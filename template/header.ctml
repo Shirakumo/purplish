@@ -1,0 +1,19 @@
+<header>
+  <nav id="top">
+    <ul>
+      <li>
+        <a href="/">Frontpage</a>
+      </li>
+      <li>
+        <a href="/BOARD">BOARD</a>
+      </li>
+    </ul>
+    <form action="/search" method="get">
+      <input type="search" name="s" placeholder="Find here..." />
+      <input type="hidden" name="context" value="CONTEXT" />
+      <input type="submit" value="Search" />
+    </form>
+  </nav>
+  <h1>TITLE</h1>
+  <img id="header-image" alt="header" src="/static/purplish/headers/HEADER" width="300" height="100" />
+</header>

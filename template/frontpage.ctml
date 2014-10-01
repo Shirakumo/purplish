@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>SOME-CHAN</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="SOME-CHAN" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" type="text/css" href="/static/purplish/default.css" />
+    <link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN Feed" />
+  </head>
+  <body>
+    <c:import template="header.ctml" />
+    <main>
+      <div id="news">
+        <h2>Breaking News</h2>
+        <p>
+          WHOAAA.
+        </p>
+      </div>
+      <ol id="recent-posts">
+        <li>
+          <c:import cache="purplish/post-ID" />
+        </li>
+      </ol>
+    </main>
+    <c:import template="footer.ctml" />
+  </body>
+</html>
