@@ -22,6 +22,6 @@
                (:interface :cache)
                (:interface :profile)
                :local-time
-               :r-clip
+               :clip
                :3bmd
                :3bmd-ext-code-blocks))
