@@ -5,4 +5,5 @@
   <textarea name="text"></textarea>
   <input type="file" name="files[]" />
   <div id="drop-area" style="hidden" />
+  <input type="submit" value="Post" />
 </form>
