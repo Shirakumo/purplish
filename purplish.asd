@@ -12,7 +12,9 @@
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :version "0.1.0"
   :description "Imageboard CMS"
-  :components ((:file "module"))
+  :components ((:file "module")
+               (:file "db")
+               (:file "api"))
   :depends-on ((:interface :database)
                (:interface :data-model)
                (:interface :auth)
