@@ -102,9 +102,7 @@
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
     (unless (user:check (auth:current) '(purplish thread delete))
       (error 'api-auth-error :message "You do not have permission to delete threads."))
-    (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent (dm:field thread "_id")))))
-      (delete-post post))
-    (delete-post thread :recache T)))
+    (delete-post thread :purge T)))
 
 (define-api purplish/post/create (thread &optional author title text files) ()
   (with-post (thread thread)
@@ -127,10 +125,10 @@
       (cond
         ((and (string= purge "true")
               (user:check (auth:current) '(purplish post purge)))
-         (delete-post post :recache T :purge T)
+         (delete-post post :purge T)
          (api-output "Post purged."))
         ((string= purge "true")
          (error 'api-auth-error :message "You do not have permission to purge posts."))
         (T
-         (delete-post post :recache T)
+         (delete-post post)
          (api-output "Post deleted."))))))
