@@ -13,6 +13,7 @@
              :indices '(name))
 
   (db:create 'purplish-posts '((board :ID)
+                               (parent :ID)
                                (revision :integer)
                                (author (:varchar 32))
                                (title (:varchar 32))
