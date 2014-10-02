@@ -14,6 +14,7 @@
   :description "Imageboard CMS"
   :components ((:file "module")
                (:file "db")
+               (:file "post")
                (:file "api"))
   :depends-on ((:interface :database)
                (:interface :data-model)
