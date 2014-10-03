@@ -35,8 +35,12 @@
     (setf (dm:field post "board") board
           (dm:field post "parent") parent
           (dm:field post "revision") revision
-          (dm:field post "author") author
-          (dm:field post "registered") registered
+          (dm:field post "author") (etypecase author
+                                     (user:user (user:username author))
+                                     (string (or* author "Anonymous"))
+                                     (null "Anonymous"))
+          (dm:field post "registered") (if (typep author 'user:user) 1 0)
+          (dm:field post "time") (get-universal-time)
           (dm:field post "title") title
           (dm:field post "text") text)
     (dm:insert post)
@@ -85,6 +89,7 @@
             (dm:field edit "revision") (1+ (dm:field revision "revision"))
             (dm:field edit "author") (user:username (auth:current))
             (dm:field edit "registered") 1
+            (dm:field edit "time") (get-universal-time)
             (dm:field edit "title") title
             (dm:field edit "text") text)
       (dm:insert edit)))
