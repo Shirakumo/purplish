@@ -129,7 +129,7 @@
     (db:remove 'purplish-files (db:query (:= 'board id)))
     (dm:delete board)))
 
-(defun create-post (board parent title text files &optional (author (auth:current) (revision 0)))
+(defun create-post (board parent title text files &optional (author (auth:current)) (revision 0))
   (with-model post ('purplish-posts NIL)
     (setf (dm:field post "board") board
           (dm:field post "parent") parent

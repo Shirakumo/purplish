@@ -8,7 +8,7 @@
 
 (defmacro with-board ((board id) &body body)
   (let ((bid (gensym "ID")))
-    `(let* ((,bid (or (parse-integer ,id :junk-allowed T)) ,id)
+    `(let* ((,bid (or (parse-integer ,id :junk-allowed T) ,id))
             (,board (dm:get-one 'purplish-boards (etypecase ,bid
                                                    (fixnum (db:query (:= '_id ,bid)))
                                                    (string (db:query (:= 'title ,bid)))))))

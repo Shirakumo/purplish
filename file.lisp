@@ -17,7 +17,7 @@
     (string (dm:get-one 'purplish-files (db:query (:= '_id (parse-integer file)))))))
 
 (defmacro define-file-embedder (type (file name) &body body)
-  (destructuring-bind (mime &optional (ext (mimes:reverse-mime (string mime))))
+  (destructuring-bind (mime &optional (ext (mimes:mime-file-type (string mime))))
       (if (listp type) type (list type))
     `(progn
        (setf (gethash ,(string ext) *file-embedders*)
@@ -66,7 +66,7 @@
     (with-model model ('purplish-files NIL)
       (setf (dm:field model "board") (dm:field post "board")
             (dm:field model "parent") (dm:field post "_id")
-            (dm:field model "type") (mimes:reverse-mime mime)
+            (dm:field model "type") (mimes:mime-file-type mime)
             (dm:field model "filename") (second file))
       (dm:insert model)
       (let ((new-file (merge-pathnames
