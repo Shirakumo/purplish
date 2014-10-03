@@ -26,6 +26,7 @@
                (:interface :auth)
                (:interface :cache)
                (:interface :profile)
+               :i-json
                :trivial-mimes
                :local-time
                :clip
