@@ -7,9 +7,15 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun create-board (name description &optional (visible T))
-  (db:insert 'purplish-boards `((name . ,name)
-                                (description . ,(or description ""))
-                                (visible . ,(if visible 1 0)))))
+  (with-model board ('purplish-boards NIL)
+    (setf (dm:field board "name") name
+          (dm:field board "description") (or description "")
+          (dm:field board "visible") (if visible 1 0))
+    (dm:insert board)
+    ;; Update header and init board
+    (dolist (board (dm:get 'purplish-boards (db:query :all)))
+      (recache-board board :cascade T))
+    (recache-frontpage)))
 
 (defun delete-board (board)
   (let ((id (dm:field board "_id")))
@@ -18,7 +24,11 @@
     (delete-file (merge-pathnames (format NIL "board/~a.html" id)))
     (db:remove 'purplish-posts (db:query (:= 'board id)))
     (db:remove 'purplish-files (db:query (:= 'board id)))
-    (dm:delete board)))
+    (dm:delete board)
+    ;; Update header
+    (dolist (board (dm:get 'purplish-boards (db:query :all)))
+      (recache-board board :cascade T))
+    (recache-frontpage)))
 
 (defun create-post (board parent title text files &optional (author (auth:current)) (revision 0))
   (with-model post ('purplish-posts NIL)
@@ -30,10 +40,10 @@
           (dm:field post "title") title
           (dm:field post "text") text)
     (dm:insert post)
-    
+    ;; Shuffle files around
     (dolist (file files)
       (create-file post file))
-
+    ;; Publicise!
     (if (= parent -1)
         (recache-thread post)
         (recache-post post))))
@@ -43,24 +53,31 @@
     (purge
      (let ((id (dm:field post "_id")))
        (dm:delete post)
+       ;; Purge files
        (dolist (file (dm:get 'purplish-files (db:query (:= 'parent id))))
          (delete-file (merge-pathnames (format NIL "~a/~a.~a"
                                                (dm:field file "board")
                                                (dm:field file "_id")
                                                (dm:field file "type")) *files*)))
        (db:remove 'purplish-files (db:query (:= 'parent id)))
+       (when (= (dm:field post "parent") -1)
+         ;; Purge each post's revisions.
+         (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent id))))
+           (db:remove 'purplish-posts (db:query (:= 'parent (dm:field post "_id"))))))
+       ;; Purge main posts & revisions
+       (db:remove 'purplish-posts (db:query (:= 'parent id)))
+       ;; Publicise!
        (cond
          ((= (dm:field post "parent") -1)
-          (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent id))))
-            (db:remove 'purplish-posts (db:query (:= 'parent (dm:field post "_id")))))
-          (db:remove 'purplish-posts (db:query (:= 'parent id)))
-          (recache-board (dm:field post "board")))
+          (recache-board (dm:field post "board"))
+          (recache-frontpage))
          (T
           (recache-thread id)))))
     (T
      (edit-post post "" "__deleted__"))))
 
 (defun edit-post (post title text)
+  ;; Create a new post with increased revision number.
   (let ((revision (last-revision post)))
     (with-model edit ('purplish-posts NIL)
       (setf (dm:field edit "board") (dm:field revision "board")
@@ -71,4 +88,5 @@
             (dm:field edit "title") title
             (dm:field edit "text") text)
       (dm:insert edit)))
+  ;; Publicise!
   (recache-post post))
