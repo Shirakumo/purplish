@@ -26,5 +26,5 @@
                                (parent :ID)
                                (type (:varchar 16))
                                (filename (:varchar 128)))
-             :indices '(post)))
+             :indices '(parent)))
 
