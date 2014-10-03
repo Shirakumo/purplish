@@ -30,7 +30,7 @@
     (setf (plump:children node) (plump:make-child-array))
     (plump:make-text-node node (date-human stamp))))
 
-(lquery:define-lquery-function purplish-cache (node post)
+(lquery:define-lquery-function purplish-cache (node type object)
   ;; We don't want to parse the cached file again just to serialise it anew
   ;; so we cheat by changing this to a fulltext element and abusing its direct
   ;; serialisation.
@@ -38,9 +38,11 @@
                 :children (plump:make-child-array))
   (plump:make-text-node
    node (with-open-file (stream (merge-pathnames
-                                 (if (= -1 (dm:field post "parent"))
-                                     (format NIL "~a/thread-min/~a.html" (dm:field post "board") (dm:field post "_id"))
-                                     (format NIL "~a/post/~a.html" (dm:field post "board") (dm:field post "_id")))
+                                 (ecase type
+                                   (:board (board-cache object))
+                                   (:thread (thread-cache object))
+                                   (:thread-min (thread-min-cache object))
+                                   (:post (post-cache object)))
                                  *cache*))
           (plump::slurp-stream stream))))
 
