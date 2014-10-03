@@ -24,17 +24,17 @@
 
 (defun thread-cache (thread)
   (let ((thread (ensure-post thread)))
-    (merge-pathnames (format NIL "~a/thread/~a.html" (dm:field thread "board") (dm:field thread "_id"))
+    (merge-pathnames (format NIL "~a/thread/~a.html" (dm:field thread "board") (dm:id thread))
                      *cache*)))
 
 (defun thread-min-cache (thread)
   (let ((thread (ensure-post thread)))
-    (merge-pathnames (format NIL "~a/thread-min/~a.html" (dm:field thread "board") (dm:field thread "_id"))
+    (merge-pathnames (format NIL "~a/thread-min/~a.html" (dm:field thread "board") (dm:id thread))
                      *cache*)))
 
 (defun post-cache (post)
   (let ((post (ensure-post post)))
-    (merge-pathnames (format NIL "~a/post/~a.html" (dm:field post "board") (dm:field post "_id"))
+    (merge-pathnames (format NIL "~a/post/~a.html" (dm:field post "board") (dm:id post))
                      *cache*)))
 
 (defun recache-frontpage ()
@@ -53,7 +53,9 @@
       (plump:serialize
        (clip:process
         (plump:parse (template "post.ctml"))
-        :post post :revision revision)
+        :post post
+        :files (dm:get 'purplish-files (db:query (:= 'parent (dm:id post))))
+        :revision revision)
        stream)
       path)
     (when propagate
@@ -64,7 +66,7 @@
 
 (defun recache-thread (thread &key cascade (propagate T) (full T))
   (let* ((thread (ensure-post thread))
-         (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:field thread "_id"))
+         (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id thread))
                                                         (:= 'revision 0))))))
     (when cascade
       (dolist (post posts)
