@@ -18,6 +18,7 @@
         <c:noop as="li" lquery="(purplish-cache :post *)" />
       </ul>
     </main>
+    <c:splice lquery="(purplish-template :replybox)" />
     <c:splice lquery="(purplish-template :footer)" />
   </body>
 </html>
