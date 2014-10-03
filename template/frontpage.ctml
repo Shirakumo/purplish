@@ -10,7 +10,7 @@
     <link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN Feed" />
   </head>
   <body>
-    <c:import template="header.ctml" />
+    <c:splice lquery="(purplish-template :header)" />
     <main>
       <div id="news">
         <h2>Breaking News</h2>
@@ -18,12 +18,11 @@
           WHOAAA.
         </p>
       </div>
-      <ol id="recent-posts">
-        <li>
-          <c:import cache="purplish/post-ID" />
-        </li>
+      <ol id="recent-posts" iterate="posts">
+        <c:noop as="li" lquery="(purplish-cache *)">
+        </c:noop>
       </ol>
     </main>
-    <c:import template="footer.ctml" />
+    <c:splice lquery="(purplish-template :footer)" />
   </body>
 </html>
