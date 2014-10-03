@@ -1,0 +1,3 @@
+<a href="SOURCE" title="FILENAME" lquery="(attr :href file :title name)">
+  <img src="/static/purplish/general-file.png" alt="File placeholder" />
+</a>

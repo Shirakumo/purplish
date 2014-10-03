@@ -1,0 +1,3 @@
+<a href="SOURCE" title="FILENAME" lquery="(attr :href file)">
+  <img src="SOURCE-THUMB" alt="FILENAME" lquery="(attr :href file-thumb)"/>
+</a>
