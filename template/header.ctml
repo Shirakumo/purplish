@@ -4,16 +4,19 @@
       <li>
         <a href="/">Frontpage</a>
       </li>
-      <li>
-        <a href="/BOARD">BOARD</a>
-      </li>
+      <c:splice iterate="boards">
+        <li>
+          <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name))">BOARD</a>
+        </li>
+      </c:splice>
     </ul>
     <form action="/search" method="get">
       <input type="search" name="s" placeholder="Find here..." />
-      <input type="hidden" name="context" value="CONTEXT" />
+      <input type="hidden" name="context" value="CONTEXT"
+             lquery="(val (if board (clip board :name) (when thread (clip thread :_id))))"/>
       <input type="submit" value="Search" />
     </form>
   </nav>
-  <h1>TITLE</h1>
-  <img id="header-image" alt="header" src="/static/purplish/headers/HEADER" width="300" height="100" />
+  <h1 lquery="(text title)">TITLE</h1>
+  <img id="header-image" alt="header" src="/api/purplish/header" width="300" height="100"/>
 </header>

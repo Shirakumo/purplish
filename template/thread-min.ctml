@@ -1,0 +1,11 @@
+<article class="thread">
+  <nav>
+    <a href="/thread/ID" lquery='(attr :href (format NIL "/thread/~a" (clip thread :_id)))'>View</a>
+    <a href="/thread/ID#bottom"  lquery='(attr :href (format NIL "/thread/~a#bottom" (clip thread :_id)))'>Jump to Bottom</a>
+    <a href="/thread/ID#reply"  lquery='(attr :href (format NIL "/thread/~a#reply" (clip thread :_id)))'>Reply</a>
+  </nav>
+  <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
+  <ul id="posts" iterate="posts">
+    <c:noop as="li" lquery="(purplish-cache :post *)" />
+  </ul>
+</article>

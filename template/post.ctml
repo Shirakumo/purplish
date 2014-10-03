@@ -1,9 +1,9 @@
 <c:using value="post">
   <article class="post" data-post-id="ID" data-post-revision="REVISION"
-           lquery="(attr :data-post-id _id :data-post-revision (clip (** revision) :revision))">
+           lquery="(attr :data-post-id _id :data-post-revision (if (** :revision) (clip (** :revision) :revision) 0))">
     <a name="POST-ID" lquery="(attr :name (format NIL &quot;post-~a&quot; _id))"/>
     <header>
-      <a class="id" href="#ID" lquery="(text _id) (attr :href (format NIL &quot;#~a&quot; _id))">ID</a>
+      <a class="id" href="/thread/ID#ID" lquery='(text _id) (attr :href (format NIL "/thread/~a#~a" (if (= -1 parent) _id parent) _id))'>ID</a>
       <h3 lquery="(text title)">TITLE</h3>
       <address class="author"><a rel="author" href="/user/AUTHOR"
                                  lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author))
@@ -23,19 +23,21 @@
           </div>
         </li>
       </ul>
-      <div class="text" lquery="(html (purplish::parse (clip (** revision) :text)))">
+      <div class="text" lquery="(html (purplish::parse (if (** :revision) (clip (** :revision) :text) text)))">
         TEXT
       </div>
     </div>
-    <c:using value="(** revision)">
-      <footer>
-        Revision <a class="revision" href="/history/ID"
-                    lquery="(text revision) (attr :href (format NIL &quot;/history/~a&quot; parent))">REVISION</a>,
-        last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
-                             lquery="(purplish-time time)">2014.01.01 00:00:00</time>
-        by <address class="editor"><a rel="author" href="/user/AUTHOR" class="registered"
-                                      lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author))">EDITOR</a></address>
-      </footer>
+    <c:using value="(** :revision)">
+      <c:when test="*">
+        <footer>
+          Revision <a class="revision" href="/history/ID"
+                      lquery="(text revision) (attr :href (format NIL &quot;/history/~a&quot; parent))">REVISION</a>,
+          last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
+                               lquery="(purplish-time time)">2014.01.01 00:00:00</time>
+          by <address class="editor"><a rel="author" href="/user/AUTHOR" class="registered"
+                                        lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author))">EDITOR</a></address>
+        </footer>
+      </c:when>
     </c:using>
   </article>
 </c:using>

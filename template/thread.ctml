@@ -11,13 +11,19 @@
     <link href="/api/purplish/atom?board=BOARD" type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD Feed" />
   </head>
   <body>
+    <a name="top" />
     <c:splice lquery="(purplish-template :header)" />
-    <main>
-      <c:noop as="div" class="op" lquery="(purplish-cache :post *)" />
+    <main class="thread">
+      <nav>
+        <a href="/board/BOARD" lquery='(attr :href (format NIL "/board/~a" (clip thread :board)))'>Return to Board</a>
+        <a href="#bottom">Jump to Bottom</a>
+      </nav>
+      <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
       <ul id="posts" iterate="posts">
         <c:noop as="li" lquery="(purplish-cache :post *)" />
       </ul>
     </main>
+    <a name="bottom" />
     <c:splice lquery="(purplish-template :replybox)" />
     <c:splice lquery="(purplish-template :footer)" />
   </body>

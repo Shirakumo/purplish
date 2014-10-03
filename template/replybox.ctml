@@ -1,8 +1,14 @@
-<form id="postbox" action="/api/purplish/post/create" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="thread" value="THREAD" />
+<form id="postbox" action="/api/purplish/post/create" method="post" enctype="multipart/form-data"
+      lquery='(attr :action (if thread "/api/purplish/post/create" "/api/purplish/thread/create"))'>
+  <a name="reply" />
+  <input type="hidden" name="thread" value="THREAD"
+         lquery="(val (when thread (clip thread :_id)))"/>
+  <input type="hidden" name="board" value="BOARD"
+         lquery="(val (when board (clip board :_id)))"/>
   <input type="text" name="author" placeholder="Anonymous" />
   <input type="text" name="title" placeholder="Title" />
-  <textarea name="text"></textarea>
+  <input type="text" name="username" placeholder="Leave empty" style="display:none;" value="" />
+  <textarea name="text"> </textarea>
   <input type="file" name="files[]" />
   <div id="drop-area" style="hidden" />
   <input type="submit" value="Post" />
