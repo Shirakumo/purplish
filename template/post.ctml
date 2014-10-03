@@ -1,27 +1,38 @@
-<article class="post" data-post-id="ID" data-post-revision="REVISION">
-  <a name="POST-ID"/>
+<article class="post" data-post-id="ID" data-post-revision="REVISION"
+         lquery="(attr :data-post-id _id :data-post-revision revision)">
+  <a name="POST-ID" lquery="(attr :name (format NIL &quot;post-~a&quot; _id))"/>
   <header>
-    <a class="id" href="#ID">ID</a>
-    <h3>TITLE</h3>
-    <address class="author"><a rel="author" href="/user/AUTHOR">AUTHOR</a></address>
-    <time pubdate datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC">2014.01.01 00:00:00</time>
+    <a class="id" href="#ID" lquery="(text _id) (attr :href (format NIL &quot;#~a&quot; _id))">ID</a>
+    <h3 lquery="(text title)">TITLE</h3>
+    <address class="author"><a rel="author" href="/user/AUTHOR"
+                               lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author))">AUTHOR</a></address>
+    <time pubdate datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
+          lquery="(purplish-time time)">
+      2014.01.01 00:00:00
+    </time>
   </header>
   <div class="content">
-    <ul class="files">
-      <li class="file" data-file-id="ID">
-        <a class="download" href="/static/purplish/file/ID" download="FILENAME">FILENAME</a>
-        <div class="preview">
+    <ul class="files" iterate="files">
+      <li class="file" data-file-id="ID" lquery="(attr :data-file-id _id)">
+        <a class="download" href="/static/purplish/file/ID" download="FILENAME"
+           lquery="(attr :href (purplish::file-path *) :download filename)">FILENAME</a>
+        <div class="preview" lquery="(html (purplish::embed-file *))">
           PREVIEW
         </div>
       </li>
     </ul>
-    <div class="text">
+    <div class="text" lquery="(html (purplish::parse text))">
       TEXT
     </div>
   </div>
-  <footer>
-    Revision <a class="revision" href="/history/ID">REVISION</a>,
-    last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC">2014.01.01 00:00:00</time>
-    by <address class="editor"><a rel="author" href="/user/AUTHOR">EDITOR</a></address>
-  </footer>
+  <c:using value="revision">
+    <footer>
+      Revision <a class="revision" href="/history/ID"
+                  lquery="(text revision) (attr :href (format NIL &quot;/history/~a&quot; _id))">REVISION</a>,
+      last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
+                           lquery="(purplish-time time)">2014.01.01 00:00:00</time>
+      by <address class="editor"><a rel="author" href="/user/AUTHOR"
+                                    lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author)">EDITOR</a></address>
+    </footer>
+  </c:using>
 </article>
