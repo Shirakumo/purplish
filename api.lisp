@@ -94,9 +94,11 @@
     (delete-board board)
     (api-output "Board deleted.")))
 
-(define-api purplish/thread/create (board title text files &optional author) ()
+(define-api purplish/thread/create (board title text files[] &optional author username) ()
+  (unless (or (not username) (string= username ""))
+    (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (with-board (board board)
-    (create-post (dm:field board "_id") -1 title text files (or* author (auth:current)))
+    (create-post (dm:field board "_id") -1 title text files[] (or* author (auth:current)))
     (api-output "Thread created.")))
 
 (define-api purplish/thread/delete (thread) ()
@@ -108,9 +110,11 @@
     (delete-post thread :purge T)
     (api-output "Thread purged.")))
 
-(define-api purplish/post/create (thread &optional author title text files) ()
+(define-api purplish/post/create (thread &optional author title text files username) ()
+  (unless (or (not username) (string= username ""))
+    (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (with-post (thread thread)
-    (unless (= (dm:field post "parent") -1)
+    (unless (= (dm:field thread "parent") -1)
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
     (create-post (dm:field thread "board") (dm:field thread "_id") title text files (or* author (auth:current)))
     (api-output "Post created.")))
@@ -136,3 +140,6 @@
         (T
          (delete-post post)
          (api-output "Post deleted."))))))
+
+(define-api purplish/header () ()
+  (serve-file (random-header)))
