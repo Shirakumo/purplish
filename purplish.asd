@@ -14,6 +14,7 @@
   :description "Imageboard CMS"
   :components ((:file "module")
                (:file "db")
+               (:file "file")
                (:file "post")
                (:file "api"))
   :depends-on ((:interface :database)
@@ -21,6 +22,7 @@
                (:interface :auth)
                (:interface :cache)
                (:interface :profile)
+               :trivial-mimes
                :local-time
                :clip
                :3bmd
