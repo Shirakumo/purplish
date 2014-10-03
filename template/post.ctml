@@ -14,7 +14,7 @@
       </time>
     </header>
     <div class="content">
-      <ul class="files" iterate="files">
+      <ul class="files" iterate="(** :files)">
         <li class="file" data-file-id="ID" lquery="(attr :data-file-id _id)">
           <a class="download" href="/static/purplish/file/ID" download="FILENAME"
              lquery="(attr :href (purplish::file-path *) :download filename)">FILENAME</a>
