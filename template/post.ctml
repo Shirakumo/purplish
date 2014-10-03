@@ -1,6 +1,6 @@
 <c:using value="post">
   <article class="post" data-post-id="ID" data-post-revision="REVISION"
-           lquery="(attr :data-post-id _id :data-post-revision (clip revision :revision))">
+           lquery="(attr :data-post-id _id :data-post-revision (clip (** revision) :revision))">
     <a name="POST-ID" lquery="(attr :name (format NIL &quot;post-~a&quot; _id))"/>
     <header>
       <a class="id" href="#ID" lquery="(text _id) (attr :href (format NIL &quot;#~a&quot; _id))">ID</a>
@@ -23,11 +23,11 @@
           </div>
         </li>
       </ul>
-      <div class="text" lquery="(html (purplish::parse (clip revision :text)))">
+      <div class="text" lquery="(html (purplish::parse (clip (** revision) :text)))">
         TEXT
       </div>
     </div>
-    <c:using value="revision">
+    <c:using value="(** revision)">
       <footer>
         Revision <a class="revision" href="/history/ID"
                     lquery="(text revision) (attr :href (format NIL &quot;/history/~a&quot; parent))">REVISION</a>,

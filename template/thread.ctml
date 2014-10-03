@@ -11,10 +11,13 @@
     <link href="/api/purplish/atom?board=BOARD" type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD Feed" />
   </head>
   <body>
-    <c:import template="header.ctml" />
+    <c:splice lquery="(purplish-template :header)" />
     <main>
-      
+      <c:noop as="div" class="op" lquery="(purplish-cache :post *)" />
+      <ul id="posts" iterate="posts">
+        <c:noop as="li" lquery="(purplish-cache :post *)" />
+      </ul>
     </main>
-    <c:import template="footer.ctml" />
+    <c:splice lquery="(purplish-template :footer)" />
   </body>
 </html>

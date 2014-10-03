@@ -19,7 +19,7 @@
         </p>
       </div>
       <ol id="recent-posts" iterate="posts">
-        <c:noop as="li" lquery="(purplish-cache *)">
+        <c:noop as="li" lquery="(purplish-cache :post *)">
         </c:noop>
       </ol>
     </main>
