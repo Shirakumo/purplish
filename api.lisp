@@ -63,7 +63,7 @@
                                                                 (:= 'revision 0)))))))
     (unless post
       (error 'api-argument-invalid :argument 'post :message "No such post found."))
-    (let ((revision (dm:get-one 'purplish-posts (db:query (:= 'parent (gethash "_id" post))) :sort '((revision :DESC))))
+    (let ((revision (last-revision post))
           (files (db:select 'purplish-files (db:query (:= 'post (gethash "_id" post))))))
       (setf (gethash "revision" post) (dm:field revision "revision")
             (gethash "editor" post) (dm:field revision "author")
@@ -86,10 +86,13 @@
 (define-api purplish/board/create (name &optional description visible) (:access (purplish board create))
   (when (dm:get-one 'purplish-boards (db:query (:= 'title title)))
     (error 'api-argument-invalid :argument 'name :message "A board with that name already exists."))
-  (db:insert 'purplish-boards `((name . ,name)
-                                (description . ,(or description ""))
-                                (visible . ,(if (string= visible "true") 1 0))))
+  (create-board name description (string= visible "true"))
   (api-output "Board created."))
+
+(define-api purplish/board/delete (board) (:access (purplish board delete))
+  (with-board (board board)
+    (delete-board board)
+    (api-output "Board deleted.")))
 
 (define-api purplish/thread/create (board title text files &optional author) ()
   (with-board (board board)
@@ -102,7 +105,8 @@
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
     (unless (user:check (auth:current) '(purplish thread delete))
       (error 'api-auth-error :message "You do not have permission to delete threads."))
-    (delete-post thread :purge T)))
+    (delete-post thread :purge T)
+    (api-output "Thread purged.")))
 
 (define-api purplish/post/create (thread &optional author title text files) ()
   (with-post (thread thread)
