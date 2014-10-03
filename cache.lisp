@@ -68,6 +68,7 @@
         (recache-post post :propagate NIL)))
 
     (when full
+      (recache-post thread :propagate NIL)
       (with-cache-file (stream path (thread-cache thread))
         (plump:serialize
          (clip:process
