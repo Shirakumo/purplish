@@ -61,7 +61,7 @@
 (defun create-file (post file)
   (let ((path (first file))
         (mime (mimes:mime-probe (first file))))
-    (unless (find mime *allowed-types :test #'string-equal)
+    (unless (find mime *allowed-types* :test #'string-equal)
       (error "Files of type ~s are not allowed." mime))
     (with-model model ('purplish-files NIL)
       (setf (dm:field model "board") (dm:field post "board")
@@ -71,9 +71,17 @@
       (dm:insert model)
       (let ((new-file (merge-pathnames
                        (format NIL "~a/~a.~a"
-                               (dm:field file "board")
-                               (dm:field file "_id")
-                               (dm:field file "type"))
+                               (dm:field model "board")
+                               (dm:field model "_id")
+                               (dm:field model "type"))
                        *files*)))
         (ensure-directories-exist new-file)
-        (rename-file path new-file)))))
+        ;; We can't use rename-file across devices, so just copy it.
+        (uiop:copy-file path new-file)))))
+
+(defvar *headers* (static-file "headers/"))
+
+(defun random-header ()
+  (let ((headers (uiop:directory-files *headers*)))
+    (nth (random (length headers))
+         headers)))
