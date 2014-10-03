@@ -22,7 +22,8 @@
                                (text :text))
              :indices '((_id board) (_id revision)))
 
-  (db:create 'purplish-files '((post :ID)
+  (db:create 'purplish-files '((board :ID)
+                               (parent :ID)
                                (type (:varchar 16))
                                (filename (:varchar 128)))
              :indices '(post)))
