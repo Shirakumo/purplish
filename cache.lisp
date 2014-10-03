@@ -11,7 +11,7 @@
 (defmacro with-cache-file ((stream path descriptor) &body body)
   `(let ((,path ,descriptor))
      (ensure-directories-exist ,path)
-     (with-open-file (,stream ,path :direction :output)
+     (with-open-file (,stream ,path :direction :output :if-exists :supersede)
        ,@body)))
 
 (defun front-cache ()
@@ -42,6 +42,7 @@
     (plump:serialize
      (clip:process
       (plump:parse (template "frontpage.ctml"))
+      :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
       :posts (dm:get 'purplish-posts (db:query :all) :amount 20 :sort '((time :DESC))))
      stream)))
 
@@ -57,7 +58,9 @@
       path)
     (when propagate
       (recache-frontpage)
-      (recache-thread (dm:field post "parent")))))
+      (if (= -1 (dm:field post "parent"))
+          (recache-thread post)
+          (recache-thread (dm:field post "parent"))))))
 
 (defun recache-thread (thread &key cascade (propagate T) (full T))
   (let* ((thread (ensure-post thread))
@@ -73,6 +76,8 @@
         (plump:serialize
          (clip:process
           (plump:parse (template "thread.ctml"))
+          :title (dm:field thread "title")
+          :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
           :thread thread :posts posts)
          stream)
         path))
@@ -81,7 +86,10 @@
       (plump:serialize
        (clip:process
         (plump:parse (template "thread-min.ctml"))
-        :thread thread :posts posts)
+        :thread thread :posts (loop repeat (- (length posts) 3)
+                                    for minposts = posts
+                                    then (cdr minposts)
+                                    finally (return minposts)))
        stream)
       path)
 
@@ -100,6 +108,8 @@
       (plump:serialize
        (clip:process
         (plump:parse (template "board.ctml"))
+        :title (dm:field board "name")
+        :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
         :board board :threads threads)
        stream)
       path)))
