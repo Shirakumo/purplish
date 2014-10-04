@@ -47,7 +47,17 @@
      :color "#FFF")))
 
   ("ul#themes"
-   )
+   :list-style none
+   :display flex
+   :align-items stretch
+   :margin 0 :padding 0
+   (li
+    :padding 7px 5px 7px 5px
+    :text-transform capitalize)
+   ((:and li :hover)
+    :color "#0088EE"
+    :cursor pointer
+    :font-weight bold))
   
   (form
    :display inline-block

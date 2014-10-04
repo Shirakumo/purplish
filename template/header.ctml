@@ -10,7 +10,7 @@
         </li>
       </c:splice>
     </ul>
-    <ul id="themes" iterate="(purplish::themes)">
+    <ul id="themes" iterate="(purplish::themes)" title="Pick a theme">
       <li lquery="(text *)"></li>
     </ul>
     <form action="/search" method="get">

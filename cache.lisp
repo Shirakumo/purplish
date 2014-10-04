@@ -11,7 +11,8 @@
 (defun boards ()
   (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
 
-(defun themes ())
+(defun themes ()
+  (mapcar #'pathname-name (uiop:directory-files (static-file "theme/*.css") #p"")))
 
 (defmacro with-cache-file ((stream path descriptor) &body body)
   `(let ((,path ,descriptor)
