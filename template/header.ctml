@@ -1,14 +1,17 @@
 <header>
   <nav id="top">
-    <ul>
+    <ul id="links">
       <li>
         <a href="/">Frontpage</a>
       </li>
-      <c:splice iterate="boards">
+      <c:splice iterate="(purplish::boards)">
         <li>
           <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name) :title description)">BOARD</a>
         </li>
       </c:splice>
+    </ul>
+    <ul id="themes" iterate="(purplish::themes)">
+      <li lquery="(text *)"></li>
     </ul>
     <form action="/search" method="get">
       <input type="search" name="s" placeholder="Find here..." />

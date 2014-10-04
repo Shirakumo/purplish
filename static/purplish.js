@@ -1,4 +1,4 @@
-$(function (){
+$(function (){    
     function zeroPadDate(date){
         return ("0" + date).slice(-2);
     }
@@ -37,4 +37,11 @@ $(function (){
     }
     
     registerFileChange($("#replybox .files>input"));
+
+    $("#themes li").click(function(){
+        var theme = $(this).text();
+        $(".theme-part").remove();
+        setCookie("purplish-theme", theme);
+        loadTheme(theme);
+    });
 });

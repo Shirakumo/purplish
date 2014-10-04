@@ -8,6 +8,11 @@
 
 (defvar *cache* (asdf:system-relative-pathname :purplish "cache/"))
 
+(defun boards ()
+  (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
+
+(defun themes ())
+
 (defmacro with-cache-file ((stream path descriptor) &body body)
   `(let ((,path ,descriptor)
          (*package* (find-package "RAD-USER")))
@@ -44,7 +49,6 @@
      (clip:process
       (plump:parse (template "frontpage.ctml"))
       :title (config-tree :purplish :title)
-      :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
       :posts (dm:get 'purplish-posts (db:query (:= 'revision 0)) :amount 20 :sort '((time :DESC))))
      stream)))
 
@@ -81,7 +85,6 @@
          (clip:process
           (plump:parse (template "thread.ctml"))
           :title (dm:field thread "title")
-          :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
           :thread thread :posts posts)
          stream)
         path))
@@ -114,7 +117,6 @@
        (clip:process
         (plump:parse (template "board.ctml"))
         :title (dm:field board "name")
-        :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
         :board board :threads threads)
        stream)
       path)))
