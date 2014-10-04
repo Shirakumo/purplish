@@ -38,13 +38,13 @@
      (clip:process (template "files/image.ctml") :file file :file-thumb thumb :name name)))
 
   ((:video/mp4 :video/webm :video/ogg)
-   (file name) (clip:process (template "files/video.ctml" :file file :name name)))
+   (file name) (clip:process (template "files/video.ctml") :file file :name name))
 
   ((:audio/mpeg :audio/x-wav :audio/ogg)
-   (file name) (clip:process (template "files/audio.ctml" :file file :name name)))
+   (file name) (clip:process (template "files/audio.ctml") :file file :name name))
 
   ((:application/pdf)
-   (file name) (clip:process (template "files/general.ctml" :file file :name name))))
+   (file name) (clip:process (template "files/general.ctml") :file file :name name)))
 
 (defun file-path (file)
   (format NIL "/static/purplish/file/~a/~a.~a"
@@ -69,7 +69,7 @@
 
 (defun create-file (post file)
   (let ((path (first file))
-        (mime (mimes:mime-probe (first file)))
+        (mime (mimes:mime-lookup (second file)))
         (name (if (< 128 (length (second file)))
                   (subseq (second file) (- (length (second file)) 128))
                   (second file))))
