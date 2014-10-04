@@ -24,15 +24,19 @@
          (error 'api-argument-invalid :argument ',id :message "No such post found."))
        ,@body)))
 
+(defun post-accessible-p (post)
+  (let ((user (auth:current)))
+    (and user
+         (or (user:check user '(purplish post change))
+             (and (= (dm:field post "registered") 1)
+                  (string-equal (dm:field post "author")
+                                (user:username user)))))))
+
 (defmacro with-post-accessible ((post-dm) &body body)
-  (let ((post (gensym "POST")))
-    `(let ((,post ,post-dm))
-       (unless (or (user:check (auth:current) '(purplish post change))
-                   (and (= (dm:field ,post "registered") 1)
-                        (string-equal (dm:field ,post "author")
-                                      (user:username (auth:current)))))
-         (error 'api-auth-error :message "You do not have permission to change this post."))
-       ,@body)))
+  `(progn
+     (unless (post-accessible-p ,post-dm)
+       (error 'api-auth-error :message "You do not have permission to change this post."))
+     ,@body))
 
 (define-api purplish/boards () ()
   (api-output (db:select 'purplish-boards (db:query (:= 'visible 1)))))
