@@ -9,7 +9,8 @@
 (defvar *cache* (asdf:system-relative-pathname :purplish "cache/"))
 
 (defmacro with-cache-file ((stream path descriptor) &body body)
-  `(let ((,path ,descriptor))
+  `(let ((,path ,descriptor)
+         (*package* (find-package "RAD-USER")))
      (ensure-directories-exist ,path)
      (with-open-file (,stream ,path :direction :output :if-exists :supersede)
        ,@body)))
@@ -89,7 +90,7 @@
        (clip:process
         (plump:parse (template "thread-min.ctml"))
         :thread thread :posts (loop repeat (- (length posts) 3)
-                                    for minposts = posts
+                                    for minposts = (cdr posts)
                                     then (cdr minposts)
                                     finally (return minposts)))
        stream)
