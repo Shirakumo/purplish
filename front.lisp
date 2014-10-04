@@ -10,7 +10,19 @@
   (setf (content-type *response*) "application/xhtml+xml")
   (or (with-open-file (stream file :if-does-not-exist NIL)
         (when stream
-          (plump::slurp-stream stream)))
+          (let ((doc (plump:parse stream))
+                (user (auth:current)))
+            (when user
+              (lquery:$ doc "#replybox .author" (val (user:username user))))
+            (lquery:$
+              doc ".post"
+              (each #'(lambda (node)
+                        (unless (and user
+                                     (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
+                                         (user:check user '(pruplish post change))))
+                          (lquery:$ node "nav.edit" (remove))))))
+            (with-output-to-string (stream)
+              (plump:serialize doc stream)))))
       (error 'request-not-found :message error-message)))
 
 (define-page frontpage #@"chan/" ()
