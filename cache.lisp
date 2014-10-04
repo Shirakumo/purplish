@@ -102,7 +102,8 @@
 (defun recache-board (board &key cascade)
   (let ((board (ensure-board board))
         (threads (dm:get 'purplish-posts (db:query (:and (:= 'board board)
-                                                         (:= 'parent -1))))))
+                                                         (:= 'parent -1)))
+                         :sort '((time :DESC)))))
     (when cascade
       (dolist (thread threads)
         (recache-thread thread :cascade T :propagate NIL)))
