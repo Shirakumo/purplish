@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8"/>
-    <title>SOME THREAD - SOME BOARD - SOME CHAN</title>
+    <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="THREAD - BOARD - SOME-CHAN" />
     <meta name="robots" content="index, follow" />
@@ -19,7 +19,7 @@
         <a href="#bottom">Jump to Bottom</a>
       </nav>
       <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
-      <ul id="posts" iterate="posts">
+      <ul class="posts" iterate="posts">
         <c:noop as="li" lquery="(purplish-cache :post *)" />
       </ul>
     </main>

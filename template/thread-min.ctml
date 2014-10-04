@@ -5,7 +5,7 @@
     <a href="/thread/ID#reply"  lquery='(attr :href (format NIL "/thread/~a#reply" (clip thread :_id)))'>Reply</a>
   </nav>
   <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
-  <ul id="posts" iterate="posts">
+  <ul class="posts" iterate="posts">
     <c:noop as="li" lquery="(purplish-cache :post *)" />
   </ul>
 </article>

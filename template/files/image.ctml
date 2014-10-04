@@ -1,4 +1,4 @@
 <a href="SOURCE" title="FILENAME" target="_blank" lquery="(attr :href file :title name)">
-  <img src="SOURCE-THUMB" alt="FILENAME" width="125" height="125"
-       lquery="(attr :src file-thumb :alt name :width (or* (config-tree :purplish :thumb :width) 150) :height (or* (config-tree :purplish :thumb :height) 150))"/>
+  <img src="SOURCE-THUMB" alt="FILENAME"
+       lquery="(attr :src file-thumb :alt name)"/>
 </a>

@@ -6,7 +6,7 @@
       </li>
       <c:splice iterate="boards">
         <li>
-          <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name))">BOARD</a>
+          <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name) :title description)">BOARD</a>
         </li>
       </c:splice>
     </ul>

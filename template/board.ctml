@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8"/>
-    <title>SOME BOARD - SOME CHAN</title>
+    <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content="BOARD - SOME-CHAN" />
     <meta name="robots" content="index, follow" />
@@ -12,12 +12,12 @@
   </head>
   <body>
     <c:splice lquery="(purplish-template :header)" />
+    <c:splice lquery="(purplish-template :replybox)" />
     <main>
       <ul id="threads" iterate="threads">
         <c:noop as="li" lquery="(purplish-cache :thread-min *)" />
       </ul>
     </main>
-    <c:splice lquery="(purplish-template :replybox)" />
     <c:splice lquery="(purplish-template :footer)" />
   </body>
 </html>

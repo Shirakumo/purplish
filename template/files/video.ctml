@@ -1,4 +1,4 @@
-<video controls src="SOURCE" preload="none" width="320" height="240" lquery="(attr :src file)">
+<video controls src="SOURCE" preload="none" width="150" height="150" lquery="(attr :src file)">
   Your browser does not support HTML5 video.
   <a href="SOURCE" download="FILENAME" title="FILENAME" target="_blank"
      lquery="(attr :href file :download name :title name)">Download the file</a>
