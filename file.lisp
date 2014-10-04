@@ -34,7 +34,7 @@
 (define-for-multiple
   ((:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml)
    (file name)
-   (let ((thumb (merge-pathnames (make-pathname :name (format NIL "~a-thumb" (pathname-name file))) file)))
+   (let ((thumb (make-pathname :name (format NIL "thumb-~a" (pathname-name file)) :defaults file)))
      (clip:process (template "files/image.ctml") :file file :file-thumb thumb :name name)))
 
   ((:video/mp4 :video/webm :video/ogg)
@@ -58,16 +58,28 @@
              (file-path file)
              (dm:field file "filename"))))
 
+(defun create-thumb (file mime)
+  (when (find mime '(:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml) :test #'string-equal)
+    (thumbnail:create
+     file NIL
+     :width (or* (config-tree :purplish :thumb :width) 150)
+     :height (or* (config-tree :purplish :thumb :height) 150)
+     :preserve-gif (config-tree :purplish :thumb :gif)
+     :if-exists :warn)))
+
 (defun create-file (post file)
   (let ((path (first file))
-        (mime (mimes:mime-probe (first file))))
+        (mime (mimes:mime-probe (first file)))
+        (name (if (< 128 (length (second file)))
+                  (subseq (second file) (- (length (second file)) 128))
+                  (second file))))
     (unless (find mime *allowed-types* :test #'string-equal)
       (error "Files of type ~s are not allowed." mime))
     (with-model model ('purplish-files NIL)
       (setf (dm:field model "board") (dm:field post "board")
             (dm:field model "parent") (dm:field post "_id")
             (dm:field model "type") (mimes:mime-file-type mime)
-            (dm:field model "filename") (second file))
+            (dm:field model "filename") name)
       (dm:insert model)
       (let ((new-file (merge-pathnames
                        (format NIL "~a/~a.~a"
@@ -77,7 +89,8 @@
                        *files*)))
         (ensure-directories-exist new-file)
         ;; We can't use rename-file across devices, so just copy it.
-        (uiop:copy-file path new-file)))))
+        (uiop:copy-file path new-file)
+        (create-thumb new-file mime)))))
 
 (defvar *headers* (static-file "headers/"))
 
