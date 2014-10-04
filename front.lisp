@@ -38,7 +38,10 @@
   (serve-or-err (post-cache post) "Post not found."))
 
 (define-page history #@"chan/history/([0-9]+)" (:uri-groups (post))
-  )
+  "Poo.")
 
 (define-page search #@"chan/search" ()
-  )
+  "Poo.")
+
+(define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
+  "Poo.")
