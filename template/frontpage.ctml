@@ -11,17 +11,20 @@
   </head>
   <body>
     <c:splice lquery="(purplish-template :header)" />
-    <main>
+    <main id="frontpage">
       <div id="news">
         <h2>Breaking News</h2>
         <p>
           WHOAAA.
         </p>
       </div>
-      <ol id="recent-posts" iterate="posts">
-        <c:noop as="li" lquery="(purplish-cache :post *)">
-        </c:noop>
-      </ol>
+      <div id="recent-posts">
+        <h2>Recent posts</h2>
+        <ol iterate="posts">
+          <c:noop as="li" lquery="(purplish-cache :post *)">
+          </c:noop>
+        </ol>
+      </div>
     </main>
     <c:splice lquery="(purplish-template :footer)" />
   </body>
