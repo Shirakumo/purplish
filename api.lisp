@@ -110,13 +110,15 @@
     (delete-post thread :purge T)
     (api-output "Thread purged.")))
 
-(define-api purplish/post/create (thread &optional author title text files username) ()
+(define-api purplish/post/create (thread &optional author title text files[] username) ()
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
+  (unless (or title text files[])
+    (error 'api-argument-missing :argument 'text :message "Title, text or file required."))
   (with-post (thread thread)
     (unless (= (dm:field thread "parent") -1)
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
-    (create-post (dm:field thread "board") (dm:field thread "_id") title text files (or* author (auth:current)))
+    (create-post (dm:field thread "board") (dm:field thread "_id") title text files[] (or* author (auth:current)))
     (api-output "Post created.")))
 
 (define-api purplish/post/edit (post &optional title text) ()
