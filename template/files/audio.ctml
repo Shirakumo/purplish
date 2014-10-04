@@ -1,5 +1,5 @@
 <audio controls src="SOURCE" preload="none" lquery="(attr :src file)">
   Your browser does not support HTML5 audio.
-  <a href="SOURCE" download="FILENAME" title="FILENAME"
+  <a href="SOURCE" download="FILENAME" title="FILENAME" target="_blank"
      lquery="(attr :href file :download name :title name)">Download the file</a>
 </audio>

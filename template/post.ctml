@@ -16,8 +16,8 @@
     <div class="content">
       <ul class="files" iterate="(** :files)">
         <li class="file" data-file-id="ID" lquery="(attr :data-file-id _id)">
-          <a class="download" href="/static/purplish/file/ID" download="FILENAME"
-             lquery="(attr :href (purplish::file-path *) :download filename)">FILENAME</a>
+          <a class="download" href="/static/purplish/file/ID" download="FILENAME" target="_blank"
+             lquery="(attr :href (purplish::file-path *) :download filename) (text filename)">FILENAME</a>
           <div class="preview" lquery="(html (purplish::embed-file *))">
             PREVIEW
           </div>
