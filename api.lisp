@@ -115,7 +115,7 @@
     (api-output "Thread purged.")))
 
 (define-api purplish/post/create (thread &optional author title text files[] username) ()
-  (unless (or* (not username) (string= username ""))
+  (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (unless (or* title text files[])
     (error 'api-argument-missing :argument 'text :message "Title, text or file required."))
