@@ -41,7 +41,8 @@
           </c:when>
         </c:using>
         <nav class="edit">
-          <a href="/edit/ID" class="edit-button">Edit</a>
+          <a href="/edit/ID" class="edit-button"
+             lquery='(attr :href (format NIL "/edit/~a" _id))'>Edit</a>
           <a href="/api/purplish/post/delete?post=ID" class="delete-button"
              lquery='(attr :href (format NIL "/api/purplish/post/delete?post=~a" _id))'>Delete</a>
         </nav>
