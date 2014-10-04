@@ -31,4 +31,5 @@
                :local-time
                :clip
                :3bmd
-               :3bmd-ext-code-blocks))
+               :3bmd-ext-code-blocks
+               :trivial-thumbnail))
