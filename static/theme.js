@@ -28,6 +28,10 @@ function loadJS(filename){
 }
 
 function loadTheme(name){
+    var els = document.getElementsByClassName("theme-part");
+    for(var i=0; i<els.length; i++){
+        els[i].parentNode.removeChild(els[i]);
+    }
     loadCSS("/static/purplish/theme/"+name+".css");
     loadJS("/static/purplish/theme/"+name+".js");
 }

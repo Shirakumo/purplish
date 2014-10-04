@@ -40,7 +40,6 @@ $(function (){
 
     $("#themes li").click(function(){
         var theme = $(this).text();
-        $(".theme-part").remove();
         setCookie("purplish-theme", theme);
         loadTheme(theme);
     });
