@@ -76,13 +76,14 @@
           (recache-board (dm:field post "board"))
           (recache-frontpage))
          (T
-          (recache-thread id)))))
+          (recache-thread (dm:field post "parent"))))))
     (T
      (edit-post post "" "__deleted__"))))
 
 (defun edit-post (post title text)
   ;; Create a new post with increased revision number.
-  (let ((revision (last-revision post)))
+  (let ((revision (or (last-revision post)
+                      post)))
     (with-model edit ('purplish-posts NIL)
       (setf (dm:field edit "board") (dm:field revision "board")
             (dm:field edit "parent") (dm:field revision "parent")
