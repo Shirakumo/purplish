@@ -7,6 +7,7 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun serve-or-err (file error-message)
+  (setf (content-type *response*) "application/xhtml+xml")
   (or (with-open-file (stream file :if-does-not-exist NIL)
         (when stream
           (plump::slurp-stream stream)))
