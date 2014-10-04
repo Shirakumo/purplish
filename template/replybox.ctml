@@ -15,7 +15,7 @@
   <div class="content">
     <div class="files">
       <input type="file" name="files[]" />
-      <ul class="filelist">
+      <ul class="filelist" title="Double click file to remove.">
       </ul>
     </div>
     <textarea class="text" name="text" tabindex="3"></textarea>
