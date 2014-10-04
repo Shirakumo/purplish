@@ -26,5 +26,6 @@
               (dm:data-model (dm:field post "_id"))
               (fixnum post)
               (string (parse-integer post)))))
-    (dm:get-one 'purplish-posts (db:query (:= 'parent id))
+    (dm:get-one 'purplish-posts (db:query (:and (:= 'parent id)
+                                                (:< 0 'revision)))
                 :sort '((revision :DESC)))))
