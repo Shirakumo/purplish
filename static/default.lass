@@ -1,0 +1,237 @@
+(:font-face
+ :font-family "FontAwesome"
+ :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?v=4.2.0')"
+ :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg')"
+ :font-weight normal
+ :font-style normal)
+
+((:or html body)
+ :margin 0 :padding 0
+ :font-family Arial sans-serif
+ :font-size 12pt
+ :background "#CCC")
+
+(body :background "#FFF")
+
+(body>header
+ :display flex
+ :flex-wrap wrap
+ 
+ (nav
+  :background "#DDD"
+  :linear-gradient top "#DDD" 0% "#CCC" 100%
+  :border-bottom 1px solid "#0088EE"
+  :display flex
+  :align-items stretch
+  :height 35px
+  :flex 1 100%
+  
+  (ul
+   :list-style none
+   :display flex
+   :align-items stretch
+   :margin 0 :padding 0
+   :flex-grow 1
+
+   (li
+    :display flex
+    :align-items stretch
+    (a :display inline-block
+       :color black
+       :padding 7px 5px 7px 5px
+       :text-decoration none
+       :text-transform capitalize)
+
+    ((:and a :hover)
+     :background "#0088EE"
+     :color "#FFF")))
+  (form
+   :display inline-block
+   :padding 7px 5px 7px 5px
+   :float right
+
+   (input
+    :margin 0
+    :border 1px solid "#CCC"
+    :background "#FFF"
+    :color black)))
+
+ (h1
+  :flex-grow 1
+  :text-transform capitalize
+  :text-align center
+  :vertical-align middle))
+
+(body>footer
+ :font-size 8pt
+ :text-align center
+ :padding 30px 10px 5px 10px
+ :linear-gradient top "#FFF" 0% "#CCC" 100%)
+
+("#threads"
+ :list-style nonde
+ :margin 0 :padding 0)
+
+(.thread
+ :font-size 0
+ :margin-top 10px
+ (>nav
+  :font-size 12pt
+  :background "#0088EE"
+  :display inline-block
+  (a
+   :font-size 10pt
+   :color "#FFF"
+   :text-decoration none
+   :display inline-block
+   :padding 5px)
+
+  ((:and a :hover)
+   :background "#00EEFF"))
+
+ (.op
+  :border-top 1px solid "#0088EE"
+  :background "#DDD"
+  :linear-gradient top "#DDD" 0% "#FFF" 100%
+  (.post))
+
+ (.posts
+  :list-style none
+  :margin 0 :padding 0))
+
+(.post
+ :display flex
+ :flex-direction column
+ :font-size 12pt
+ :padding 5px
+ :clear both
+ :min-height 120px
+ :border-bottom 1px solid "#0088EE"
+ 
+ (header
+  (.id
+   :color "#0088EE"
+   :text-decoration none
+   :display inline-block
+   :min-width 60px)
+  ((:and .id :before)
+   :content "'#'")
+  (.title
+   :display inline-block
+   :margin 0 0 0 10px
+   :padding 0)
+  (.author
+   :font-style normal
+   :display inline-block
+   (a
+    :color "#000"
+    :text-decoration none
+    :font-weight bold)
+   (.registered
+    :color "#0088EE"))
+  ((:and .author :before)
+   :content "' by '")
+  (time
+   :float right
+   :display inline-block
+   :min-width 150px
+   :text-align right))
+
+ (.content
+  :flex-grow 1
+  :display flex
+  (.files
+   :width 160px
+   :list-style none
+   :margin 0 :padding 0
+   :float left
+   :margin 5px
+
+   (.file
+    :display block
+    (.download
+     :display block
+     :text-overflow ellipsis
+     :overflow hidden
+     :font-size 8pt
+     :white-space nowrap)
+    (.preview
+     (audio :max-width 150px)
+     (video :max-width 150px))))
+
+  (.text
+   :flex-grow 1))
+
+ (footer
+  :display flex
+  :clear both
+  :font-size 8pt
+  :padding 3px
+  (.revision
+   :flex-grow 1
+   :display inline-block
+   (.editor
+    :font-style normal
+    :display inline-block))
+  (nav
+   :flex-grow 1
+   :text-align right
+
+   (a
+    :display inline-block
+    :padding 0 2px 0 2px
+    :color "black"
+    :text-decoration none))))
+
+("#replybox"
+ :display flex
+ :flex-direction column
+ :padding 5px
+
+ ((:or input textarea .filelist)
+  :background "#EEE"
+  :border 1px solid "#CCC")
+ 
+ (header
+  :display flex
+  (.id
+   :display inline-block
+   :min-width 60px)
+  (.title
+   :flex-grow 1
+   :min-width 300px)
+  (.time
+   :display inline-block
+   :min-width 150px
+   :text-align right))
+
+ (.content
+  :flex-grow 1
+  :display flex
+  (.files
+   :display flex
+   :flex-direction column
+   :width 160px
+   (.filelist
+    :flex-grow 1
+    :list-style none
+    :margin 0
+    :padding 0
+    :font-size 10pt
+    (input :display none)
+    (li
+     :padding 2px
+     :cursor pointer
+     :overflow hidden
+     :text-overflow ellipsis)))
+  (.text
+   :flex-grow 1
+   :min-height 150px))
+
+ (footer
+  (input
+   :display block
+   :width 100%
+   :box-sizing border-box
+   :font-weight bold
+   :cursor pointer)))
