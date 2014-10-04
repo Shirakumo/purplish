@@ -17,7 +17,7 @@
                                (revision :integer)
                                (author (:varchar 32))
                                (registered (:integer 1))
-                               (title (:varchar 32))
+                               (title (:varchar 64))
                                (time (:integer 5))
                                (text :text))
              :indices '((_id board) (_id revision)))
