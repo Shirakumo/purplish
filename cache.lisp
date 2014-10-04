@@ -45,7 +45,7 @@
       (plump:parse (template "frontpage.ctml"))
       :title (config-tree :purplish :title)
       :boards (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC)))
-      :posts (dm:get 'purplish-posts (db:query :all) :amount 20 :sort '((time :DESC))))
+      :posts (dm:get 'purplish-posts (db:query (:= 'revision 0)) :amount 20 :sort '((time :DESC))))
      stream)))
 
 (defun recache-post (post &key (propagate T))
