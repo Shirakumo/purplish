@@ -30,16 +30,13 @@
       (recache-board board :cascade T))
     (recache-frontpage)))
 
-(defun create-post (board parent title text files &optional (author (auth:current)) (revision 0))
+(defun create-post (board parent title text files &optional author (registered 0) (revision 0))
   (with-model post ('purplish-posts NIL)
     (setf (dm:field post "board") board
           (dm:field post "parent") parent
           (dm:field post "revision") revision
-          (dm:field post "author") (etypecase author
-                                     (user:user (user:username author))
-                                     (string (or* author "Anonymous"))
-                                     (null "Anonymous"))
-          (dm:field post "registered") (if (typep author 'user:user) 1 0)
+          (dm:field post "author") (or* author "Anonymous")
+          (dm:field post "registered") (or* registered 0)
           (dm:field post "time") (get-universal-time)
           (dm:field post "title") title
           (dm:field post "text") text)
