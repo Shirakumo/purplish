@@ -76,6 +76,19 @@
   :text-align center
   :vertical-align middle))
 
+(.error
+ :background "#DD0000"
+ :color "#FFF"
+ :text-align center
+ :font-size 14pt
+ :padding 5px)
+
+((:and .error :before)
+ :font-family FontAwesome
+ :content "'\\f071'"
+ :display inline-block
+ :padding-right 5px)
+
 (body>footer
  :font-size 8pt
  :text-align center
@@ -114,10 +127,8 @@
  :margin 0 :padding 0)
 
 (.thread
- :font-size 0
  :margin-top 10px
  (>nav
-  :font-size 12pt
   :background "#0088EE"
   :display inline-block
   (a
@@ -197,8 +208,10 @@
      :font-size 8pt
      :white-space nowrap)
     (.preview
-     (audio :max-width 150px)
-     (video :max-width 150px :background black :color white))))
+     ((:or audio video img)
+      :max-width 150px
+      :max-height 150px)
+     (video :background black :color white))))
 
   (.text
    :flex-grow 1
@@ -263,8 +276,10 @@
     :margin 0
     :padding 0
     :font-size 10pt
+    :overflow-y auto
     (input :display none)
     (li
+     :white-space nowrap
      :padding 2px
      :cursor pointer
      :overflow hidden
@@ -280,3 +295,19 @@
    :box-sizing border-box
    :font-weight bold
    :cursor pointer)))
+
+((:and .preview .full)
+ :background "rgba(0,0,0,0.75)"
+ :position fixed
+ :display flex
+ :top 0 :left 0 :right 0 :bottom 0
+ :z-index 100
+
+ (>*
+  :margin auto auto auto auto)
+
+ ((:or audio video img)
+  :width 90% !important
+  :height auto !important
+  :max-width 90% !important
+  :max-height 90% !important))

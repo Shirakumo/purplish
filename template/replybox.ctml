@@ -2,23 +2,27 @@
       lquery='(attr :action (if thread "/api/purplish/post/create" "/api/purplish/thread/create"))'>
   <a name="reply"/>
   <header>
+    <input type="hidden" name="browser" value="true" />
     <input type="hidden" name="thread" value="THREAD"
            lquery="(val (when thread (clip thread :_id)))"/>
     <input type="hidden" name="board" value="BOARD"
            lquery="(val (when board (clip board :_id)))"/>
     <div class="id"></div>
     <input type="text" class="author" name="author" placeholder="Anonymous" maxlength="32" tabindex="1" />
-    <input type="text" class="title" name="title" placeholder="Title" maxlength="64" tabindex="2" />
+    <input type="text" class="title" name="title" placeholder="Title" maxlength="64" tabindex="2"
+           lquery='(attr :required (unless thread "required"))'/>
     <input type="text" name="username" placeholder="Leave empty" style="display:none;" value="" />
     <div class="time"></div>
   </header>
   <div class="content">
     <div class="files">
-      <input type="file" name="files[]" />
+      <input type="file" name="files[]"
+             lquery='(attr :required (unless thread "required"))' />
       <ul class="filelist" title="Double click file to remove.">
       </ul>
     </div>
-    <textarea class="text" name="text" tabindex="3"></textarea>
+    <textarea class="text" name="text" tabindex="3"
+              lquery='(attr :required (unless thread "required"))'></textarea>
   </div>
   <footer>
     <input type="submit" value="Post" lquery='(val (if thread "Post" "Make Thread"))' tabindex="4" />
