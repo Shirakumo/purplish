@@ -21,6 +21,8 @@
                                      (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
                                          (user:check user '(pruplish post change))))
                           (lquery:$ node "nav.edit" (remove))))))
+            (when (get-var "error")
+              (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" (get-var "error")))))
             (with-output-to-string (stream)
               (plump:serialize doc stream)))))
       (error 'request-not-found :message error-message)))
