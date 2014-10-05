@@ -107,7 +107,7 @@
         (subseq target match-start match-end))))
 
 (defun preparse (text)
-  (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "[>>\\1](/post/\\1)"))
+  (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "<a href=\"/post/\\1\" class=\"post-reference\">&gt;&gt;\\1</a>"))
   (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external)))
 
 (defun parse (text)
