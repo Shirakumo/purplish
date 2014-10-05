@@ -1,5 +1,5 @@
 $(function(){
-    $(".id").click(function(){
+    $(".post .id").click(function(){
         var post = $(this).closest(".post");
         $("#replybox").detach().insertAfter(post);
         $("#replybox .text").focus();

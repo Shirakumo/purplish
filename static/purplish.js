@@ -77,7 +77,7 @@ $(function (){
     });
 
     // Posting things
-    $(".id").click(function(){
+    $(".post .id").click(function(){
         var post = $(this).closest(".post");
         var thread = $(this).closest(".thread");
         var box = $("#replybox");
