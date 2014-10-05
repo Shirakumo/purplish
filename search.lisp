@@ -24,8 +24,10 @@
       (write-string ".*" stream))))
 
 (defun search-posts (query &key board thread (amount 20) (func 'dm:get))
-  (let* ((board (when board (dm:id (ensure-board board))))
-         (thread (when thread (dm:id (ensure-post thread))))
+  (let* ((board (when board (ensure-board board)))
+         (thread (when thread (ensure-post thread)))
+         (board (when board (dm:id board)))
+         (thread (when thread (dm:id thread)))
          (query (parse-search-query query))
          (query (cond
                   (thread (db:query (:and (:= 'parent thread)
