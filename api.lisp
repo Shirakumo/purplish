@@ -48,6 +48,9 @@
 (define-api purplish/boards () ()
   (api-output (db:select 'purplish-boards (db:query (:= 'visible 1)))))
 
+(define-api purplish/search (query) ()
+  (api-output (search-posts query :func 'db:select)))
+
 (define-api purplish/board/threads (board &optional skip amount) ()
   (let ((skip (or (parse-integer skip :junk-allowed T) 0))
         (amount (or (parse-integer amount :junk-allowed T) 20))
@@ -59,15 +62,29 @@
                                                            (:= 'revision 0)))
                            :amount amount :skip skip :sort '((time :DESC))))))
 
+(define-api purplish/board/search (board query) ()
+  (let ((board (dm:get-one 'purplish-boards (db:query (:= 'name board)))))
+    (unless board
+      (error 'api-argument-invalid :argument 'board :message "No such board found."))
+    (api-output (search-posts query :board board :func 'db:select))))
+
 (define-api purplish/thread/posts (thread &optional skip amount) ()
   (let ((skip (or (parse-integer skip :junk-allowed T) 0))
         (amount (or (parse-integer amount :junk-allowed T) 20))
-        (thread (dm:get-one 'purplish-posts (db:query (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))))))
+        (thread (dm:get-one 'purplish-posts (db:query (:and (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))
+                                                            (:= 'parent -1))))))
     (unless thread
       (error 'api-argument-invalid :argument 'thread :message "No such thread found."))
     (api-output (db:select 'purplish-posts (db:query (:and (:= 'parent (dm:field thread '_id))
                                                            (:= 'revision 0)))
                            :amount amount :skip skip :sort '((time :DESC))))))
+
+(define-api purplish/thread/search (thread query) ()
+  (let ((thread (dm:get-one 'purplish-posts (db:query (:and (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))
+                                                            (:= 'parent -1))))))
+    (unless thread
+      (error 'api-argument-invalid :argument 'thread :message "No such thread found."))
+    (api-output (search-posts query :thread thread :func 'db:select))))
 
 (define-api purplish/post (post) ()
   (let ((post (first (db:select 'purplish-posts (db:query (:and (:= '_id (or (parse-integer post :junk-allowed T) "-1"))
