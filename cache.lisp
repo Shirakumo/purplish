@@ -26,7 +26,7 @@
 
 (defun board-cache (board)
   (let ((board (ensure-board board)))
-    (merge-pathnames (format NIL "board/~a.html" (dm:field board "_id"))
+    (merge-pathnames (format NIL "board/~a.html" (dm:id board))
                      *cache*)))
 
 (defun thread-cache (thread)
@@ -94,9 +94,9 @@
       (plump:serialize
        (clip:process
         (plump:parse (template "thread-min.ctml"))
-        :thread thread :posts (loop repeat (- (length posts) 3)
-                                    for minposts = (cdr posts)
+        :thread thread :posts (loop for minposts = posts
                                     then (cdr minposts)
+                                    repeat (- (length posts) 3)
                                     finally (return minposts)))
        stream)
       path)
@@ -105,10 +105,10 @@
       (recache-board (dm:field thread "board")))))
 
 (defun recache-board (board &key cascade)
-  (let ((board (ensure-board board))
-        (threads (dm:get 'purplish-posts (db:query (:and (:= 'board board)
-                                                         (:= 'parent -1)))
-                         :sort '((time :DESC)))))
+  (let* ((board (ensure-board board))
+         (threads (dm:get 'purplish-posts (db:query (:and (:= 'board (dm:id board))
+                                                          (:= 'parent -1)))
+                          :sort '((time :DESC)))))
     (when cascade
       (dolist (thread threads)
         (recache-thread thread :cascade T :propagate NIL)))
