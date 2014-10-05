@@ -89,7 +89,7 @@ $(function (){
         // Update textbox
         var text = $(".text", box);
         text.focus();
-        text.text((text.text()+"\n\n"+">>"+post.data("post-id")).trim()+"\n");
+        text.text((text.text()+"\n\n"+">>"+post.data("post-id")).trim()+"  \n");
         return false;
     });
 });
