@@ -81,15 +81,17 @@ $(function (){
         var post = $(this).closest(".post");
         var thread = $(this).closest(".thread");
         var box = $("#replybox");
-        // Update post target
-        box.attr("action","/api/purplish/post/create");
-        $("input[type=submit]",box).val("Post");
-        $("input[name=thread]",box).val(thread.data("thread-id"));
-        $(".title,.text,.files input",box).removeAttr("required");
-        // Update textbox
-        var text = $(".text", box);
-        text.focus();
-        text.text((text.text()+"\n\n"+">>"+post.data("post-id")).trim()+"  \n");
-        return false;
+        if(box.length>0){
+            // Update post target
+            box.attr("action","/api/purplish/post/create");
+            $("input[type=submit]",box).val("Post");
+            $("input[name=thread]",box).val(thread.data("thread-id"));
+            $(".title,.text,.files input",box).removeAttr("required");
+            // Update textbox
+            var text = $(".text", box);
+            text.focus();
+            text.text((text.text()+"\n\n"+">>"+post.data("post-id")).trim()+"  \n");
+            return false;
+        }
     });
 });

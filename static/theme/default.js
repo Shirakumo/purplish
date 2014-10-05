@@ -6,6 +6,5 @@ $(function(){
         $('html, body').stop().animate({
             scrollTop: post.offset().top
         }, 500);
-        return false;
     });
 });
