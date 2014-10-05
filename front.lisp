@@ -6,6 +6,12 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
+(defun show-error (doc)
+  (when (get-var "error")
+    (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" (get-var "error"))))))
+
+;;;;
+;; Static
 (defun serve-or-err (file error-message)
   (setf (content-type *response*) "application/xhtml+xml")
   (or (with-open-file (stream file :if-does-not-exist NIL)
@@ -21,8 +27,7 @@
                                      (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
                                          (user:check user '(pruplish post change))))
                           (lquery:$ node "nav.edit" (remove))))))
-            (when (get-var "error")
-              (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" (get-var "error")))))
+            (show-error doc)
             (with-output-to-string (stream)
               (plump:serialize doc stream)))))
       (error 'request-not-found :message error-message)))
@@ -36,6 +41,8 @@
 (define-page thread #@"chan/thread/([0-9]+)" (:uri-groups (thread))
   (serve-or-err (thread-cache thread) "Thread not found."))
 
+;;;;
+;; Redirects
 (define-page post #@"chan/post/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
     (redirect (format NIL "/thread/~a#post-~a"
@@ -44,20 +51,48 @@
                           (dm:field post "parent"))
                       (dm:id post)))))
 
+(define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
+  (redirect (format NIL "//user.~a~:[:~a~;~*~]/~a" (domain *request*) (= 80 (port *request*)) (port *request*) user)))
+
+;;;;
+;; Dynamics
+(defmacro with-dynamic-env ((doc template) &body body)
+  (let ((stream (gensym "STREAM")))
+    `(let ((,doc (plump:parse (template ,template)))
+           (*package* ,(find-package "RAD-USER")))
+       (setf (content-type *response*) "application/xhtml+xml")
+       ,@body
+       (with-output-to-string (,stream)
+         (plump:serialize ,doc ,stream)))))
+
+(define-page edit #@"chan/edit/([0-9]+)" (:uri-groups (post))
+  (let ((post (ensure-post post)))
+    (unless post
+      (error 'request-not-found :message "No such post."))
+    (with-dynamic-env (doc "edit.ctml")
+      (clip:process
+       doc
+       :title "Post History"
+       :post post
+       :revision (or (last-revision post) post))
+      (show-error doc))))
+
 (define-page history #@"chan/history/([0-9]+)" (:uri-groups (post))
-  "Poo.")
+  (let ((post (ensure-post post)))
+    (unless post
+      (error 'request-not-found :message "No such post."))
+    (with-dynamic-env (doc "history.ctml")
+      (clip:process
+       doc
+       :title "Post History"
+       :post post
+       :revisions (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id post))
+                                                          (:> 'revision 0))))))))
 
 (define-page search #@"chan/search" ()
-  (setf (content-type *response*) "application/xhtml+xml")
-  (let ((doc (plump:parse (template "search.ctml")))
-        (*package* (find-package "RAD-USER")))
+  (with-dynamic-env (doc "search.ctml")
     (clip:process
      doc
      :title "Search Results"
      :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
-    (lquery:$ doc "nav.edit" (remove))
-    (with-output-to-string (stream)
-      (plump:serialize doc stream))))
-
-(define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
-  (redirect (format NIL "//user.~a~:[:~a~;~*~]/~a" (domain *request*) (= 80 (port *request*)) (port *request*) user)))
+    (lquery:$ doc "nav.edit" (remove))))

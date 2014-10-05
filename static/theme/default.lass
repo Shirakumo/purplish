@@ -116,6 +116,7 @@
         ((:or "header time" footer) :display none)
         (.files
          :width auto
+         :min-width 0
          :max-width 150px)
         (.text
          (img
@@ -281,8 +282,12 @@
  (header
   :display flex
   (.id
+   :color "#0088EE"
+   :text-decoration none
    :display inline-block
    :min-width 60px)
+  ((:and .id :before)
+   :content "'#'")
   (.title
    :flex-grow 1
    :min-width 300px)

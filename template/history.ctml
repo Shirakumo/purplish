@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Post History - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
+    <c:splice lquery="(purplish-template :head)" />
+  </head>
+  <body>
+    <c:splice lquery="(purplish-template :header)" />
+    <main id="history">
+      <c:splice lquery="(purplish-template :post)" />
+      <ol iterate="revisions">
+        <c:let as="li" post="*">
+          <c:splice lquery="(purplish-template :post)" />
+        </c:let>
+      </ol>
+    </main>
+    <c:splice lquery="(purplish-template :footer)" />
+  </body>
+</html>
