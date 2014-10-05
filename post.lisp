@@ -18,17 +18,20 @@
     (recache-frontpage)))
 
 (defun delete-board (board)
-  (let ((id (dm:field board "_id")))
-    (uiop:delete-directory-tree (merge-pathnames (format NIL "~a/" id) *files*) :validate (constantly T))
-    (uiop:delete-directory-tree (merge-pathnames (format NIL "~a/" id) *cache*) :validate (constantly T))
-    (delete-file (merge-pathnames (format NIL "board/~a.html" id)))
-    (db:remove 'purplish-posts (db:query (:= 'board id)))
-    (db:remove 'purplish-files (db:query (:= 'board id)))
-    (dm:delete board)
-    ;; Update header
-    (dolist (board (dm:get 'purplish-boards (db:query :all)))
-      (recache-board board :cascade T))
-    (recache-frontpage)))
+  (let ((board (ensure-board board)))
+    (let ((id (dm:field board "_id")))
+      (ignore-errors
+       (uiop:delete-directory-tree (merge-pathnames (format NIL "~a/" id) *files*) :validate (constantly T)))
+      (ignore-errors
+       (uiop:delete-directory-tree (merge-pathnames (format NIL "~a/" id) *cache*) :validate (constantly T)))
+      (delete-file (board-cache board))
+      (db:remove 'purplish-posts (db:query (:= 'board id)))
+      (db:remove 'purplish-files (db:query (:= 'board id)))
+      (dm:delete board)
+      ;; Update header
+      (dolist (board (dm:get 'purplish-boards (db:query :all)))
+        (recache-board board :cascade T))
+      (recache-frontpage))))
 
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
   (with-model post ('purplish-posts NIL)
@@ -52,46 +55,48 @@
         (recache-post post))))
 
 (defun delete-post (post &key purge)
-  (cond
-    (purge
-     (let ((id (dm:field post "_id")))
-       (dm:delete post)
-       ;; Purge files
-       (dolist (file (dm:get 'purplish-files (db:query (:= 'parent id))))
-         (delete-file (merge-pathnames (format NIL "~a/~a.~a"
-                                               (dm:field file "board")
-                                               (dm:field file "_id")
-                                               (dm:field file "type")) *files*)))
-       (db:remove 'purplish-files (db:query (:= 'parent id)))
-       (when (= (dm:field post "parent") -1)
-         ;; Purge each post's revisions.
-         (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent id))))
-           (db:remove 'purplish-posts (db:query (:= 'parent (dm:field post "_id"))))))
-       ;; Purge main posts & revisions
-       (db:remove 'purplish-posts (db:query (:= 'parent id)))
-       ;; Publicise!
-       (cond
-         ((= (dm:field post "parent") -1)
-          (recache-board (dm:field post "board"))
-          (recache-frontpage))
-         (T
-          (recache-thread (dm:field post "parent"))))))
-    (T
-     (edit-post post "" "_deleted_"))))
+  (let ((post (ensure-post post)))
+    (cond
+      (purge
+       (let ((id (dm:field post "_id")))
+         (dm:delete post)
+         ;; Purge files
+         (dolist (file (dm:get 'purplish-files (db:query (:= 'parent id))))
+           (delete-file (merge-pathnames (format NIL "~a/~a.~a"
+                                                 (dm:field file "board")
+                                                 (dm:field file "_id")
+                                                 (dm:field file "type")) *files*)))
+         (db:remove 'purplish-files (db:query (:= 'parent id)))
+         (when (= (dm:field post "parent") -1)
+           ;; Purge each post's revisions.
+           (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent id))))
+             (db:remove 'purplish-posts (db:query (:= 'parent (dm:field post "_id"))))))
+         ;; Purge main posts & revisions
+         (db:remove 'purplish-posts (db:query (:= 'parent id)))
+         ;; Publicise!
+         (cond
+           ((= (dm:field post "parent") -1)
+            (recache-board (dm:field post "board"))
+            (recache-frontpage))
+           (T
+            (recache-thread (dm:field post "parent"))))))
+      (T
+       (edit-post post "" "_deleted_")))))
 
 (defun edit-post (post title text)
-  ;; Create a new post with increased revision number.
-  (let ((revision (or (last-revision post)
-                      post)))
-    (with-model edit ('purplish-posts NIL)
-      (setf (dm:field edit "board") (dm:field revision "board")
-            (dm:field edit "parent") (dm:field post "_id")
-            (dm:field edit "revision") (1+ (dm:field revision "revision"))
-            (dm:field edit "author") (user:username (auth:current))
-            (dm:field edit "registered") 1
-            (dm:field edit "time") (get-universal-time)
-            (dm:field edit "title") title
-            (dm:field edit "text") text)
-      (dm:insert edit)))
-  ;; Publicise!
-  (recache-post post))
+  (let ((post (ensure-post post)))
+    ;; Create a new post with increased revision number.
+    (let ((revision (or (last-revision post)
+                        post)))
+      (with-model edit ('purplish-posts NIL)
+        (setf (dm:field edit "board") (dm:field revision "board")
+              (dm:field edit "parent") (dm:field post "_id")
+              (dm:field edit "revision") (1+ (dm:field revision "revision"))
+              (dm:field edit "author") (user:username (auth:current))
+              (dm:field edit "registered") 1
+              (dm:field edit "time") (get-universal-time)
+              (dm:field edit "title") title
+              (dm:field edit "text") text)
+        (dm:insert edit)))
+    ;; Publicise!
+    (recache-post post)))
