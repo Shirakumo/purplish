@@ -67,18 +67,18 @@
   (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url :sharedp T)) 5))
 
 (define-external-embedder youtube (address)
-  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"https://www.youtube.com/embed/~a\"></iframe>"
+  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//www.youtube.com/embed/~a\"></iframe>"
           (or (youtube-code address) (return))))
 
 (defun vimeo-code (url)
   (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo.com/([0-9]+)" url :sharedp T)) 3))
 
 (define-external-embedder vimeo (address)
-  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"https://player.vimeo.com/video/~a\"></iframe>"
+  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//player.vimeo.com/video/~a\"></iframe>"
           (or (vimeo-code address) (return))))
 
 (define-external-embedder soundcloud (address)
-  (format NIL "<iframe width=\"100%\" height=\"166\" frameborder=\"no\" src=\"https://w.soundcloud.com/player/?url=~a\"></iframe>"
+  (format NIL "<iframe width=\"100%\" height=\"166\" frameborder=\"no\" src=\"//w.soundcloud.com/player/?url=~a\"></iframe>"
           address))
 
 (defun bandcamp-code (url)
@@ -95,7 +95,7 @@
 (define-external-embedder bandcamp (address)
   (destructuring-bind (band album track) (or (bandcamp-code address) (return))
     (declare (ignorable band))
-    (format NIL "<iframe width=\"100%\" height=\"42\" frameborder=\"no\" src=\"https://bandcamp.com/EmbeddedPlayer/~@[album=~a/~]size=small/bgcol=ffffff/linkcol=0687f5/~@[track=~a/~]transparent=true/\" seamless></iframe>"
+    (format NIL "<iframe width=\"100%\" height=\"42\" frameborder=\"no\" src=\"//bandcamp.com/EmbeddedPlayer/~@[album=~a/~]size=small/bgcol=ffffff/linkcol=0687f5/~@[track=~a/~]transparent=true/\" seamless></iframe>"
             album track)))
 
 (defun embed-external (target start end match-start match-end reg-starts reg-ends)
