@@ -19,6 +19,7 @@
                (:file "file")
                (:file "cache")
                (:file "post")
+               (:file "search")
                (:file "api")
                (:file "front"))
   :depends-on ((:interface :database)
