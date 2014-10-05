@@ -3,13 +3,10 @@
   <head>
     <meta charset="utf-8"/>
     <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="BOARD - SOME-CHAN" />
-    <meta name="robots" content="index, follow" />
-    <link rel="stylesheet" type="text/css" href="/static/purplish/theme/default.css" class="theme-part" />
-    <link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN Feed" />
-    <link href="/api/purplish/atom?board=BOARD" type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD Feed" />
-    <script type="text/javascript" src="/static/purplish/theme.js"></script>
+    <c:splice lquery="(purplish-template :head)" />
+    <link href="/api/purplish/atom?board=BOARD" type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
+          lquery='(attr :title (format NIL "~a ~a" (clip board :name) (config-tree :purplish :title)))
+                  (attr :href (format NIL "/api/purplish/atom?board=~a" (clip board :_id)))'/>
   </head>
   <body>
     <c:splice lquery="(purplish-template :header)" />

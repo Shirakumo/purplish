@@ -3,21 +3,15 @@
   <head>
     <meta charset="utf-8"/>
     <title>Frontpage - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="SOME-CHAN" />
-    <meta name="robots" content="index, follow" />
-    <link rel="stylesheet" type="text/css" href="/static/purplish/theme/default.css" class="theme-part" />
-    <link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN Feed" />
-    <script type="text/javascript" src="/static/purplish/theme.js"></script>
+    <c:splice lquery="(purplish-template :head)" />
   </head>
   <body>
     <c:splice lquery="(purplish-template :header)" />
     <main id="frontpage">
       <div id="news">
         <h2>Breaking News</h2>
-        <p>
-          WHOAAA.
-        </p>
+        <div lquery='(html (purplish::parse (or (config-tree :purplish :news) "No news :(")))'>
+        </div>
       </div>
       <div id="recent-posts">
         <h2>Recent posts</h2>
