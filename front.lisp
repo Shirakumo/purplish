@@ -48,7 +48,16 @@
   "Poo.")
 
 (define-page search #@"chan/search" ()
-  "Poo.")
+  (setf (content-type *response*) "application/xhtml+xml")
+  (let ((doc (plump:parse (template "search.ctml")))
+        (*package* (find-package "RAD-USER")))
+    (clip:process
+     doc
+     :title "Search Results"
+     :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
+    (lquery:$ doc "nav.edit" (remove))
+    (with-output-to-string (stream)
+      (plump:serialize doc stream))))
 
 (define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
   "Poo.")

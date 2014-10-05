@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Search - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="SOME-CHAN" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" type="text/css" href="/static/purplish/theme/default.css" class="theme-part" />
+    <link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN Feed" />
+    <script type="text/javascript" src="/static/purplish/theme.js"></script>
+  </head>
+  <body>
+    <c:splice lquery="(purplish-template :header)" />
+    <main id="search">
+      <ol iterate="posts">
+        <c:noop as="li" lquery="(purplish-cache :post *)">
+        </c:noop>
+      </ol>
+    </main>
+    <c:splice lquery="(purplish-template :footer)" />
+  </body>
+</html>

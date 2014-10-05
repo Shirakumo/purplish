@@ -15,8 +15,10 @@
     </ul>
     <form action="/search" method="get">
       <input type="search" name="s" placeholder="Find here..." />
-      <input type="hidden" name="context" value="CONTEXT"
-             lquery="(val (if board (clip board :name) (when thread (clip thread :_id))))"/>
+      <input type="hidden" name="thread" value=""
+             lquery="(val (when thread (clip thread :_id)))"/>
+      <input type="hidden" name="board" value=""
+             lquery="(val (when board (clip board :_id)))"/>
       <input type="submit" value="Search" />
     </form>
   </nav>
