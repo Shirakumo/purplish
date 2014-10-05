@@ -24,6 +24,13 @@
          (error 'api-argument-invalid :argument ',id :message "No such post found."))
        ,@body)))
 
+(defmacro with-api-error (&body body)
+  `(handler-case (progn ,@body)
+     (radiance-error (err)
+       (error 'api-error :message (message err)))
+     (error (err)
+       (error 'api-error :message (princ-to-string err)))))
+
 (defun post-accessible-p (post)
   (let ((user (auth:current)))
     (and user
@@ -88,21 +95,21 @@
     (api-output (db:select 'purplish-files (db:query (:= 'post (dm:field post '_id)))))))
 
 (define-api purplish/board/create (name &optional description visible) (:access (purplish board create))
-  (when (dm:get-one 'purplish-boards (db:query (:= 'title title)))
+  (when (dm:get-one 'purplish-boards (db:query (:= 'title name)))
     (error 'api-argument-invalid :argument 'name :message "A board with that name already exists."))
-  (create-board name description (string= visible "true"))
+  (with-api-error (create-board name description (string= visible "true")))
   (api-output "Board created."))
 
 (define-api purplish/board/delete (board) (:access (purplish board delete))
   (with-board (board board)
-    (delete-board board)
+    (with-api-error (delete-board board))
     (api-output "Board deleted.")))
 
 (define-api purplish/thread/create (board title text files[] &optional author username) ()
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (with-board (board board)
-    (create-post (dm:field board "_id") -1 title text files[] (or* author (auth:current)))
+    (with-api-error (create-post (dm:field board "_id") -1 title text files[] (or* author (auth:current))))
     (api-output "Thread created.")))
 
 (define-api purplish/thread/delete (thread) ()
@@ -111,7 +118,7 @@
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
     (unless (user:check (auth:current) '(purplish thread delete))
       (error 'api-auth-error :message "You do not have permission to delete threads."))
-    (delete-post thread :purge T)
+    (with-api-error (delete-post thread :purge T))
     (api-output "Thread purged.")))
 
 (define-api purplish/post/create (thread &optional author title text files[] username) ()
@@ -122,14 +129,15 @@
   (with-post (thread thread)
     (unless (= (dm:field thread "parent") -1)
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
-    (create-post (dm:field thread "board") (dm:field thread "_id") title text files[] author
-                 (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0))
+    (with-api-error
+      (create-post (dm:field thread "board") (dm:field thread "_id") title text files[] author
+                   (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))
     (api-output "Post created.")))
 
 (define-api purplish/post/edit (post &optional title text) ()
   (with-post (post post)
     (with-post-accessible (post)
-      (edit-post post title text)
+      (with-api-error (edit-post post title text))
       (api-output "Post edited."))))
 
 (define-api purplish/post/delete (post &optional purge) ()
@@ -140,12 +148,12 @@
       (cond
         ((and (string= purge "true")
               (user:check (auth:current) '(purplish post purge)))
-         (delete-post post :purge T)
+         (with-api-error (delete-post post :purge T))
          (api-output "Post purged."))
         ((string= purge "true")
          (error 'api-auth-error :message "You do not have permission to purge posts."))
         (T
-         (delete-post post)
+         (with-api-error (delete-post post))
          (api-output "Post deleted."))))))
 
 (define-api purplish/header () ()
