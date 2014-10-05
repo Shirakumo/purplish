@@ -60,4 +60,4 @@
       (plump:serialize doc stream))))
 
 (define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
-  "Poo.")
+  (redirect (format NIL "//user.~a~:[:~a~;~*~]/~a" (domain *request*) (= 80 (port *request*)) (port *request*) user)))

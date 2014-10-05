@@ -4,8 +4,8 @@
     <a name="POST-ID" lquery="(attr :name (format NIL &quot;post-~a&quot; _id))"/>
     <header>
       <a class="id" href="/thread/ID#post-ID" lquery='(text _id) (attr :href (format NIL "/thread/~a#post-~a" (if (= -1 parent) _id parent) _id))'>ID</a>
-      <address class="author"><a rel="author" href="/user/AUTHOR"
-                                 lquery="(text author) (attr :href (format NIL &quot;/user/~a&quot; author))
+      <address class="author"><a rel="author"
+                                 lquery="(text author) (attr :href (when (= 1 registered) (format NIL &quot;/user/~a&quot; author)))
                                  (add-class (when (= 1 registered) &quot;registered&quot;))">AUTHOR</a></address>
       <h3 lquery="(text title)" class="title">TITLE</h3>
       <time pubdate datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
