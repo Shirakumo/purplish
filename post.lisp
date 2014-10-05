@@ -15,7 +15,8 @@
     ;; Update header and init board
     (dolist (board (dm:get 'purplish-boards (db:query :all)))
       (recache-board board :cascade T))
-    (recache-frontpage)))
+    (recache-frontpage)
+    board))
 
 (defun delete-board (board)
   (let ((board (ensure-board board)))
@@ -31,7 +32,8 @@
       ;; Update header
       (dolist (board (dm:get 'purplish-boards (db:query :all)))
         (recache-board board :cascade T))
-      (recache-frontpage))))
+      (recache-frontpage))
+    T))
 
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
   (with-model post ('purplish-posts NIL)
@@ -52,7 +54,8 @@
     ;; Publicise!
     (if (= parent -1)
         (recache-thread post)
-        (recache-post post))))
+        (recache-post post))
+    post))
 
 (defun delete-post (post &key purge)
   (let ((post (ensure-post post)))
@@ -81,7 +84,8 @@
            (T
             (recache-thread (dm:field post "parent"))))))
       (T
-       (edit-post post "" "_deleted_")))))
+       (edit-post post "" "_deleted_")))
+    T))
 
 (defun edit-post (post title text)
   (let ((post (ensure-post post)))
@@ -99,4 +103,5 @@
               (dm:field edit "text") text)
         (dm:insert edit)))
     ;; Publicise!
-    (recache-post post)))
+    (recache-post post)
+    post))
