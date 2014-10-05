@@ -26,6 +26,8 @@
                (:interface :auth)
                (:interface :cache)
                (:interface :profile)
+               :cl-ppcre
+               :lquery
                :i-json
                :trivial-mimes
                :local-time
