@@ -304,7 +304,8 @@
  :z-index 100
 
  (>*
-  :margin auto auto auto auto)
+  :margin auto auto auto auto
+  :text-align center)
 
  ((:or audio video img)
   :width 90% !important
