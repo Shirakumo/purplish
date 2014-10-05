@@ -26,7 +26,7 @@
 
 (defun board-cache (board)
   (let ((board (ensure-board board)))
-    (merge-pathnames (format NIL "board/~a.html" (dm:field board "name"))
+    (merge-pathnames (format NIL "board/~a.html" (dm:field board "_id"))
                      *cache*)))
 
 (defun thread-cache (thread)
