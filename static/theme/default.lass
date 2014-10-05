@@ -154,7 +154,6 @@
 (.post
  :display flex
  :flex-direction column
- :font-size 12pt
  :padding 5px
  :clear both
  :min-height 120px
@@ -193,7 +192,8 @@
   :flex-grow 1
   :display flex
   (.files
-   :width 160px
+   :max-width 160px
+   :min-width 160px
    :list-style none
    :margin 0 :padding 0
    :float left
@@ -215,6 +215,7 @@
 
   (.text
    :flex-grow 1
+   :word-wrap break-word
 
    ((:or img iframe)
     :max-width 300px
@@ -223,7 +224,29 @@
    (.post-reference
     :text-decoration none
     :font-weight bold
-    :color "#0088EE")))
+    :color "#0088EE")
+
+   (pre
+    :font-family Consolas Inconsolata monospace
+    :padding-left 15px
+    :border-left 2px solid "#0088EE")
+
+   (blockquote
+    :border-left 2px solid "#000"
+    :margin 0
+    :padding-left 15px
+    (blockquote
+     :border-color "#333"
+     (blockquote
+      :border-color "#666"
+      (blockquote
+       :border-color "#999"
+       (blockquote
+        :border-color "#CCC")))))
+
+   (ul :list-style disc)
+
+   (ol :list-style decimal)))
 
  (footer
   :display flex
