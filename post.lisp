@@ -32,6 +32,8 @@
 
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
   (with-model post ('purplish-posts NIL)
+    (dolist (file files)
+      (check-file file))    
     (setf (dm:field post "board") board
           (dm:field post "parent") parent
           (dm:field post "revision") revision

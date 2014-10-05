@@ -58,6 +58,13 @@
              (file-path file)
              (dm:field file "filename"))))
 
+(defun check-file (file)
+  (let ((mime (mimes:mime-lookup (second file))))
+    (if mime
+        (unless (find mime *allowed-types* :test #'string-equal)
+          (error "Files of type ~s are not allowed." mime))
+        (error "Unknown file format."))))
+
 (defun create-thumb (file mime)
   (when (find mime '(:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml) :test #'string-equal)
     (thumbnail:create
