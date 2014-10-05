@@ -49,7 +49,7 @@
 (defun file-path (file)
   (format NIL "/static/purplish/file/~a/~a.~a"
           (dm:field file "board")
-          (dm:field file "_id")
+          (dm:id file)
           (dm:field file "type")))
 
 (defun embed-file (file)
@@ -84,14 +84,14 @@
       (error "Files of type ~s are not allowed." mime))
     (with-model model ('purplish-files NIL)
       (setf (dm:field model "board") (dm:field post "board")
-            (dm:field model "parent") (dm:field post "_id")
+            (dm:field model "parent") (dm:id post)
             (dm:field model "type") (mimes:mime-file-type mime)
             (dm:field model "filename") name)
       (dm:insert model)
       (let ((new-file (merge-pathnames
                        (format NIL "~a/~a.~a"
                                (dm:field model "board")
-                               (dm:field model "_id")
+                               (dm:id model)
                                (dm:field model "type"))
                        *files*)))
         (ensure-directories-exist new-file)

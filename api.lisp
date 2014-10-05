@@ -109,7 +109,7 @@
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (with-board (board board)
-    (with-api-error (create-post (dm:field board "_id") -1 title text files[] (or* author (auth:current))))
+    (with-api-error (create-post (dm:id board) -1 title text files[] (or* author (auth:current))))
     (api-output "Thread created.")))
 
 (define-api purplish/thread/delete (thread) ()
@@ -130,7 +130,7 @@
     (unless (= (dm:field thread "parent") -1)
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
     (with-api-error
-      (create-post (dm:field thread "board") (dm:field thread "_id") title text files[] author
+      (create-post (dm:field thread "board") (dm:id thread) title text files[] author
                    (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))
     (api-output "Post created.")))
 

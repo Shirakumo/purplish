@@ -19,7 +19,7 @@
 
 (defun delete-board (board)
   (let ((board (ensure-board board)))
-    (let ((id (dm:field board "_id")))
+    (let ((id (dm:id board)))
       (ignore-errors
        (uiop:delete-directory-tree (merge-pathnames (format NIL "~a/" id) *files*) :validate (constantly T)))
       (ignore-errors
@@ -58,19 +58,19 @@
   (let ((post (ensure-post post)))
     (cond
       (purge
-       (let ((id (dm:field post "_id")))
+       (let ((id (dm:id post)))
          (dm:delete post)
          ;; Purge files
          (dolist (file (dm:get 'purplish-files (db:query (:= 'parent id))))
            (delete-file (merge-pathnames (format NIL "~a/~a.~a"
                                                  (dm:field file "board")
-                                                 (dm:field file "_id")
+                                                 (dm:id file)
                                                  (dm:field file "type")) *files*)))
          (db:remove 'purplish-files (db:query (:= 'parent id)))
          (when (= (dm:field post "parent") -1)
            ;; Purge each post's revisions.
            (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent id))))
-             (db:remove 'purplish-posts (db:query (:= 'parent (dm:field post "_id"))))))
+             (db:remove 'purplish-posts (db:query (:= 'parent (dm:id post))))))
          ;; Purge main posts & revisions
          (db:remove 'purplish-posts (db:query (:= 'parent id)))
          ;; Publicise!
@@ -90,7 +90,7 @@
                         post)))
       (with-model edit ('purplish-posts NIL)
         (setf (dm:field edit "board") (dm:field revision "board")
-              (dm:field edit "parent") (dm:field post "_id")
+              (dm:field edit "parent") (dm:id post)
               (dm:field edit "revision") (1+ (dm:field revision "revision"))
               (dm:field edit "author") (user:username (auth:current))
               (dm:field edit "registered") 1

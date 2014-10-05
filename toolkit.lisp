@@ -23,7 +23,7 @@
 
 (defun last-revision (post)
   (let ((id (etypecase post
-              (dm:data-model (dm:field post "_id"))
+              (dm:data-model (dm:id post))
               (fixnum post)
               (string (parse-integer post)))))
     (dm:get-one 'purplish-posts (db:query (:and (:= 'parent id)
