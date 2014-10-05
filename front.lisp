@@ -37,7 +37,12 @@
   (serve-or-err (thread-cache thread) "Thread not found."))
 
 (define-page post #@"chan/post/([0-9]+)" (:uri-groups (post))
-  (serve-or-err (post-cache post) "Post not found."))
+  (let ((post (ensure-post post)))
+    (redirect (format NIL "/thread/~a#post-~a"
+                      (if (= -1 (dm:field post "parent"))
+                          (dm:id post)
+                          (dm:field post "parent"))
+                      (dm:id post)))))
 
 (define-page history #@"chan/history/([0-9]+)" (:uri-groups (post))
   "Poo.")
