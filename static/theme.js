@@ -24,7 +24,9 @@ function loadJS(filename){
     script.setAttribute("class", "theme-part");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("src", filename);
-    document.getElementsByTagName("body")[0].appendChild(script);
+    window.onload = function(){
+        document.getElementsByTagName("body")[0].appendChild(script);
+    }
 }
 
 function loadTheme(name){
