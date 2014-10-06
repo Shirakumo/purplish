@@ -64,14 +64,14 @@
          #'(lambda (,address) (block NIL ,@body))))
 
 (defun youtube-code (url)
-  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url :sharedp T)) 5))
+  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url)) 5))
 
 (define-external-embedder youtube (address)
   (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//www.youtube.com/embed/~a\"></iframe>"
           (or (youtube-code address) (return))))
 
 (defun vimeo-code (url)
-  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo.com/([0-9]+)" url :sharedp T)) 3))
+  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo.com/([0-9]+)" url)) 3))
 
 (define-external-embedder vimeo (address)
   (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//player.vimeo.com/video/~a\"></iframe>"
