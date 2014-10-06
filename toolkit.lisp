@@ -10,7 +10,8 @@
   (etypecase post
     (dm:data-model post)
     (fixnum (dm:get-one 'purplish-posts (db:query (:= '_id post))))
-    (string (dm:get-one 'purplish-posts (db:query (:= '_id (parse-integer post)))))))
+    (string (dm:get-one 'purplish-posts (db:query (:= '_id (or (parse-integer post :junk-allowed T)
+                                                               (return-from ensure-post))))))))
 
 (defun ensure-board (board)
   (etypecase board
