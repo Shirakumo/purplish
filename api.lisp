@@ -130,7 +130,8 @@
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (with-board (board board)
-    (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] (or* author (auth:current))))))
+    (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] author
+                                               (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
       (if (string= (post/get "browser") "true")
           (redirect (format NIL "/thread/~a" (dm:id thread)))
           (api-output "Thread created.")))))
