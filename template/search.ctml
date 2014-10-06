@@ -13,7 +13,7 @@
   <body>
     <c:splice lquery="(purplish-template :header)" />
     <main id="search">
-      <ol iterate="posts">
+      <ol class="results" iterate="posts">
         <c:noop as="li" lquery="(purplish-cache :post *)">
         </c:noop>
       </ol>

@@ -10,6 +10,15 @@
   (when (get-var "error")
     (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" (get-var "error"))))))
 
+(defun remove-inaccessible-options (doc &optional (user (auth:current)))
+  (lquery:$
+    doc ".post"
+    (each #'(lambda (node)
+              (unless (and user
+                           (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
+                               (user:check user '(pruplish post change))))
+                (lquery:$ node "nav.edit" (remove)))))))
+
 ;;;;
 ;; Static
 (defun serve-or-err (file error-message)
@@ -20,13 +29,7 @@
                 (user (auth:current)))
             (when user
               (lquery:$ doc "#replybox .author" (val (user:username user))))
-            (lquery:$
-              doc ".post"
-              (each #'(lambda (node)
-                        (unless (and user
-                                     (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
-                                         (user:check user '(pruplish post change))))
-                          (lquery:$ node "nav.edit" (remove))))))
+            (remove-inaccessible-options doc user)
             (show-error doc)
             (with-output-to-string (stream)
               (plump:serialize doc stream)))))
@@ -87,7 +90,9 @@
        :title "Post History"
        :post post
        :revisions (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id post))
-                                                          (:> 'revision 0))))))))
+                                                          (:> 'revision 0)))))
+      (lquery:$ doc ".revisions nav.edit" (remove))
+      (remove-inaccessible-options doc))))
 
 (define-page search #@"chan/search" ()
   (with-dynamic-env (doc "search.ctml")
@@ -95,4 +100,4 @@
      doc
      :title "Search Results"
      :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
-    (lquery:$ doc "nav.edit" (remove))))
+    (remove-inaccessible-options doc)))

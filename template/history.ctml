@@ -9,10 +9,12 @@
     <c:splice lquery="(purplish-template :header)" />
     <main id="history">
       <c:splice lquery="(purplish-template :post)" />
-      <ol iterate="revisions">
-        <c:let as="li" post="*">
-          <c:splice lquery="(purplish-template :post)" />
-        </c:let>
+      <ol class="revisions" iterate="revisions">
+        <li>
+          <c:let post="*">
+            <c:splice lquery="(purplish-template :post)" />
+          </c:let>
+        </li>
       </ol>
     </main>
     <c:splice lquery="(purplish-template :footer)" />
