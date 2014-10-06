@@ -63,7 +63,11 @@
     (if mime
         (unless (find mime *allowed-types* :test #'string-equal)
           (error "Files of type ~s are not allowed." mime))
-        (error "Unknown file format."))))
+        (error "Unknown file format."))
+    (unless (and (integerp (config-tree :purplish :file :size-limit))
+                 (<= (/ (file-size (first file)) 1024 1024)
+                     (config-tree :purplish :file :size-limit)))
+      (error "File is too big. Must be below ~aMb" (config-tree :purplish :file :size-limit)))))
 
 (defun create-thumb (file mime)
   (when (find mime '(:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml) :test #'string-equal)
