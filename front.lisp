@@ -6,9 +6,9 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defun show-error (doc)
-  (when (get-var "error")
-    (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" (get-var "error"))))))
+(defun show-error (doc &optional (error (get-var "error")))
+  (when error
+    (lquery:$ doc "body>header" (after (format NIL "<div class=\"error\">~a</div>" error)))))
 
 (defun remove-inaccessible-options (doc &optional (user (auth:current)))
   (lquery:$
@@ -94,10 +94,18 @@
       (lquery:$ doc ".revisions nav.edit" (remove))
       (remove-inaccessible-options doc))))
 
-(define-page search #@"chan/search" ()
+(rate:define-rate search (time-left :timeout 10)
   (with-dynamic-env (doc "search.ctml")
     (clip:process
      doc
-     :title "Search Results"
-     :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
-    (remove-inaccessible-options doc)))
+     :title "Search Results")
+    (show-error doc (format NIL "Please wait ~a seconds before searching again." time-left))))
+
+(define-page search #@"chan/search" ()
+  (rate:with-rate-limitation (search)
+    (with-dynamic-env (doc "search.ctml")
+      (clip:process
+       doc
+       :title "Search Results"
+       :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
+      (remove-inaccessible-options doc))))

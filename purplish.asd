@@ -27,6 +27,7 @@
                (:interface :auth)
                (:interface :cache)
                (:interface :profile)
+               (:interface :rate)
                :cl-ppcre
                :lquery
                :i-json

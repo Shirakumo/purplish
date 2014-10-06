@@ -45,6 +45,12 @@
        (error 'api-auth-error :message "You do not have permission to change this post."))
      ,@body))
 
+(rate:define-rate post (time-left :timeout 10)
+  (error 'api-error :message (format NIL "Please wait ~a seconds before posting again." time-left)))
+
+(rate:define-rate api-search (time-left :timeout 10)
+  (error 'api-error :message (format NIL "Please wait ~a seconds between searches." time-left)))
+
 (define-api purplish/boards () ()
   (api-output (db:select 'purplish-boards (db:query (:= 'visible 1)))))
 
@@ -80,11 +86,12 @@
                            :amount amount :skip skip :sort '((time :DESC))))))
 
 (define-api purplish/thread/search (thread query) ()
-  (let ((thread (dm:get-one 'purplish-posts (db:query (:and (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))
-                                                            (:= 'parent -1))))))
-    (unless thread
-      (error 'api-argument-invalid :argument 'thread :message "No such thread found."))
-    (api-output (search-posts query :thread thread :func 'db:select))))
+  (rate:with-rate-limitation (api-search)
+    (let ((thread (dm:get-one 'purplish-posts (db:query (:and (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))
+                                                              (:= 'parent -1))))))
+      (unless thread
+        (error 'api-argument-invalid :argument 'thread :message "No such thread found."))
+      (api-output (search-posts query :thread thread :func 'db:select)))))
 
 (define-api purplish/post (post) ()
   (let ((post (first (db:select 'purplish-posts (db:query (:and (:= '_id (or (parse-integer post :junk-allowed T) "-1"))
@@ -129,12 +136,13 @@
 (define-api purplish/thread/create (board title text files[] &optional author username) ()
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
-  (with-board (board board)
-    (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] author
-                                               (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
-      (if (string= (post/get "browser") "true")
-          (redirect (format NIL "/thread/~a" (dm:id thread)))
-          (api-output "Thread created.")))))
+  (rate:with-rate-limitation (post)
+    (with-board (board board)
+      (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] author
+                                                 (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
+        (if (string= (post/get "browser") "true")
+            (redirect (format NIL "/thread/~a" (dm:id thread)))
+            (api-output "Thread created."))))))
 
 (define-api purplish/thread/delete (thread) ()
   (with-post (thread thread)
@@ -152,15 +160,16 @@
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (unless (or* title text files[])
     (error 'api-argument-missing :argument 'text :message "Title, text or file required."))
-  (with-post (thread thread)
-    (unless (= (dm:field thread "parent") -1)
-      (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
-    (let ((post (with-api-error
-                  (create-post (dm:field thread "board") (dm:id thread) title text files[] author
-                               (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
-      (if (string= (post/get "browser") "true")
-          (redirect (format NIL "/post/~a" (dm:id post)))
-          (api-output "Post created.")))))
+  (rate:with-rate-limitation (post)
+    (with-post (thread thread)
+      (unless (= (dm:field thread "parent") -1)
+        (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
+      (let ((post (with-api-error
+                    (create-post (dm:field thread "board") (dm:id thread) title text files[] author
+                                 (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
+        (if (string= (post/get "browser") "true")
+            (redirect (format NIL "/post/~a" (dm:id post)))
+            (api-output "Post created."))))))
 
 (define-api purplish/post/edit (post &optional title text) ()
   (with-post (post post)
