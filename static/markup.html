@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Purplish Markup Help</title>
+    <style type="text/css">
+     code{
+       font-family: Consolas, Inconsolata, monospace;
+       background: #DDD;
+       padding: 3px;
+     }
+
+     pre code{display: block;}
+    </style>
+  </head>
+  <body>
+    <h1>Purplish Markup</h1>
+    <p>
+      Post content is parsed using <a href="http://daringfireball.net/projects/markdown/basics">Markdown</a>, with some special extensions. Markdown is supposed to be a mixin with HTML, so you may input HTML with your normal text if some kind of markup is not exposed through Markdown syntax. Here's a basic rundown of the Markdown syntax:
+    </p>
+    <pre><code>*italic* **bold** ***even bolder***</code></pre>
+    <pre><code>_italic as well_ __this, too, is bold__ ___you get the gist___</code></pre>
+    <p>
+      Markdown attempts to allow a more 'natural' form than HTML. For example, A list looks like so:
+    </p>
+    <pre><code>* Some item
+* Oh man more
+* And a last one</code></pre>
+    <p>
+      One of the things you will most likely want to use for text markup is links and images. Markdown offers syntax for that as well:
+    </p>
+    <pre><code>[Link label](http://example.com)</code></pre>
+    <pre><code>&lt;http://example.com&gt;</code></pre>
+    <pre><code>![image alt](http://example.com/some-image.jpg)</code></pre>
+    <p>
+      Markdown automatically segments your code into paragraphs when an empty line is encountered. This means that simple line breaks won't result in a line break in the result. If you want to force a line break, you have to append two spaces to the end of your line before the line break. For more information about Markdown, please see <a href="http://daringfireball.net/projects/markdown/syntax">the syntax</a>.
+    </p>
+    <h2>Extra Markup</h2>
+    <p>
+      Purplish offers a few extra syntax specialties to integrate better. The additions are post references, embeddings and spoiler text.
+    </p>
+    <p>
+      Post references work as is normal for imageboards. Simple prepend the post ID with two pointy opening brackets, like so: <code>&gt;&gt;1969</code>.
+    </p>
+    <p>
+      Embeddings allow you to integrate things like youtube video players or soundcloud audio players into your posts. In order to create such an embed, simply use the same syntax as for a link, but change the link label to be the service you want to embed. Like so: <code>[youtube](https://www.youtube.com/watch?v=K2rwxs1gH9w)</code>
+    </p>
+    <p>
+      Finally, spoiler text (hiding your text until its moused over) happens by surrounding the region with <code>|? ?|</code>. Simply just like this: <code>PS3 has |?no games?|</code>
+    </p>
+  </body>
+</html>

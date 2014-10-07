@@ -23,6 +23,7 @@
     </div>
     <textarea class="text" name="text" tabindex="3"
               lquery='(attr :required (unless thread "required"))'></textarea>
+    <a class="help" href="/static/purplish/markup.html" target="_blank">Markup Help</a>
   </div>
   <footer>
     <input type="submit" value="Post" lquery='(val (if thread "Post" "Make Thread"))' tabindex="4" />
