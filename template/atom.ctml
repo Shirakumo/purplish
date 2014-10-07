@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text" lquery="(text title)">TITLE</title>
+  <subtitle type="html" lquery="(text description)">
+    DESCRIPTION
+  </subtitle>
+  <updated lquery="(text (purplish::date-machine updated))"></updated>
+  <id>http://chan.<c:splice lquery="(text domain)" />/</id>
+  <link rel="alternate" type="text/html" hreflang="en" href="http://chan.DOMAIN/"
+        lquery="(attr :href (format NIL &quot;http://chan.~a/&quot; domain))"/>
+  <link rel="self" type="application/atom+xml" href="http://chan.DOMAIN/api/purplish/atom"
+        lquery="(attr :href (format NIL &quot;http://chan.~a/api/purplish/atom~@[?board=~a~]&quot; domain board))"/>
+  <rights>Copyright (c) 2014, TymoonNET/NexT</rights>
+  <generator uri="http://github.com/Shinmera/purplish/" version="1.0">
+    purplish
+  </generator>
+  <c:splice iterate="posts">
+    <entry>
+      <title lquery="(text title)">TITLE</title>
+      <link rel="alternate" type="text/html" href="http://chan.DOMAIN/thread/ID#post-ID"
+            lquery="(attr :href (purplish::atom-post-link *))"/>
+      <id lquery="(text (purplish::atom-post-link *))">http://chan.DOMAIN/thread/ID#post-ID</id>
+      <published lquery="(text (purplish::date-machine time))">TIME</published>
+      <updated lquery="(text (purplish::date-machine time))">TIME</updated>
+      <author>
+        <name lquery="(text author)">AUTHOR</name>
+      </author>
+      <content type="html" lquery="(text (purplish::parse text))">
+        TEXT
+      </content>
+    </entry>
+  </c:splice>
+</feed>
