@@ -7,16 +7,19 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun date-machine (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
   (let ((local-time:*default-timezone* local-time:+utc-zone+))
     (local-time:format-timestring
      NIL stamp :format '((:year 4) "-" (:month 2) "-" (:day 2) "T" (:hour 2) ":" (:min 2) ":" (:sec 2)))))
 
 (defun date-human (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
   (let ((local-time:*default-timezone* local-time:+utc-zone+))
     (local-time:format-timestring
      NIL stamp :format '((:year 4) "." (:month 2) "." (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2)))))
 
 (defun date-fancy (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
   (let ((local-time:*default-timezone* local-time:+utc-zone+))
     (local-time:format-timestring
      NIL stamp :format '(:long-weekday ", " :ordinal-day " of " :long-month " " :year ", " :hour ":" :min ":" :sec))))
