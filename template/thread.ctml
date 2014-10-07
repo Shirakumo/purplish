@@ -20,9 +20,13 @@
       <ul class="posts" iterate="posts">
         <c:noop as="li" lquery="(purplish-cache :post *)" />
       </ul>
+      <c:splice lquery="(purplish-template :replybox)" />
+      <nav>
+        <a href="/board/BOARD" lquery='(attr :href (format NIL "/board/~a" (clip thread :board)))'>Return to Board</a>
+        <a href="#top">Jump to Top</a>
+      </nav>
     </main>
     <a name="bottom" />
-    <c:splice lquery="(purplish-template :replybox)" />
     <c:splice lquery="(purplish-template :footer)" />
   </body>
 </html>
