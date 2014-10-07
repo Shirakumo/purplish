@@ -166,7 +166,7 @@
         (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
       (let ((post (with-api-error
                     (create-post (dm:field thread "board") (dm:id thread) title text files[] author
-                                 (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
+                                 (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))        
         (if (string= (post/get "browser") "true")
             (redirect (format NIL "/post/~a" (dm:id post)))
             (api-output "Post created."))))))

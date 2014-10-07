@@ -45,12 +45,16 @@
           (dm:field post "author") (or* author "Anonymous")
           (dm:field post "registered") (or* registered 0)
           (dm:field post "time") (get-universal-time)
+          (dm:field post "updated") (get-universal-time)
           (dm:field post "title") title
           (dm:field post "text") text)
     (dm:insert post)
     ;; Shuffle files around
     (dolist (file files)
       (create-file post file))
+    ;; Bump
+    (unless (= parent -1)
+      (db:update 'purplish-posts (db:query (:= '_id parent)) `(("updated" . ,(get-universal-time)))))
     ;; Publicise!
     (recache-post post)
     post))
@@ -98,6 +102,7 @@
               (dm:field edit "registered") 1
               (dm:field edit "deleted") (if delete 1 0)
               (dm:field edit "time") (get-universal-time)
+              (dm:field edit "updated") (get-universal-time)
               (dm:field edit "title") title
               (dm:field edit "text") text)
         (dm:insert edit)))

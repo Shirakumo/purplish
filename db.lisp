@@ -20,6 +20,7 @@
                                (deleted (:integer 1))
                                (title (:varchar 64))
                                (time (:integer 5))
+                               (updated (:integer 5))
                                (text :text))
              :indices '((_id board) (_id revision)))
 

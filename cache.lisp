@@ -44,18 +44,10 @@
     (merge-pathnames (format NIL "~a/post/~a.html" (dm:field post "board") (dm:id post))
                      *cache*)))
 
-(defun recache-frontpage ()
-  (with-cache-file (stream path (front-cache))
-    (plump:serialize
-     (clip:process
-      (plump:parse (template "frontpage.ctml"))
-      :title (config-tree :purplish :title)
-      :posts (dm:get 'purplish-posts (db:query (:= 'revision 0)) :amount 20 :sort '((time :DESC))))
-     stream)))
-
 (defun recache-post (post &key (propagate T))
   (let* ((post (ensure-post post))
          (revision (last-revision post)))
+    (v:debug :purplish-cache "Recaching Post ~a" (dm:id post))
     (with-cache-file (stream path (post-cache post))
       (plump:serialize
        (clip:process
@@ -74,7 +66,9 @@
 (defun recache-thread (thread &key cascade (propagate T) (full T))
   (let* ((thread (ensure-post thread))
          (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id thread))
-                                                        (:= 'revision 0))))))
+                                                        (:= 'revision 0)))
+                        :sort '((time :ASC)))))
+    (v:debug :purplish-cache "Recaching Thread ~a" (dm:id thread))
     (when cascade
       (recache-post thread :propagate NIL)
       (dolist (post posts)
@@ -108,7 +102,8 @@
   (let* ((board (ensure-board board))
          (threads (dm:get 'purplish-posts (db:query (:and (:= 'board (dm:id board))
                                                           (:= 'parent -1)))
-                          :sort '((time :DESC)))))
+                          :sort '((updated :DESC)))))
+    (v:debug :purplish-cache "Recaching Board ~a" (dm:id board))
     (when cascade
       (dolist (thread threads)
         (recache-thread thread :cascade T :propagate NIL)))
@@ -121,3 +116,14 @@
         :board board :threads threads)
        stream)
       path)))
+
+(defun recache-frontpage ()
+  (v:debug :purplish-cache "Recaching Frontpage")
+  (with-cache-file (stream path (front-cache))
+    (plump:serialize
+     (clip:process
+      (plump:parse (template "frontpage.ctml"))
+      :title (config-tree :purplish :title)
+      :posts (dm:get 'purplish-posts (db:query (:= 'revision 0))
+                     :amount 20 :sort '((time :DESC))))
+     stream)))
