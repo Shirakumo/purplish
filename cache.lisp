@@ -76,11 +76,11 @@
          (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id thread))
                                                         (:= 'revision 0))))))
     (when cascade
+      (recache-post thread :propagate NIL)
       (dolist (post posts)
         (recache-post post :propagate NIL)))
 
     (when full
-      (recache-post thread :propagate NIL)
       (with-cache-file (stream path (thread-cache thread))
         (plump:serialize
          (clip:process
