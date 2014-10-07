@@ -42,6 +42,13 @@
    #:parse)
   ;; post.lisp
   (:export
+   #:board-created
+   #:board-deleted
+   #:post-created
+   #:post-edited
+   #:post-deleted
+   #:post-purged
+   
    #:create-board
    #:delete-board
    #:create-post

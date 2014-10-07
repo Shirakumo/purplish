@@ -6,6 +6,13 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
+(define-hook board-created (id))
+(define-hook board-deleted (id))
+(define-hook post-created (id))
+(define-hook post-deleted (id))
+(define-hook post-purged (id))
+(define-hook post-edited (id edit-id))
+
 (defun create-board (name description &optional (visible T))
   (with-model board ('purplish-boards NIL)
     (setf (dm:field board "name") name
@@ -16,6 +23,7 @@
     (dolist (board (dm:get 'purplish-boards (db:query :all)))
       (recache-board board :cascade T))
     (recache-frontpage)
+    (trigger 'board-created (dm:id board))
     board))
 
 (defun delete-board (board)
@@ -32,7 +40,8 @@
       ;; Update header
       (dolist (board (dm:get 'purplish-boards (db:query :all)))
         (recache-board board :cascade T))
-      (recache-frontpage))
+      (recache-frontpage)
+      (trigger 'board-deleted id))
     T))
 
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
@@ -57,6 +66,7 @@
       (db:update 'purplish-posts (db:query (:= '_id parent)) `(("updated" . ,(get-universal-time)))))
     ;; Publicise!
     (recache-post post)
+    (trigger 'post-created (dm:id post))
     post))
 
 (defun delete-post (post &key (author (user:username (auth:current))) purge)
@@ -84,9 +94,11 @@
             (recache-board (dm:field post "board"))
             (recache-frontpage))
            (T
-            (recache-thread (dm:field post "parent"))))))
+            (recache-thread (dm:field post "parent"))))
+         (trigger 'post-purged id)))
       (T
-       (edit-post post (or author "Anonymous") "" "_deleted_" :delete T)))
+       (edit-post post (or author "Anonymous") "" "_deleted_" :delete T)
+       (trigger 'post-deleted (dm:id post))))
     T))
 
 (defun edit-post (post author title text &key delete)
@@ -105,7 +117,8 @@
               (dm:field edit "updated") (get-universal-time)
               (dm:field edit "title") title
               (dm:field edit "text") text)
-        (dm:insert edit)))
-    ;; Publicise!
-    (recache-post post)
+        (dm:insert edit)
+        ;; Publicise!
+        (recache-post post)
+        (trigger 'post-edited (dm:id post) (dm:id edit))))
     post))
