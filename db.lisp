@@ -17,6 +17,7 @@
                                (revision :integer)
                                (author (:varchar 32))
                                (registered (:integer 1))
+                               (deleted (:integer 1))
                                (title (:varchar 64))
                                (time (:integer 5))
                                (text :text))

@@ -52,9 +52,7 @@
     (dolist (file files)
       (create-file post file))
     ;; Publicise!
-    (if (= parent -1)
-        (recache-thread post)
-        (recache-post post))
+    (recache-post post)
     post))
 
 (defun delete-post (post &key purge)
@@ -84,10 +82,10 @@
            (T
             (recache-thread (dm:field post "parent"))))))
       (T
-       (edit-post post "" "_deleted_")))
+       (edit-post post (user:username (auth:current)) "" "_deleted_" :delete T)))
     T))
 
-(defun edit-post (post title text)
+(defun edit-post (post author title text &key delete)
   (let ((post (ensure-post post)))
     ;; Create a new post with increased revision number.
     (let ((revision (or (last-revision post)
@@ -96,8 +94,9 @@
         (setf (dm:field edit "board") (dm:field revision "board")
               (dm:field edit "parent") (dm:id post)
               (dm:field edit "revision") (1+ (dm:field revision "revision"))
-              (dm:field edit "author") (user:username (auth:current))
+              (dm:field edit "author") author
               (dm:field edit "registered") 1
+              (dm:field edit "deleted") (if delete 1 0)
               (dm:field edit "time") (get-universal-time)
               (dm:field edit "title") title
               (dm:field edit "text") text)

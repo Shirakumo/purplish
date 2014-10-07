@@ -174,7 +174,7 @@
 (define-api purplish/post/edit (post &optional title text) ()
   (with-post (post post)
     (with-post-accessible (post)
-      (with-api-error (edit-post post title text))
+      (with-api-error (edit-post post (user:username (auth:current)) title text))
       (if (string= (post/get "browser") "true")
           (redirect (format NIL "/post/~a" (dm:id post)))
           (api-output "Board created.")))))
@@ -182,8 +182,6 @@
 (define-api purplish/post/delete (post &optional purge) ()
   (with-post (post post)
     (with-post-accessible (post)
-      (unless (/= (dm:field post "parent") -1)
-        (error 'api-argument-invalid :argument 'post :message "This is a thread."))
       (cond
         ((and (string= purge "true")
               (user:check (auth:current) '(purplish post purge)))
