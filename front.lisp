@@ -21,8 +21,8 @@
 
 ;;;;
 ;; Static
-(defun serve-or-err (file error-message)
-  (setf (content-type *response*) "application/xhtml+xml")
+(defun serve-or-err (file error-message &optional (content-type "application/xhtml+xml"))
+  (setf (content-type *response*) content-type)
   (or (with-open-file (stream file :if-does-not-exist NIL)
         (when stream
           (let ((doc (plump:parse stream))
