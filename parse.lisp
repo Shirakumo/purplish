@@ -108,7 +108,8 @@
 
 (defun preparse (text)
   (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "<a href=\"/post/\\1\" class=\"post-reference\">&gt;&gt;\\1</a>"))
-  (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external)))
+  (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
+  (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>")))
 
 (defun parse (text)
   (let ((3bmd:*smart-quotes* T)
