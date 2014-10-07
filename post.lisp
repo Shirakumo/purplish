@@ -55,7 +55,7 @@
     (recache-post post)
     post))
 
-(defun delete-post (post &key purge)
+(defun delete-post (post &key (author (user:username (auth:current))) purge)
   (let ((post (ensure-post post)))
     (cond
       (purge
@@ -82,7 +82,7 @@
            (T
             (recache-thread (dm:field post "parent"))))))
       (T
-       (edit-post post (user:username (auth:current)) "" "_deleted_" :delete T)))
+       (edit-post post (or author "Anonymous") "" "_deleted_" :delete T)))
     T))
 
 (defun edit-post (post author title text &key delete)
