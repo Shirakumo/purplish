@@ -6,6 +6,7 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
+(defvar *headers* (static-file "headers/"))
 (defvar *files* (static-file "file/"))
 (defvar *file-embedders* (make-hash-table :test 'equalp))
 (defvar *allowed-types* ())
@@ -102,8 +103,6 @@
         ;; We can't use rename-file across devices, so just copy it.
         (uiop:copy-file path new-file)
         (create-thumb new-file mime)))))
-
-(defvar *headers* (static-file "headers/"))
 
 (defun random-header ()
   (let ((headers (uiop:directory-files *headers*)))

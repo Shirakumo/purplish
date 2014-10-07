@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>PURPLISH</title>
+    <style type="text/css">
+      code a{text-decoration:none;}
+      h1{display:inline-block;font-size: 28pt;margin-bottom:0;}
+      code{font-family: Consolas, Inconsolata, monospace;}
+      h4{display: inline-block;margin:0;padding:0;}
+      #symbol-index ul{list-style: none;}
+      .package li{margin-bottom: 20px;}
+      .package pre{margin: 0 0 0 10px; white-space: pre-wrap;}
+      .package .nicknames{font-size: 12pt; font-weight: normal;}
+      table{margin: 20px;}
+      td{padding-bottom: 10px;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>purplish</h1>
+      <span>0.9.0</span>
+      <p>Imageboard CMS for Radiance</p>
+    </header>
+    <div id="content">
+      <article>
+        <c:documentate>
+          <span><h2>About Purplish</h2>
+
+<p>Purplish is an imageboard software for <a href="https://github.com/Shinmera/Radiance">Radiance</a>. It supports multiple boards, themes, multiple files per post, rate limiting, video and audio embedding, post editing and more.</p>
+
+<h2>How To</h2>
+
+<p>Set up Radiance and load Purplish with quicklisp or ASDF. Once Radiance has been started up, you can use <code><a href="#PURPLISH:CREATE-BOARD">purplish:create-board</a></code> to add new boards. Purplish occupies the subdomain <code>chan</code>. You can set up the rotating headers by putting images into <code><a href="#PURPLISH:*HEADERS*">purplish:*headers*</a></code>.</p>
+
+<h2>Interface Dependencies</h2>
+
+<ul>
+<li>database</li>
+<li>data-model</li>
+<li>auth</li>
+<li>cache</li>
+<li>profile</li>
+<li>rate</li>
+</ul>
+
+<h2>Configuration Variables</h2>
+
+<ul>
+<li><code>(:purplish :title)</code></li>
+<li><code>(:purplish :description)</code></li>
+<li><code>(:purplish :thumb :width)</code></li>
+<li><code>(:purplish :thumb :height)</code></li>
+<li><code>(:purplish :thumb :gif)</code></li>
+<li><code>(:purplish :file :size-limit)</code></li>
+</ul>
+</span>
+        </c:documentate>
+      </article>
+      <article>
+        <h2>Copyright</h2>
+        <span>purplish</span> is licensed under the <span><a href="https://tldrlegal.com/search?q=Artistic">Artistic</a></span> license and ©<span>2014</span> <span>Nicolas Hafner &lt;shinmera@tymoon.eu&gt;</span>. This library can be obtained on <a href="https://github.com/Shinmera/purplish">https://github.com/Shinmera/purplish</a>.
+      </article>
+      <article id="symbol-index">
+        <h2>Package Index</h2>
+        <ul><li class="package">
+            <h3>
+              <a name="PURPLISH" href="#PURPLISH">PURPLISH</a>
+              <span class="nicknames">(MODULARIZE.MOD.PURPLISH ORG.TYMOONNEXT.RADIANCE.PURPLISH)</span>
+            </h3>
+            <ul><li>
+                <a name="PURPLISH:BOARD-CACHE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:BOARD-CACHE">BOARD-CACHE</a></h4>
+                      <span/>
+                      <span>(BOARD)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:BOARDS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:BOARDS">BOARDS</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:CHECK-FILE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:CHECK-FILE">CHECK-FILE</a></h4>
+                      <span/>
+                      <span>(FILE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:CREATE-BOARD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:CREATE-BOARD">CREATE-BOARD</a></h4>
+                      <span/>
+                      <span>(NAME DESCRIPTION &amp;OPTIONAL (VISIBLE T))</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:CREATE-FILE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:CREATE-FILE">CREATE-FILE</a></h4>
+                      <span/>
+                      <span>(POST FILE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:CREATE-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:CREATE-POST">CREATE-POST</a></h4>
+                      <span/>
+                      <span>(BOARD PARENT TITLE TEXT FILES &amp;OPTIONAL AUTHOR (REGISTERED 0) (REVISION 0))</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:DELETE-BOARD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:DELETE-BOARD">DELETE-BOARD</a></h4>
+                      <span/>
+                      <span>(BOARD)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:DELETE-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:DELETE-POST">DELETE-POST</a></h4>
+                      <span/>
+                      <span>(POST &amp;KEY (AUTHOR (USERNAME (CURRENT))) PURGE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:EDIT-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:EDIT-POST">EDIT-POST</a></h4>
+                      <span/>
+                      <span>(POST AUTHOR TITLE TEXT &amp;KEY DELETE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:EMBED-FILE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:EMBED-FILE">EMBED-FILE</a></h4>
+                      <span/>
+                      <span>(FILE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:ENSURE-BOARD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:ENSURE-BOARD">ENSURE-BOARD</a></h4>
+                      <span/>
+                      <span>(BOARD)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:ENSURE-FILE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:ENSURE-FILE">ENSURE-FILE</a></h4>
+                      <span/>
+                      <span>(FILE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:ENSURE-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:ENSURE-POST">ENSURE-POST</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:EXTERNAL-EMBEDDER"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:EXTERNAL-EMBEDDER">EXTERNAL-EMBEDDER</a></h4>
+                      <span/>
+                      <span>(NAME)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:FILE-PATH"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:FILE-PATH">FILE-PATH</a></h4>
+                      <span/>
+                      <span>(FILE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:FRONT-CACHE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:FRONT-CACHE">FRONT-CACHE</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:LAST-REVISION"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:LAST-REVISION">LAST-REVISION</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:PARSE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:PARSE">PARSE</a></h4>
+                      <span/>
+                      <span>(TEXT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:PARSE-SEARCH-QUERY"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:PARSE-SEARCH-QUERY">PARSE-SEARCH-QUERY</a></h4>
+                      <span/>
+                      <span>(STRING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:POST-CACHE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:POST-CACHE">POST-CACHE</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:PREPARSE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:PREPARSE">PREPARSE</a></h4>
+                      <span/>
+                      <span>(TEXT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:RANDOM-HEADER"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:RANDOM-HEADER">RANDOM-HEADER</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:RECACHE-BOARD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:RECACHE-BOARD">RECACHE-BOARD</a></h4>
+                      <span/>
+                      <span>(BOARD &amp;KEY CASCADE)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:RECACHE-FRONTPAGE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:RECACHE-FRONTPAGE">RECACHE-FRONTPAGE</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:RECACHE-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:RECACHE-POST">RECACHE-POST</a></h4>
+                      <span/>
+                      <span>(POST &amp;KEY (PROPAGATE T))</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:RECACHE-THREAD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:RECACHE-THREAD">RECACHE-THREAD</a></h4>
+                      <span/>
+                      <span>(THREAD &amp;KEY CASCADE (PROPAGATE T) (FULL T))</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:SEARCH-POSTS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:SEARCH-POSTS">SEARCH-POSTS</a></h4>
+                      <span/>
+                      <span>(QUERY &amp;KEY BOARD THREAD (AMOUNT 20) (FUNC 'GET))</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:THEMES"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:THEMES">THEMES</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:THREAD-CACHE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:THREAD-CACHE">THREAD-CACHE</a></h4>
+                      <span/>
+                      <span>(THREAD)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:THREAD-MIN-CACHE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#PURPLISH:THREAD-MIN-CACHE">THREAD-MIN-CACHE</a></h4>
+                      <span/>
+                      <span>(THREAD)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:DEFINE-EXTERNAL-EMBEDDER"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#PURPLISH:DEFINE-EXTERNAL-EMBEDDER">DEFINE-EXTERNAL-EMBEDDER</a></h4>
+                      <span/>
+                      <span>(NAME (ADDRESS) &amp;BODY BODY)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:DEFINE-FILE-EMBEDDER"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#PURPLISH:DEFINE-FILE-EMBEDDER">DEFINE-FILE-EMBEDDER</a></h4>
+                      <span/>
+                      <span>(TYPE (FILE NAME) &amp;BODY BODY)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:DEFINE-FOR-MULTIPLE"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#PURPLISH:DEFINE-FOR-MULTIPLE">DEFINE-FOR-MULTIPLE</a></h4>
+                      <span/>
+                      <span>(&amp;BODY DEFS)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:*CACHE*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#PURPLISH:*CACHE*">*CACHE*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:*FILES*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#PURPLISH:*FILES*">*FILES*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="PURPLISH:*HEADERS*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#PURPLISH:*HEADERS*">*HEADERS*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li></ul>
+          </li></ul>
+      </article>
+    </div>
+  </body>
+</html>

@@ -10,8 +10,10 @@
   :class "radiance:module"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
-  :version "0.1.0"
-  :description "Imageboard CMS"
+  :license "Artistic"
+  :version "0.9.0"
+  :description "Imageboard CMS for Radiance"
+  :homepage "https://github.com/Shinmera/purplish"
   :components ((:file "module")
                (:file "db")
                (:file "toolkit")
