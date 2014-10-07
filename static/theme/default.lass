@@ -245,6 +245,14 @@
        (blockquote
         :border-color "#CCC")))))
 
+   (.spoiler
+    :display inline-block
+    :background "#000"
+    :color "#000")
+
+   ((:and .spoiler :hover)
+    :background transparent)
+
    (ul :list-style disc)
 
    (ol :list-style decimal)))
@@ -299,6 +307,7 @@
  (.content
   :flex-grow 1
   :display flex
+  :position relative
   (.files
    :display flex
    :flex-direction column
@@ -319,7 +328,18 @@
      :text-overflow ellipsis)))
   (.text
    :flex-grow 1
-   :min-height 150px))
+   :min-height 150px)
+
+  (.help
+   :position absolute
+   :right 3px
+   :bottom 2px
+   :background "#DDD"
+   :z-index 10
+   :text-decoration none
+   :padding 2px
+   :font-size 10pt
+   :color black))
 
  (footer
   (input
