@@ -43,8 +43,8 @@
         <nav class="edit">
           <a href="/edit/ID" class="edit-button"
              lquery='(attr :href (format NIL "/edit/~a" _id))'>Edit</a>
-          <a href="/api/purplish/post/delete?post=ID" class="delete-button"
-             lquery='(attr :href (format NIL "/api/purplish/post/delete?post=~a" _id))'>Delete</a>
+          <a href="/api/purplish/post/delete?post=ID&browser=true" class="delete-button"
+             lquery='(attr :href (format NIL "/api/purplish/post/delete?post=~a&browser=true" _id))'>Delete</a>
         </nav>
       </footer>
   </article>
