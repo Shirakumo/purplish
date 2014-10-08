@@ -11,12 +11,6 @@
 (defvar *file-embedders* (make-hash-table :test 'equalp))
 (defvar *allowed-types* ())
 
-(defun ensure-file (file)
-  (etypecase file
-    (dm:data-model file)
-    (fixnum (dm:get-one 'purplish-files (db:query (:= '_id file))))
-    (string (dm:get-one 'purplish-files (db:query (:= '_id (parse-integer file)))))))
-
 (defmacro define-file-embedder (type (file name) &body body)
   (destructuring-bind (mime &optional (ext (mimes:mime-file-type (string mime))))
       (if (listp type) type (list type))
