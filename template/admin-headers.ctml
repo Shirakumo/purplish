@@ -1,0 +1,35 @@
+<div>
+  <h2>Manage Headers</h2>
+  <form class="box" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <div class="actionbar"><input type="submit" name="action" value="Upload" /></div>
+  </form>
+  <div class="tablebox">
+    <table class="selectable actions interactive">
+      <thead>
+        <tr>
+	  <th><input type="checkbox" class="select-all" /></th>
+          <th>Header</th>
+	  <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <c:splice iterate="headers">
+          <tr>
+	    <td><input type="checkbox" name="selected[]" form="massEditForm" lquery="(val (purplish::header-id *))" /></td>
+            <td><img alt="header" src="/static/purplish/header/0.png" lquery="(attr :src (purplish::header-src *))" /></td>
+	    <td>
+              <form action="#" method="post">
+	        <input type="hidden" name="file" lquery="(val (purplish::header-id *))" />
+	        <input type="submit" name="action" value="Delete" />
+	      </form>
+            </td>
+          </tr>
+        </c:splice>
+      </tbody>
+    </table>
+    <form class="table-actions" id="massEditForm" action="#" method="post">
+      <input type="submit" name="action" value="Delete" />
+    </form>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div>
+  <h2>Purplish Configuration</h2>
+  <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
+  <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
+  <form action="#" method="post" class="box">
+    <label>Title</label><input type="text" name="title" placeholder="Purplish" required
+                               lquery="(val (config-tree :purplish :title))"/><br />
+    <label>Description</label><input type="text" name="description" placeholder="A simple imageboard" required
+                               lquery="(val (config-tree :purplish :description))" /><br />
+    <label>News</label><textarea name="news" placeholder="No news :("
+                               lquery="(text (config-tree :purplish :news))"></textarea><br />
+    <label>Thumb Width</label><input type="text" name="thumb-width" placeholder="150"
+                               lquery="(val (config-tree :purplish :thumb :width))" /><br />
+    <label>Thumb Height</label><input type="text" name="thumb-height" placeholder="150"
+                               lquery="(val (config-tree :purplish :thumb :height))" /><br />
+    <label>Thumb Gif</label><input type="checkbox" name="thumb-gif"
+                               lquery="(attr :checked (config-tree :purplish :thumb :gif))" /><br />
+    <label>File Size Limit</label><input type="number" step="any" name="file-size-limit" placeholder="None"
+                               lquery="(val (config-tree :purplish :file :size-limit))" /><br />
+    <div class="actionbar">
+      <input type="submit" name="action" value="Save" />
+    </div>
+  </form>
+</div>
