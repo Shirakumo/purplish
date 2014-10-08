@@ -23,3 +23,11 @@ Configuration Variables
 * `(:purplish :thumb :height)`
 * `(:purplish :thumb :gif)`
 * `(:purplish :file :size-limit)`
+
+Permissions
+-----------
+* `(purplish post change)`
+* `(purplish thread delete)`
+* `(purplish post purge)`
+* `(purplish board create)`
+* `(purplish board delete)`
