@@ -47,7 +47,7 @@
 (defun recache-post (post &key (propagate T))
   (let* ((post (ensure-post post))
          (revision (last-revision post)))
-    (v:debug :purplish-cache "Recaching Post ~a" (dm:id post))
+    (l:debug :purplish-cache "Recaching Post ~a" (dm:id post))
     (with-cache-file (stream path (post-cache post))
       (plump:serialize
        (clip:process
@@ -68,7 +68,7 @@
          (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id thread))
                                                         (:= 'revision 0)))
                         :sort '((time :ASC)))))
-    (v:debug :purplish-cache "Recaching Thread ~a" (dm:id thread))
+    (l:debug :purplish-cache "Recaching Thread ~a" (dm:id thread))
     (when cascade
       (recache-post thread :propagate NIL)
       (dolist (post posts)
@@ -103,7 +103,7 @@
          (threads (dm:get 'purplish-posts (db:query (:and (:= 'board (dm:id board))
                                                           (:= 'parent -1)))
                           :sort '((updated :DESC)))))
-    (v:debug :purplish-cache "Recaching Board ~a" (dm:id board))
+    (l:debug :purplish-cache "Recaching Board ~a" (dm:id board))
     (when cascade
       (dolist (thread threads)
         (recache-thread thread :cascade T :propagate NIL)))
@@ -118,7 +118,7 @@
       path)))
 
 (defun recache-frontpage ()
-  (v:debug :purplish-cache "Recaching Frontpage")
+  (l:debug :purplish-cache "Recaching Frontpage")
   (with-cache-file (stream path (front-cache))
     (plump:serialize
      (clip:process

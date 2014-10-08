@@ -14,7 +14,7 @@
   (merge-pathnames (format NIL "atom/~:[general.xml~;~:*~a.xml~]" board) *cache*))
 
 (defun recache-atom (&key post board)
-  (v:debug :purplish-cache "Recaching Atom~@[ ~a~]" (or post board))
+  (l:debug :purplish-cache "Recaching Atom~@[ ~a~]" (or post board))
   (flet ((execute (posts title description file)
            (with-cache-file (stream path file)
              (plump:serialize
