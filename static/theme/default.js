@@ -7,4 +7,8 @@ $(function(){
             scrollTop: post.offset().top
         }, 500);
     });
+
+    $("#header-image").click(function(){
+        $(this).attr("src", "/api/purplish/header?t="+new Date().getTime());
+    });
 });
