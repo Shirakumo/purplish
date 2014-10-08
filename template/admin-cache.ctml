@@ -1,0 +1,24 @@
+<div>
+  <h2>Purplish Cache</h2>
+  <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
+  <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
+  <form action="#" method="get" class="box">
+    <input type="checkbox" name="type[]" value="front" /><label>Frontpage</label><br />
+    <input type="checkbox" name="type[]" value="board" /><label>Board</label><select name="board" iterate="boards">
+      <option value="ID" lquery="(text name) (val _id)">BOARD</option>
+    </select><br />
+    <input type="checkbox" name="type[]" value="thread" /><label>Thread</label><input type="number" name="thread" /><br />
+    <input type="checkbox" name="type[]" value="post" /><label>Post</label><input type="number" name="post" /><br />
+    <input type="checkbox" name="type[]" value="atom" /><label>Atom</label><select name="atom">
+      <option value="-1">Frontpage</option>
+      <c:splice  iterate="boards">
+        <option value="ID" lquery="(text name) (val _id)">BOARD</option>
+      </c:splice>
+    </select><br />
+    <div class="actionbar">
+      <input type="checkbox" name="cascade" value="true" checked="checked" /> Cascade
+      <input type="checkbox" name="propagate" value="true" /> Propagate
+      <input type="submit" name="action" value="Recache" />
+    </div>
+  </form>
+</div>
