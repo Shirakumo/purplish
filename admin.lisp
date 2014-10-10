@@ -71,4 +71,20 @@
             (uiop:copy-file (first (post-var "file")) target))
           (setf info "Header uploaded.")))
       (r-clip:process
-       T :error error :info info :headers (uiop:directory-files *headers*)))))
+       T :error error :info info :headers (uiop:directory-files *headers*))))
+
+  (admin:define-panel themes purplish (:access (purplish admin themes) :icon "fa-paint-brush" :tooltip "Manage available chan themes." :lquery (template "admin-themes.ctml"))
+    (with-actions (error info)
+        ((:delete
+          (dolist (name (or (post-var "selected[]") (list (post-var "name"))))
+            (ignore-errors (delete-file (make-pathname :name name :type "css" :defaults *themes*)))
+            (ignore-errors (delete-file (make-pathname :name name :type "js" :defaults *themes*))))
+          (setf info "Themes deleted."))
+         (:upload
+          (let ((target (make-pathname :name (post-var "name") :defaults *themes*)))
+            (uiop:copy-file (first (post-var "css")) (make-pathname :type "css" :defaults target))
+            (when (post-var "js")
+              (uiop:copy-file (first (post-var "js")) (make-pathname :type "js" :defaults target)))
+            (setf info "Theme uploaded."))))
+      (r-clip:process
+       T :error error :info info :themes (themes)))))

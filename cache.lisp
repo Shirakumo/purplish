@@ -7,12 +7,13 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defvar *cache* (asdf:system-relative-pathname :purplish "cache/"))
+(defvar *themes* (static-file "theme/"))
 
 (defun boards ()
   (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
 
 (defun themes ()
-  (mapcar #'pathname-name (uiop:directory-files (static-file "theme/*.css") #p"")))
+  (mapcar #'pathname-name (uiop:directory-files *themes* #p"*.css")))
 
 (defmacro with-cache-file ((stream path descriptor) &body body)
   `(let ((,path ,descriptor)

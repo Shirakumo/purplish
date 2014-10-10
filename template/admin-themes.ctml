@@ -1,9 +1,11 @@
 <div>
-  <h2>Manage Headers</h2>
+  <h2>Manage Themes</h2>
   <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
   <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
   <form class="box" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" />
+    <label>Name</label><input type="text" name="name" required /><br />
+    <label>CSS</label><input type="file" name="css" required /><br />
+    <label>JS</label><input type="file" name="js" /><br />
     <div class="actionbar"><input type="submit" name="action" value="Upload" /></div>
   </form>
   <div class="tablebox">
@@ -11,18 +13,18 @@
       <thead>
         <tr>
 	  <th><input type="checkbox" class="select-all" /></th>
-          <th>Header</th>
+          <th>Name</th>
 	  <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <c:splice iterate="headers">
+        <c:splice iterate="themes">
           <tr>
-	    <td><input type="checkbox" name="selected[]" form="massEditForm" lquery="(val (purplish::header-id *))" /></td>
-            <td><img alt="header" src="/static/purplish/header/0.png" lquery="(attr :src (purplish::header-src *))" /></td>
+	    <td><input type="checkbox" name="selected[]" form="massEditForm" lquery="(val *)" /></td>
+            <td lquery="(text *)">THEME</td>
 	    <td>
               <form action="#" method="post">
-	        <input type="hidden" name="file" lquery="(val (purplish::header-id *))" />
+	        <input type="hidden" name="name" lquery="(val *)" />
 	        <input type="submit" name="action" value="Delete" />
 	      </form>
             </td>
