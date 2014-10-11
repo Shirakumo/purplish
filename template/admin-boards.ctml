@@ -1,0 +1,43 @@
+<div>
+  <h2>Manage Boards</h2>
+  <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
+  <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
+  <form class="box" method="post" enctype="multipart/form-data">
+    <label>Name</label><input type="text" name="name" required /><br />
+    <label>Description</label><textarea name="description"></textarea><br />
+    <label>Visible</label><input type="checkbox" name="visible" value="true" checked /><br />
+    <div class="actionbar"><input type="submit" name="action" value="Create" /></div>
+  </form>
+  <div class="tablebox">
+    <table class="selectable actions interactive">
+      <thead>
+        <tr>
+	  <th><input type="checkbox" class="select-all" /></th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Visible</th>
+	  <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <c:splice iterate="boards">
+          <tr>
+	    <td><input type="checkbox" name="selected[]" form="massEditForm" lquery="(val name)" /></td>
+            <td lquery="(text name)">NAME</td>
+            <td lquery="(text description)">DESCRIPTION</td>
+            <td lquery="(text visible)">VISIBLE</td>
+	    <td>
+              <form action="#" method="post">
+	        <input type="hidden" name="name" lquery="(val name)" />
+	        <input type="submit" name="action" value="Delete" />
+	      </form>
+            </td>
+          </tr>
+        </c:splice>
+      </tbody>
+    </table>
+    <form class="table-actions" id="massEditForm" action="#" method="post">
+      <input type="submit" name="action" value="Delete" />
+    </form>
+  </div>
+</div>

@@ -87,4 +87,16 @@
               (uiop:copy-file (first (post-var "js")) (make-pathname :type "js" :defaults target)))
             (setf info "Theme uploaded."))))
       (r-clip:process
-       T :error error :info info :themes (themes)))))
+       T :error error :info info :themes (themes))))
+
+  (admin:define-panel boards purplish (:access (purplish admin boards) :icon "fa-newspaper-o" :tooltip "Create or remove boards." :lquery (template "admin-boards.ctml"))
+    (with-actions (error info)
+        ((:delete
+          (dolist (name (or (post-var "selected[]") (list (post-var "name"))))
+            (delete-board name))
+          (setf info "Boards deleted."))
+         (:create
+          (create-board (post-var "name") (post-var "description") (when (string= (post-var "visible") "true") T))
+          (setf info "Board created.")))
+      (r-clip:process
+       T :error error :info info :boards (boards)))))
