@@ -32,7 +32,7 @@ $(function(){
             // Full image
             $(".image",this).each(function(){
                 $("img",this).attr("src", $(this).attr("href"))
-                    .attr("style", "max-height:"+$(window).height()+"px !important;width:auto !important"});
+                    .attr("style", "max-height:"+$(window).height()+"px !important;width:auto !important");
             });
         }
     });
