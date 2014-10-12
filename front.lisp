@@ -55,7 +55,7 @@
                       (dm:id post)))))
 
 (define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
-  (redirect (format NIL "//user.~a~:[:~a~;~*~]/~a" (domain *request*) (= 80 (port *request*)) (port *request*) user)))
+  (redirect (format NIL "//user.~a~:[:~a~;~*~]/~a" (domain *request*) (= 80 (or (port *request*) 80)) (port *request*) user)))
 
 ;;;;
 ;; Dynamics
