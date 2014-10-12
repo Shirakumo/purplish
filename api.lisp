@@ -123,14 +123,14 @@
     (error 'api-argument-invalid :argument 'name :message "A board with that name already exists."))
   (with-api-error (create-board name description (string= visible "true")))
   (if (string= (post/get "browser") "true")
-      (redirect (format NIL "/board/~a" name))
+      (redirect (format NIL "/board/~a" name) 303)
       (api-output "Board created.")))
 
 (define-api purplish/board/delete (board) (:access (purplish board delete))
   (with-board (board board)
     (with-api-error (delete-board board))
     (if (string= (post/get "browser") "true")
-        (redirect "/")
+        (redirect "/" 303)
         (api-output "Board deleted."))))
 
 (define-api purplish/thread/create (board title text files[] &optional author username) ()
@@ -141,7 +141,7 @@
       (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] author
                                                  (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
         (if (string= (post/get "browser") "true")
-            (redirect (format NIL "/thread/~a" (dm:id thread)))
+            (redirect (format NIL "/thread/~a" (dm:id thread)) 303)
             (api-output "Thread created."))))))
 
 (define-api purplish/thread/delete (thread) ()
@@ -152,7 +152,7 @@
       (error 'api-auth-error :message "You do not have permission to delete threads."))
     (with-api-error (delete-post thread :purge T))
     (if (string= (post/get "browser") "true")
-        (redirect (format NIL "/board/~a" (dm:field thread "board")))
+        (redirect (format NIL "/board/~a" (dm:field thread "board")) 303)
         (api-output "Thread purged."))))
 
 (define-api purplish/post/create (thread &optional author title text files[] username) ()
@@ -168,7 +168,7 @@
                     (create-post (dm:field thread "board") (dm:id thread) title text files[] author
                                  (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))        
         (if (string= (post/get "browser") "true")
-            (redirect (format NIL "/post/~a" (dm:id post)))
+            (redirect (format NIL "/post/~a" (dm:id post)) 303)
             (api-output "Post created."))))))
 
 (define-api purplish/post/edit (post &optional title text) ()
@@ -176,7 +176,7 @@
     (with-post-accessible (post)
       (with-api-error (edit-post post (user:username (auth:current)) title text))
       (if (string= (post/get "browser") "true")
-          (redirect (format NIL "/post/~a" (dm:id post)))
+          (redirect (format NIL "/post/~a" (dm:id post)) 303)
           (api-output "Board created.")))))
 
 (define-api purplish/post/delete (post &optional purge) ()
@@ -194,7 +194,7 @@
         (T
          (with-api-error (delete-post post))
          (if (string= (post/get "browser") "true")
-             (redirect (format NIL "/post/~a" (dm:id post)))
+             (redirect (format NIL "/post/~a" (dm:id post)) 303)
              (api-output "Post deleted.")))))))
 
 (define-api purplish/header () ()
