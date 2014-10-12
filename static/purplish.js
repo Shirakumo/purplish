@@ -70,4 +70,13 @@ $(function (){
             return false;
         }
     });
+
+    // Name saving
+    if(getCookie("purplish-username") !== undefined){
+        $("#replybox .author").val(getCookie("purplish-username"));
+    }
+    
+    $("#replybox input[type=submit]").click(function(){
+        setCookie("purplish-username", $("#replybox .author").val());
+    });
 });
