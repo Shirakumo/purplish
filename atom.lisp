@@ -22,7 +22,8 @@
                (plump:parse (template "atom.ctml"))
                :title title
                :description description
-               :updated (when posts (dm:field (car (last posts)) "time"))
+               :updated (or (when posts (dm:field (car (last posts)) "time"))
+                            (get-universal-time))
                :posts posts)
               stream))))
     (when (or post board)
