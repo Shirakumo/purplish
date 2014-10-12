@@ -116,8 +116,9 @@
         ((:or "header time" footer) :display none)
         (.files
          :width auto
-         :min-width 0
-         :max-width 150px)
+         :min-width 120px
+         :max-width 120px
+         (* :max-width 120px))
         (.text
          (img
           :max-width 100%
