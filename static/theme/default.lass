@@ -101,7 +101,10 @@
  ("#news"
   :flex-grow 1
   :padding 0 20px 20px 20px
-  :border-bottom 1px solid "#0088EE")
+  :border-bottom 1px solid "#0088EE"
+  :overflow-x auto
+  
+  (img :max-width 100%))
  
  ("#recent-posts"
   :border-left 1px solid "#0088EE"
