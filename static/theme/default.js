@@ -32,8 +32,7 @@ $(function(){
             // Full image
             $(".image",this).each(function(){
                 $("img",this).attr("src", $(this).attr("href"))
-                    .css({"max-height": $(window).height()+"px !important",
-                          "height": "auto"});
+                    .attr("style", "max-height:"+$(window).height()+"px !important;width:auto !important"});
             });
         }
     });
