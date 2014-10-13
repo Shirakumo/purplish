@@ -135,6 +135,7 @@ $(function (){
     }
 
     Purplish.prototype.init = function(){
+        purplish.log("Init...");
         // Set datetime
         $("#replybox .time").text(purplish.formatDate(new Date()));
         
@@ -205,7 +206,8 @@ $(function (){
 
         // Post fetching
         purplish.startPostFetching();
-        
+
+        purplish.log("Init complete.");
         return null;
     }
 
