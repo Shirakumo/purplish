@@ -40,13 +40,11 @@
   (change-class node 'plump:fulltext-element
                 :children (plump:make-child-array))
   (plump:make-text-node
-   node (with-open-file (stream (merge-pathnames
-                                 (ecase type
-                                   (:board (board-cache object))
-                                   (:thread (thread-cache object))
-                                   (:thread-min (thread-min-cache object))
-                                   (:post (post-cache object)))
-                                 *cache*))
+   node (with-open-file (stream (ecase type
+                                  (:board (board-cache object))
+                                  (:thread (thread-cache object))
+                                  (:thread-min (thread-min-cache object))
+                                  (:post (post-cache object))))
           (plump::slurp-stream stream))))
 
 (lquery:define-lquery-function purplish-template (node object)
