@@ -23,6 +23,12 @@
                                                                 (return-from ensure-post)))))))
    (error "No such post found.")))
 
+(defun ensure-thread (post)
+  (let ((thread (ensure-post post)))
+    (unless (= (dm:field thread "parent") -1)
+      (error "This post is not a thread."))
+    thread))
+
 (defun ensure-board (board)
   (or
    (etypecase board
