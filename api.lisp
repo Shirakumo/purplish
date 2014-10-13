@@ -85,12 +85,13 @@
                                                            (:= 'revision 0)))
                            :amount amount :skip skip :sort '((time :DESC))))))
 
-(define-api purplish/thread/last-post (thread) ()
-  (db:iterate 'purplish-posts (db:query (:and (:= 'parent (parse-integer thread))
-                                              (:= 'revision 0)))
-    #'(lambda (table) (return-from purplish/thread/last-post
-                        (api-output (gethash "_id" table))))
-    :fields '(_id) :amount 1 :sort '((_id :DESC))))
+(define-api purplish/thread/post-ids (thread) ()
+  (let ((thread (parse-integer thread)))
+    (api-output (cons thread
+                      (db:iterate 'purplish-posts (db:query (:and (:= 'parent thread)
+                                                                  (:= 'revision 0)))
+                        #'(lambda (table) (gethash "_id" table))
+                        :fields '(_id) :sort '((_id :ASC)) :accumulate T)))))
 
 (define-api purplish/thread/search (thread query) ()
   (rate:with-rate-limitation (api-search)
