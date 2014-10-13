@@ -45,6 +45,12 @@
              lquery='(attr :href (format NIL "/edit/~a" _id))'>Edit</a>
           <a href="/api/purplish/post/delete?post=ID&browser=true" class="delete-button"
              lquery='(attr :href (format NIL "/api/purplish/post/delete?post=~a&browser=true" _id))'>Delete</a>
+          <a href="/api/purplish/post/delete?post=ID&purge=true&browser=true" class="purge-button"
+             lquery='(attr :href (format NIL "/api/purplish/post/delete?post=~a&purge=true&browser=true" _id))'>Purge</a>
+          <c:unless test="(= -1 parent)">
+            <a href="/api/purplish/post/move?post=ID" class="move-button"
+               lquery='(attr :href (format NIL "/api/purplish/post/move?post=~a" _id))'>Move</a>
+          </c:unless>
         </nav>
       </footer>
   </article>
