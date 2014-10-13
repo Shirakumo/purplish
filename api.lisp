@@ -85,6 +85,13 @@
                                                            (:= 'revision 0)))
                            :amount amount :skip skip :sort '((time :DESC))))))
 
+(define-api purplish/thread/last-post (thread) ()
+  (db:iterate 'purplish-posts (db:query (:and (:= 'parent (parse-integer thread))
+                                              (:= 'revision 0)))
+    #'(lambda (table) (return-from purplish/thread/last-post
+                        (api-output (gethash "_id" table))))
+    :fields '(_id) :amount 1 :sort '((_id :DESC))))
+
 (define-api purplish/thread/search (thread query) ()
   (rate:with-rate-limitation (api-search)
     (let ((thread (dm:get-one 'purplish-posts (db:query (:and (:= '_id (or (parse-integer thread :junk-allowed T) "-1"))
@@ -117,6 +124,13 @@
 (define-api purplish/post/files (post) ()
   (with-post (post post)
     (api-output (db:select 'purplish-files (db:query (:= 'post (dm:field post '_id)))))))
+
+(define-api purplish/post/render (post) ()
+  (with-post (post post)
+    (let ((doc (plump:parse (post-cache post))))
+      (remove-inaccessible-options doc)
+      (api-output (with-output-to-string (stream)
+                    (plump:serialize doc stream))))))
 
 (define-api purplish/board/create (name &optional description visible) (:access (purplish board create))
   (when (dm:get-one 'purplish-boards (db:query (:= 'title name)))
