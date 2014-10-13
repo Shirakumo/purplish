@@ -8,9 +8,14 @@
 (define-module #:purplish
   (:nicknames #:org.tymoonnext.radiance.purplish)
   (:use #:cl #:radiance)
+  ;; atom.lisp
+  (:export
+   #:atom-cache
+   #:recache-atom)
   ;; cache.lisp
   (:export
    #:*cache*
+   #:*themes*
    #:boards
    #:themes
    #:front-cache
@@ -26,7 +31,6 @@
   (:export
    #:*files*
    #:*headers*
-   #:ensure-file
    #:define-file-embedder
    #:define-for-multiple
    #:file-path
@@ -48,18 +52,24 @@
    #:post-edited
    #:post-deleted
    #:post-purged
+   #:post-moved
+   #:thread-moved
    
    #:create-board
    #:delete-board
    #:create-post
    #:delete-post
-   #:edit-post)
+   #:edit-post
+   #:move-post
+   #:move-thread)
   ;; search.lisp
   (:export
    #:parse-search-query
    #:search-posts)
   ;; toolkit.lisp
   (:export
+   #:ensure-file
    #:ensure-post
+   #:ensure-thread
    #:ensure-board
    #:last-revision))
