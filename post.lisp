@@ -12,8 +12,12 @@
 (define-hook post-deleted (id))
 (define-hook post-purged (id))
 (define-hook post-edited (id edit-id))
+(define-hook post-moved (id old-thread-id))
+(define-hook thread-moved (id old-board-id))
 
 (defun create-board (name description &optional (visible T))
+  (when (dm:get-one 'purplish-boards (db:query (:= 'name name)))
+    (error "A board with that name already exists!"))
   (with-model board ('purplish-boards NIL)
     (setf (dm:field board "name") name
           (dm:field board "description") (or description "")
@@ -122,3 +126,42 @@
         (recache-post post)
         (trigger 'post-edited (dm:id post) (dm:id edit))))
     post))
+
+(defun move-post (post new-thread)
+  (let* ((post (ensure-post post))
+         (old-thread (dm:field post "parent"))
+         (new-thread (ensure-thread new-thread)))
+    (when (= old-thread -1)
+      (error "Post is a thread."))
+    ;; Update revisions
+    (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
+               `((board . ,(dm:field new-thread "board"))))
+    ;; Update post
+    (setf (dm:field post "board") (dm:field new-thread "board")
+          (dm:field post "parent") (dm:id new-thread))
+    (dm:save post)
+    ;; Publicise!
+    (recache-post post)
+    (recache-thread old-thread)
+    (trigger 'post-moved (dm:id post) old-thread)
+    post))
+
+(defun move-thread (thread new-board)
+  (let* ((thread (ensure-thread thread))
+         (old-board (dm:field thread "board"))
+         (new-board (ensure-board new-board)))
+    ;; Update revisions
+    (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent (dm:id thread)))))
+      (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
+                 `((board . ,(dm:id new-board)))))
+    ;; Update posts
+    (db:update 'purplish-posts (db:query (:= 'parent (dm:id thread)))
+               `((board . ,(dm:id new-board))))
+    ;; Update thread
+    (setf (dm:field thread "board") (dm:id new-board))
+    (dm:save thread)
+    ;; Publicise!
+    (recache-thread thread :cascade T)
+    (recache-board old-board)
+    (trigger 'thread-moved (dm:id thread) old-board)
+    thread))
