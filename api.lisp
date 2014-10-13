@@ -159,6 +159,12 @@
             (redirect (format NIL "/thread/~a" (dm:id thread)) 303)
             (api-output "Thread created."))))))
 
+(define-api purplish/thread/move (thread new-board) (:access (purplish thread move))
+  (with-api-error (move-thread thread new-board))
+  (if (string= (post/get "browser") "true")
+      (redirect (format NIL "/thread/~a" thread) 303)
+      (api-output "Thread moved.")))
+
 (define-api purplish/thread/delete (thread) ()
   (with-post (thread thread)
     (unless (= (dm:field thread "parent") -1)
@@ -211,6 +217,12 @@
          (if (string= (post/get "browser") "true")
              (redirect (format NIL "/post/~a" (dm:id post)) 303)
              (api-output "Post deleted.")))))))
+
+(define-api purplish/post/move (post new-thread) (:access (purplish post move))
+  (with-api-error (move-post post new-thread))
+  (if (string= (post/get "browser") "true")
+      (redirect (format NIL "/post/~a" post) 303)
+      (api-output "Post moved.")))
 
 (define-api purplish/header () ()
   (serve-file (random-header)))
