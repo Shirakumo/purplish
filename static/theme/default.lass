@@ -1,14 +1,7 @@
-(:font-face
- :font-family "FontAwesome"
- :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?v=4.2.0')"
- :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg')"
- :font-weight normal
- :font-style normal)
-
 ((:or html body)
  :margin 0 :padding 0
  :font-family Arial sans-serif
- :font-size 12pt
+ :font-size 11pt
  :background "#CCC")
 
 (body :background "#FFF")
@@ -56,8 +49,7 @@
     :text-transform capitalize)
    ((:and li :hover)
     :color "#0088EE"
-    :cursor pointer
-    :font-weight bold))
+    :cursor pointer))
   
   (form
    :display inline-block
@@ -65,6 +57,7 @@
    :float right
 
    (input
+    :font-size 1.0em
     :margin 0
     :border 1px solid "#CCC"
     :background "#FFF"
@@ -80,7 +73,7 @@
  :background "#DD0000"
  :color "#FFF"
  :text-align center
- :font-size 14pt
+ :font-size 1.2em
  :padding 5px)
 
 ((:and .error :before)
@@ -90,7 +83,7 @@
  :padding-right 5px)
 
 (body>footer
- :font-size 8pt
+ :font-size 0.75em
  :text-align center
  :padding 30px 10px 5px 10px
  :linear-gradient top "#FFF" 0% "#CCC" 100%)
@@ -115,7 +108,7 @@
    :margin 0
    :padding 0
    (li (.post
-        :font-size 10pt
+        :font-size 0.9em
         ((:or "header time" footer) :display none)
         (.files
          :width auto
@@ -138,7 +131,7 @@
   :background "#0088EE"
   :display inline-block
   (a
-   :font-size 10pt
+   :font-size 0.8em
    :color "#FFF"
    :text-decoration none
    :display inline-block
@@ -167,7 +160,7 @@
  
  (header
   (.id
-   :color "#0088EE"
+   :color black
    :text-decoration none
    :display inline-block
    :min-width 60px)
@@ -182,8 +175,7 @@
    :display inline-block
    (a
     :color "#000"
-    :text-decoration none
-    :font-weight bold)
+    :text-decoration none)
    (.registered
     :color "#0088EE"))
   ((:and .author :before)
@@ -211,7 +203,7 @@
      :display block
      :text-overflow ellipsis
      :overflow hidden
-     :font-size 8pt
+     :font-size 0.8em
      :white-space nowrap)
     (.preview
      ((:or audio video img)
@@ -265,7 +257,7 @@
  (footer
   :display flex
   :clear both
-  :font-size 8pt
+  :font-size 0.8em
   :padding 3px
   (.revision
    :flex-grow 1
@@ -291,6 +283,7 @@
  ((:or input textarea .filelist)
   :background "#EEE"
   :color "#000"
+  :font-size 1.0em
   :border 1px solid "#CCC")
  
  (header
@@ -318,12 +311,14 @@
    :display flex
    :flex-direction column
    :width 160px
+   (input
+    :font-size 0.8em)
    (.filelist
     :flex-grow 1
     :list-style none
     :margin 0
     :padding 0
-    :font-size 10pt
+    :font-size 0.9em
     :overflow-y auto
     (input :display none)
     (li
@@ -338,13 +333,13 @@
 
   (.help
    :position absolute
-   :right 3px
-   :bottom 2px
+   :right 1px
+   :bottom 1px
    :background "#DDD"
    :z-index 10
    :text-decoration none
    :padding 2px
-   :font-size 10pt
+   :font-size 0.9em
    :color black))
 
  (footer
