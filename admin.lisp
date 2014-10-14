@@ -36,7 +36,7 @@
        :error error :info (when info (format NIL "Recached ~{~a~^, ~}" info))
        :boards (boards))))
 
-  (admin:define-panel settings purplish (:access (purplish admin conifg) :icon "fa-gears" :tooltip "Change the purplish configuration" :lquery (template "admin-config.ctml"))
+  (admin:define-panel settings purplish (:access (purplish admin config) :icon "fa-gears" :tooltip "Change the purplish configuration" :lquery (template "admin-config.ctml"))
     (with-actions (error info)
         ((:save
           (setf (config-tree :purplish :title) (post-var "title")
