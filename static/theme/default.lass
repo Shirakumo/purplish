@@ -1,3 +1,10 @@
+(:font-face
+ :font-family "FontAwesome"
+ :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?v=4.2.0')"
+ :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg')"
+ :font-weight normal
+ :font-style normal)
+
 ((:or html body)
  :margin 0 :padding 0
  :font-family Arial sans-serif
@@ -122,7 +129,7 @@
           :max-height 100%)))))))
 
 ("#threads"
- :list-style nonde
+ :list-style none
  :margin 0 :padding 0)
 
 (.thread
@@ -367,6 +374,7 @@
   :max-width 90% !important
   :max-height 90% !important))
 
+;; Small screens
 (:media "(max-width:700px)"
         ((:or html body)
          :font-size 10pt)
