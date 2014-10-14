@@ -31,3 +31,10 @@ Permissions
 * `(purplish post purge)`
 * `(purplish board create)`
 * `(purplish board delete)`
+* `(purplish post move)`
+* `(purplish thread move)`
+* `(purplish admin cache)`
+* `(purplish admin config)`
+* `(purplish admin headers)`
+* `(purplish admin themes)`
+* `(purplish admin boards)`
