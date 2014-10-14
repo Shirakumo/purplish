@@ -366,3 +366,62 @@
   :height auto !important
   :max-width 90% !important
   :max-height 90% !important))
+
+(:media "(max-width:700px)"
+        ((:or html body)
+         :font-size 10pt)
+
+        (body>header
+         :justify-content space-around
+         (nav
+          ("ul#links"
+           :flex-wrap wrap
+           :justify-content space-around)
+          ("ul#themes" :display none)
+          (form :display none))
+         (h1 :display none))
+
+        ("#frontpage"
+         :flex-direction column
+         ("#recent-posts"
+          (h2 :text-align left
+              :padding-left 20px)
+          :width auto))
+
+        (.thread
+         (>nav
+          :display flex
+          :justify-content space-around
+          (a
+           :flex-grow 1
+           :text-align center)))
+
+        (.post
+         :padding 0
+         :min-height 60px
+         (header
+          (.id
+           :min-width 0
+           :display inline-block
+           :color white
+           :padding 3px
+           :background "#0088EE")
+          (time :min-width 0))
+         (.content
+          (.files
+           :min-width 0
+           :max-width 120px
+           (* :max-width 120px !important))))
+        
+        ("#replybox"
+         :padding 0
+         
+         (header
+          (.id :display none)
+          (.title :min-width 0)
+          (.time :display none))
+
+         (.content
+          :flex-direction column
+          (.files
+           :width auto))))
