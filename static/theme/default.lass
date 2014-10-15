@@ -136,7 +136,9 @@
            :min-width 120px
            :max-width 120px
            (* :max-width 120px)
-           (.preview.full :max-width none))
+           (.preview.full
+            :max-width none
+            (* :max-width none)))
           (.text
            (img
             :max-width 100%
