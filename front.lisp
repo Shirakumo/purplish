@@ -111,5 +111,5 @@
       (clip:process
        doc
        :title "Search Results"
-       :posts (search-posts (post/get "s") :thread (post/get "thread") :board (post/get "board")))
+       :posts (search-posts (post/get "s") :thread (or* (post/get "thread")) :board (or* (post/get "board"))))
       (remove-inaccessible-options doc))))
