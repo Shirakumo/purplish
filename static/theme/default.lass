@@ -1,435 +1,514 @@
-(:font-face
- :font-family "FontAwesome"
- :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?v=4.2.0')"
- :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg')"
- :font-weight normal
- :font-style normal)
+(:let ((base "#0088EE")
+       (high "#77CCFF")
+       (back "#F8F8F8")
+       (front "#FFFFFF")
+       (border "#CCCCCC"))
 
-((:or html body)
- :margin 0 :padding 0
- :font-family Arial sans-serif
- :font-size 11pt
- :background "#CCC")
+  (:font-face
+   :font-family "FontAwesome"
+   :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?v=4.2.0')"
+   :src "url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),url('http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg')"
+   :font-weight normal
+   :font-style normal)
 
-(body :background "#FFF")
-
-(body>header
- :display flex
- :flex-wrap wrap
- 
- (nav
-  :background "#DDD"
-  :linear-gradient top "#DDD" 0% "#CCC" 100%
-  :border-bottom 1px solid "#0088EE"
-  :display flex
-  :align-items stretch
-  :height 35px
-  :flex 1 100%
-  
-  ("ul#links"
-   :list-style none
-   :display flex
-   :align-items stretch
+  ((:or html body)
    :margin 0 :padding 0
-   :flex-grow 1
+   :font-family Arial sans-serif
+   :font-size 11pt)
 
-   (li
+  (body :background #(back))
+
+  (body>header
+   :display flex
+   :flex-wrap wrap
+   :padding-top 35px
+   
+   (nav
+    :background #(front)
+    :border-bottom 2px solid #(base)
     :display flex
     :align-items stretch
-    (a :display inline-block
+    :height 35px
+    :position fixed
+    :top 0 :left 0 :right 0
+    :z-index 10
+    
+    ("ul#links"
+     :list-style none
+     :display flex
+     :align-items stretch
+     :margin 0 :padding 0
+     :flex-grow 1
+
+     (li
+      :display flex
+      :align-items stretch
+      (a
+       :display inline-block
        :color black
        :padding 7px 5px 7px 5px
        :text-decoration none
        :text-transform capitalize)
 
-    ((:and a :hover)
-     :background "#0088EE"
-     :color "#FFF")))
+      ((:and a :hover) 
+       :color #(high)
+       :border-bottom 2px solid #(high))))
 
-  ("ul#themes"
-   :list-style none
-   :display flex
-   :align-items stretch
-   :margin 0 :padding 0
-   (li
-    :padding 7px 5px 7px 5px
-    :text-transform capitalize)
-   ((:and li :hover)
-    :color "#0088EE"
-    :cursor pointer))
-  
-  (form
-   :display inline-block
-   :padding 7px 5px 7px 5px
-   :float right
+    ("ul#themes"
+     :list-style none
+     :display flex
+     :align-items stretch
+     :margin 0 :padding 0
+     (li
+      :padding 7px 5px 7px 5px
+      :text-transform capitalize)
+     ((:and li :hover) 
+      :color #(high)
+      :border-bottom 2px solid #(high)
+      :cursor pointer))
+    
+    (form
+     :display inline-block
+     :padding 7px 5px 7px 5px
+     :float right
 
-   (input
-    :font-size 1.0em
-    :margin 0
-    :border 1px solid "#CCC"
-    :background "#FFF"
-    :color black)))
+     (input
+      :font-size 1.0em
+      :margin 0
+      :border 1px solid #(border)
+      :background #(back)
+      :color black)))
 
- (h1
-  :flex-grow 1
-  :text-transform capitalize
-  :text-align center
-  :vertical-align middle))
+   (h1
+    :flex-grow 1
+    :text-transform capitalize
+    :text-align center
+    :vertical-align middle))
 
-(.error
- :background "#DD0000"
- :color "#FFF"
- :text-align center
- :font-size 1.2em
- :padding 5px)
-
-((:and .error :before)
- :font-family FontAwesome
- :content "'\\f071'"
- :display inline-block
- :padding-right 5px)
-
-(body>footer
- :font-size 0.75em
- :text-align center
- :padding 30px 10px 5px 10px
- :linear-gradient top "#FFF" 0% "#CCC" 100%)
-
-("#frontpage"
- :display flex
-
- ("#news"
-  :flex-grow 1
-  :padding 0 20px 20px 20px
-  :border-bottom 1px solid "#0088EE"
-  :overflow-x auto
-  
-  (img :max-width 100%))
- 
- ("#recent-posts"
-  :border-left 1px solid "#0088EE"
-  :width 299px
-  (h2 :text-align center)
-  (ol
-   :list-style none
-   :margin 0
-   :padding 0
-   (li (.post
-        :font-size 0.9em
-        ((:or "header time" footer) :display none)
-        (.files
-         :width auto
-         :min-width 120px
-         :max-width 120px
-         (* :max-width 120px)
-         (.preview.full :max-width none))
-        (.text
-         (img
-          :max-width 100%
-          :max-height 100%)))))))
-
-("#threads"
- :list-style none
- :margin 0 :padding 0)
-
-(.thread
- :margin-top 10px
- (>nav
-  :background "#0088EE"
-  :display inline-block
-  (a
-   :font-size 0.8em
+  (.error
+   :background "#DD0000"
    :color "#FFF"
-   :text-decoration none
-   :display inline-block
+   :text-align center
+   :font-size 1.2em
    :padding 5px)
 
-  ((:and a :hover)
-   :background "#00EEFF"))
-
- (.op
-  :border-top 1px solid "#0088EE"
-  :background "#DDD"
-  :linear-gradient top "#DDD" 0% "#FFF" 100%
-  (.post))
-
- (.posts
-  :list-style none
-  :margin 0 :padding 0))
-
-(.post
- :display flex
- :flex-direction column
- :padding 5px
- :clear both
- :min-height 120px
- :border-bottom 1px solid "#0088EE"
- 
- (header
-  (.id
-   :color black
-   :text-decoration none
+  ((:and .error :before)
+   :font-family FontAwesome
+   :content "'\\f071'"
    :display inline-block
-   :min-width 60px)
-  ((:and .id :before)
-   :content "'#'")
-  (.title
-   :display inline-block
-   :margin 0 0 0 10px
-   :padding 0)
-  (.author
-   :font-style normal
-   :display inline-block
-   (a
-    :color "#000"
-    :text-decoration none)
-   (.registered
-    :color "#0088EE"))
-  ((:and .author :before)
-   :content "' by '")
-  (time
-   :float right
-   :display inline-block
-   :min-width 150px
-   :text-align right))
+   :padding-right 5px)
 
- (.content
-  :flex-grow 1
-  :display flex
-  (.files
-   :max-width 160px
-   :min-width 160px
+  (body>footer
+   :font-size 0.75em
+   :text-align center
+   :padding 30px 10px 5px 10px)
+
+  ("#frontpage"
+   :display flex
+
+   ("#news"
+    :background #(front)
+    :margin 5px
+    :flex-grow 1
+    :padding 0 20px 20px 20px
+    :border 1px solid #(border)
+    :border-radius 10px
+    :overflow-x auto
+    
+    (img :max-width 100%))
+   
+   ("#recent-posts"
+    :border 1px solid #(border)
+    :width 300px
+    :margin 5px
+    :border-radius 10px
+    :background #(front)
+    (h2 :text-align center)
+    (ol
+     :list-style none
+     :margin 0
+     :padding 0
+     (li (.post
+          :font-size 0.9em
+          ((:or "header time" footer) :display none)
+          (.files
+           :width auto
+           :min-width 120px
+           :max-width 120px
+           (* :max-width 120px)
+           (.preview.full :max-width none))
+          (.text
+           (img
+            :max-width 100%
+            :max-height 100%))))
+     ((:and li :last-child)
+      (.post :border-bottom none)))))
+
+  ("#threads"
    :list-style none
-   :margin 0 :padding 0
-   :float left
-   :margin 5px
+   :margin 0 :padding 0)
 
-   (.file
+  (.thread
+   :margin-top 10px
+   :background #(front)
+   :margin 10px
+   :border 1px solid #(border)
+   :border-radius 10px
+   
+   (>nav
     :display block
-    (.download
-     :display block
-     :text-overflow ellipsis
-     :overflow hidden
-     :font-size 0.8em
-     :white-space nowrap)
-    (.preview
-     ((:or audio video img)
-      :max-width 150px
-      :max-height 150px)
-     (video :background black :color white))))
+    :padding-left 20px
+    (a
+     :font-size 1.0em
+     :color "#000"
+     :text-decoration none
+     :display inline-block
+     :padding 5px)
+    ((:and a :hover)
+     :border-color #(high) !important
+     :color #(high)))
 
-  (.text
-   :flex-grow 1
-   :word-wrap break-word
+   ((:and >nav :first-child)
+    :border-bottom 1px solid #(border)
+    (a :border-top 2px solid transparent))
 
-   ((:or img iframe)
-    :max-width 300px
-    :max-height 300px)
+   ((:and >nav :last-child)
+    :border-top 1px solid #(border)
+    (a :border-bottom 2px solid transparent))
 
-   (.post-reference
-    :text-decoration none
-    :font-weight bold
-    :color "#0088EE")
+   (.op
+    (.post))
 
-   (pre
-    :font-family Consolas Inconsolata monospace
-    :padding-left 15px
-    :border-left 2px solid "#0088EE")
+   (.posts
+    :list-style none
+    :margin 0 :padding 0
 
-   (blockquote
-    :border-left 2px solid "#000"
-    :margin 0
-    :padding-left 15px
-    (blockquote
-     :border-color "#333"
-     (blockquote
-      :border-color "#666"
-      (blockquote
-       :border-color "#999"
-       (blockquote
-        :border-color "#CCC")))))
+    ((:and li :last-child)
+     (.post :border-bottom none))
 
-   (.spoiler
-    :display inline-block
-    :background "#000"
-    :color "#000")
+    ("#replybox"
+     :border-bottom 1px solid #(border)))
 
-   ((:and .spoiler :hover)
-    :background transparent)
+   (">#replybox"
+    :border-top 1px solid #(border)))
 
-   (ul :list-style disc)
-
-   (ol :list-style decimal)))
-
- (footer
-  :display flex
-  :clear both
-  :font-size 0.8em
-  :padding 3px
-  (.revision
-   :flex-grow 1
-   :display inline-block
-   (.editor
-    :font-style normal
-    :display inline-block))
-  (nav
-   :flex-grow 1
-   :text-align right
-
-   (a
-    :display inline-block
-    :padding 0 2px 0 2px
-    :color "black"
-    :text-decoration none))))
-
-("#replybox"
- :display flex
- :flex-direction column
- :padding 5px
-
- ((:or input textarea .filelist)
-  :background "#EEE"
-  :color "#000"
-  :font-size 1.0em
-  :border 1px solid "#CCC")
- 
- (header
-  :display flex
-  (.id
-   :color "#0088EE"
-   :text-decoration none
-   :display inline-block
-   :min-width 60px)
-  ((:and .id :before)
-   :content "'#'")
-  (.title
-   :flex-grow 1
-   :min-width 300px)
-  (.time
-   :display inline-block
-   :min-width 150px
-   :text-align right))
-
- (.content
-  :flex-grow 1
-  :display flex
-  :position relative
-  (.files
+  (.post
    :display flex
    :flex-direction column
-   :width 160px
-   (input
-    :font-size 0.8em)
-   (.filelist
+   :padding 5px
+   :clear both
+   :min-height 120px
+   :border-bottom 1px solid #(border)
+   
+   (header
+    (.id
+     :color black
+     :text-decoration none
+     :display inline-block
+     :min-width 60px)
+    ((:and .id :before)
+     :content "'#'")
+    ((:and .id :hover)
+     :color #(high))
+    (.title
+     :display inline-block
+     :margin 0 0 0 10px
+     :padding 0)
+    (.author
+     :font-style normal
+     :display inline-block
+     (a
+      :color "#000"
+      :text-decoration none)
+     (.registered
+      :color #(base)))
+    ((:and .author :before)
+     :content "' by '")
+    (time
+     :float right
+     :display inline-block
+     :min-width 150px
+     :text-align right))
+
+   (.content
     :flex-grow 1
-    :list-style none
-    :margin 0
-    :padding 0
-    :font-size 0.9em
-    :overflow-y auto
-    (input :display none)
-    (li
-     :white-space nowrap
+    :display flex
+    (.files
+     :max-width 160px
+     :min-width 160px
+     :list-style none
+     :margin 0 :padding 0
+     :float left
+     :margin 5px
+
+     (.file
+      :display block
+      (.download
+       :display block
+       :text-overflow ellipsis
+       :overflow hidden
+       :font-size 0.8em
+       :white-space nowrap)
+      (.preview
+       ((:or audio video img)
+        :max-width 150px
+        :max-height 150px)
+       (video :background black :color white))))
+
+    (.text
+     :flex-grow 1
+     :word-wrap break-word
+
+     ((:or img iframe)
+      :max-width 300px
+      :max-height 300px)
+
+     (.post-reference
+      :text-decoration none
+      :font-weight bold
+      :color #(base))
+
+     (pre
+      :font-family Consolas Inconsolata monospace
+      :padding-left 15px
+      :border-left 2px solid #(base))
+
+     (blockquote
+      :border-left 2px solid "#000"
+      :margin 0
+      :padding-left 15px
+      (blockquote
+       :border-color "#333"
+       (blockquote
+        :border-color "#666"
+        (blockquote
+         :border-color "#999"
+         (blockquote
+          :border-color "#CCC")))))
+
+     (.spoiler
+      :display inline-block
+      :background "#000"
+      :color "#000")
+
+     ((:and .spoiler :hover)
+      :background transparent)
+
+     (ul :list-style disc)
+
+     (ol :list-style decimal)))
+
+   (footer
+    :display flex
+    :clear both
+    :font-size 0.8em
+    :padding 3px
+    (.revision
+     :flex-grow 1
+     :display inline-block
+     (.editor
+      :font-style normal
+      :display inline-block))
+    (nav
+     :flex-grow 1
+     :text-align right
+
+     (a
+      :display inline-block
+      :padding 0 2px 0 2px
+      :color "#000"
+      :text-decoration none))))
+
+  ("#replybox"
+   :background #(front)
+   :display flex
+   :flex-direction column
+   :padding 5px
+
+   ((:or input textarea .filelist)
+    :background #(back)
+    :color "#000"
+    :font-size 1.0em
+    :border 1px solid #(border)
+    :padding 2px)
+   
+   (header
+    :display flex
+    (.id
+     :text-decoration none
+     :display inline-block
+     :min-width 60px)
+    ((:and .id :before)
+     :content "'#'")
+    (.title
+     :flex-grow 1
+     :min-width 300px
+     :margin-left 5px)
+    (.time
+     :display inline-block
+     :min-width 150px
+     :text-align right))
+
+   (.content
+    :flex-grow 1
+    :display flex
+    :position relative
+    (.files
+     :margin 5px
+     :display flex
+     :flex-direction column
+     :width 160px
+     (input
+      :font-size 0.8em)
+     (.filelist
+      :flex-grow 1
+      :list-style none
+      :margin 0
+      :padding 0
+      :font-size 0.9em
+      :overflow-y auto
+      (input :display none)
+      (li
+       :white-space nowrap
+       :padding 2px
+       :cursor pointer
+       :overflow hidden
+       :text-overflow ellipsis)))
+    (.text
+     :flex-grow 1
+     :min-height 150px
+     :margin 5px 5px 5px 0
+     :box-sizing border-box)
+
+    (.help
+     :position absolute
+     :right 6px
+     :bottom 6px
+     :background #(border)
+     :z-index 10
+     :text-decoration none
      :padding 2px
+     :font-size 0.9em
+     :color black))
+
+   (footer
+    :padding 0 5px 0 5px
+    (input
+     :display block
+     :box-sizing border-box
+     :width 100%
+     :font-size 1.0em
+     :box-sizing border-box
+     :font-weight bold
      :cursor pointer
-     :overflow hidden
-     :text-overflow ellipsis)))
-  (.text
-   :flex-grow 1
-   :min-height 150px)
+     :background #(base)
+     :color white
+     :border none
+     :border-radius 0 0 7px 7px)
+    ((:and input :hover)
+     :background #(high))))
 
-  (.help
-   :position absolute
-   :right 1px
-   :bottom 1px
-   :background "#DDD"
-   :z-index 10
-   :text-decoration none
-   :padding 2px
-   :font-size 0.9em
-   :color black))
+  ("body>#replybox"
+   :margin 10px
+   :border 1px solid #(border)
+   :border-radius 10px)
 
- (footer
-  (input
-   :display block
-   :width 100%
-   :box-sizing border-box
-   :font-weight bold
-   :cursor pointer)))
+  ((:and .preview .full)
+   :background "rgba(0,0,0,0.75)"
+   :position fixed
+   :display flex
+   :top 0 :left 0 :right 0 :bottom 0
+   :z-index 100
+   :padding 20px
 
-((:and .preview .full)
- :background "rgba(0,0,0,0.75)"
- :position fixed
- :display flex
- :top 0 :left 0 :right 0 :bottom 0
- :z-index 100
- :padding 20px
+   (>*
+    :margin auto auto auto auto
+    :text-align center)
 
- (>*
-  :margin auto auto auto auto
-  :text-align center)
+   ((:or audio video img)
+    :height auto !important
+    :max-width 100% !important
+    :max-height 100% !important))
 
- ((:or audio video img)
-  :height auto !important
-  :max-width 100% !important
-  :max-height 100% !important))
+  ;; Small screens
+  (:media "(max-width:700px)"
+          ((:or html body)
+           :font-size 10pt)
 
-;; Small screens
-(:media "(max-width:700px)"
-        ((:or html body)
-         :font-size 10pt)
+          (body>header
+           :justify-content space-around
+           (nav
+            ("ul#links"
+             :flex-wrap wrap
+             :justify-content space-around
+             (* :flex-grow 1
+                :text-align center))
+            ("ul#themes" :display none)
+            (form :display none))
+           (h1 :display none))
 
-        (body>header
-         :justify-content space-around
-         (nav
-          ("ul#links"
-           :flex-wrap wrap
-           :justify-content space-around)
-          ("ul#themes" :display none)
-          (form :display none))
-         (h1 :display none))
+          ("#frontpage"
+           :flex-direction column
+           ("#recent-posts"
+            (h2 :text-align left
+                :padding-left 20px)))
 
-        ("#frontpage"
-         :flex-direction column
-         ("#recent-posts"
-          (h2 :text-align left
-              :padding-left 20px)
-          :width auto))
+          (.thread
+           :margin 10px 2px 2px 2px
+           :border-radius 2px
+           (>nav
+            :display flex
+            :justify-content space-around
+            :padding 0
+            (a
+             :flex-grow 1
+             :text-align center)))
 
-        (.thread
-         (>nav
-          :display flex
-          :justify-content space-around
-          (a
-           :flex-grow 1
-           :text-align center)))
+          (.post
+           :padding 0
+           :min-height 60px
+           (header
+            (.id
+             :min-width 0
+             :display inline-block
+             :color white
+             :padding 3px
+             :background #(base))
+            (time :min-width 0))
+           (.content
+            (.files
+             :min-width 120px
+             :max-width 120px
+             (* :max-width 120px !important))))
+          
+          ("#replybox"
+           :padding 2px
+           
+           (header
+            (.id :display none)
+            (.title :min-width 0)
+            (.time :display none))
 
-        (.post
-         :padding 0
-         :min-height 60px
-         (header
-          (.id
-           :min-width 0
-           :display inline-block
-           :color white
-           :padding 3px
-           :background "#0088EE")
-          (time :min-width 0))
-         (.content
-          (.files
-           :min-width 0
-           :max-width 120px
-           (* :max-width 120px !important))))
-        
-        ("#replybox"
-         :padding 0
-         
-         (header
-          (.id :display none)
-          (.title :min-width 0)
-          (.time :display none))
+           (.content
+            :flex-direction column
+            (.text
+             :margin 2px 0 0 0
+             :min-height 100px)
+            (.files
+             :margin 2px 0 0 0
+             :width auto)
+            (.help
+             :display none))
 
-         (.content
-          :flex-direction column
-          (.files
-           :width auto))))
+           (footer
+            (input :border-radius 0 0 2px 2px)))
+
+          ("body>#replybox"
+           :margin 2px
+           :border-radius 2px))
+
+  ;; Large screens
+  (:media "(min-width:1200px)"
+          (body :max-width 1200px
+                :margin 0 auto 0 auto)))
+  
