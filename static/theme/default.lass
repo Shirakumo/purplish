@@ -388,7 +388,7 @@
      :right 6px
      :bottom 6px
      :background #(border)
-     :z-index 10
+     :z-index 5
      :text-decoration none
      :padding 2px
      :font-size 0.9em
