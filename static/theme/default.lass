@@ -416,7 +416,7 @@
    :border 1px solid #(border)
    :border-radius 10px)
 
-  ((:and (:or "#search" "#history") .post)
+  (((:or "#search" "#history") .post)
    :background #(front)
    :border 1px solid #(border)
    :border-radius 10px)
