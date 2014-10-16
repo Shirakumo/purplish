@@ -416,6 +416,11 @@
    :border 1px solid #(border)
    :border-radius 10px)
 
+  ((:and (:or "#search" "#history") .post)
+   :background #(front)
+   :border 1px solid #(border)
+   :border-radius 10px)
+
   ((:and .preview .full)
    :background "rgba(0,0,0,0.75)"
    :position fixed
