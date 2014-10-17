@@ -26,7 +26,9 @@
    #:recache-post
    #:recache-thread
    #:recache-board
-   #:recache-frontpage)
+   #:recache-frontpage
+   #:prune-cache
+   #:recache-all)
   ;; file.lisp
   (:export
    #:*files*
