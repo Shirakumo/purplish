@@ -112,9 +112,21 @@
   (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
   (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>")))
 
+(defun sanitize (node)
+  (lquery:$ node "script,link,frame,frameset,embed,object,applet" (remove))
+  (lquery:$ node "[onclick],[onfocus],[onblur],[onmouseover],[onmouseout],[ondoubleclick],[onload],[onunload]"
+            (each #'(lambda (node) (loop for attr being the hash-keys of (plump:attributes node)
+                                         when (and (< 2 (length attr)) (string-equal attr "on" :end1 2))
+                                         do (remhash attr (plump:attributes node))))))
+  (lquery:$ node "[href^=javascript],[href^=jscript]" (remove-attr :href))
+  (lquery:$ node "[src^=javascript],[src^=jscript]" (remove-attr :src))
+  node)
+
 (defun parse (text)
   (let ((3bmd:*smart-quotes* T)
         (3bmd-code-blocks:*code-blocks* T))
-    (with-output-to-string (stream)
-      (3bmd:parse-string-and-print-to-stream
-       (preparse text) stream))))
+    (let ((doc (plump:parse
+                (with-output-to-string (stream)
+                  (3bmd:parse-string-and-print-to-stream
+                   (preparse text) stream)))))
+      (sanitize doc))))
