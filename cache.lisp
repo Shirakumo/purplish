@@ -130,13 +130,13 @@
      stream)))
 
 (defun prune-cache ()
-  (v:warn :purplish-cache "Pruning cache")
+  (l:warn :purplish-cache "Pruning cache")
   (uiop:delete-directory-tree *cache* :validate (constantly T))
   (ensure-directories-exist *cache*))
 
 (defun recache-all ()
   (prune-cache)
-  (v:info :purplish-cache "Recaching all")
+  (l:info :purplish-cache "Recaching all")
   (dolist (board (dm:get 'purplish-boards (db:query :all)))
     (recache-board board :cascade T)
     (recache-atom :board board))
