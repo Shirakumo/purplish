@@ -225,4 +225,6 @@
       (api-output "Post moved.")))
 
 (define-api purplish/header () ()
-  (serve-file (random-header)))
+  (let ((header (random-header)))
+    (redirect (format NIL "/static/purplish/headers/~a.~a"
+                      (pathname-name header) (pathname-type header)))))
