@@ -102,3 +102,9 @@
   (let ((headers (uiop:directory-files *headers*)))
     (nth (random (length headers))
          headers)))
+
+(define-page static-files (#@"/static/purplish/([^/]+)/(.+)" 1001) (:uri-groups (type path))
+  (when (or (string-equal type "file")
+            (string-equal type "headers"))
+    (setf (header "Cache-Control") "public, max-age=31536000"))
+  (serve-file (static-file (format NIL "~a/~a" type path))))
