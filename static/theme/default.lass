@@ -1,5 +1,6 @@
 (:let ((base "#0088EE")
        (high "#77CCFF")
+       (low "#0033AA")
        (back "#F8F8F8")
        (front "#FFFFFF")
        (border "#CCCCCC"))
@@ -47,12 +48,14 @@
        :display inline-block
        :color black
        :padding 7px 5px 7px 5px
+       :margin 0 2px -2px 2px
        :text-decoration none
-       :text-transform capitalize)
+       :text-transform capitalize
+       :border-bottom 2px solid #(low))
 
       ((:and a :hover) 
        :color #(high)
-       :border-bottom 2px solid #(high))))
+       :border-color #(high))))
 
     ("ul#themes"
      :list-style none
@@ -61,11 +64,13 @@
      :margin 0 :padding 0
      (li
       :padding 7px 5px 7px 5px
+      :margin-bottom -2px
+      :border-bottom 2px solid #(low)
+      :cursor pointer
       :text-transform capitalize)
      ((:and li :hover) 
       :color #(high)
-      :border-bottom 2px solid #(high)
-      :cursor pointer))
+      :border-color #(high)))
     
     (form
      :display inline-block
@@ -172,11 +177,13 @@
 
    ((:and >nav :first-child)
     :border-bottom 1px solid #(border)
-    (a :border-top 2px solid transparent))
+    (a :border-top 3px solid #(border)
+       :margin-top -1px))
 
    ((:and >nav :last-child)
     :border-top 1px solid #(border)
-    (a :border-bottom 2px solid transparent))
+    (a :border-bottom 3px solid #(border)
+       :margin-bottom -1px))
 
    (.op
     (.post))
