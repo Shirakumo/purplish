@@ -22,7 +22,7 @@
   (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
   (let ((local-time:*default-timezone* local-time:+utc-zone+))
     (local-time:format-timestring
-     NIL stamp :format '(:long-weekday ", " :ordinal-day " of " :long-month " " :year ", " :hour ":" :min ":" :sec))))
+     NIL stamp :format '(:long-weekday ", " :ordinal-day " of " :long-month " " :year ", " :hour ":" (:min 2) ":" (:sec 2) " UTC"))))
 
 (lquery:define-lquery-function purplish-time (node time)
   (let ((stamp (local-time:universal-to-timestamp time)))

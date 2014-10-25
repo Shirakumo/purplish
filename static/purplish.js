@@ -137,6 +137,9 @@ $(function (){
     Purplish.prototype.init = function(){
         purplish.log("Init...");
         // Set datetime
+        $("time").each(function(){
+            $(this).text(purplish.formatDate(new Date(Date.parse($(this).attr("datetime")))));
+        });
         $("#replybox .time").text(purplish.formatDate(new Date()));
         
         // File handling
