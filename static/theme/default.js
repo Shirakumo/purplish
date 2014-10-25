@@ -3,9 +3,7 @@ $(function(){
         var post = $(this).closest(".post");
         $("#replybox").detach().insertAfter(post);
         $("#replybox .text").focus();
-        $('html, body').stop().animate({
-            scrollTop: post.offset().top
-        }, 500);
+        purplish.gotoPost(post);
     });
 
     $("#header-image").click(function(){

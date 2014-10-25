@@ -71,6 +71,14 @@ $(function (){
                                     callback);
     }
 
+    Purplish.prototype.getPost = function(id){
+        return $(".post[data-post-id="+id+"]");
+    }
+
+    Purplish.prototype.ensurePost = function(thing){
+        return (thing instanceof jQuery)? thing : purplish.getPost(thing);
+    }
+
     Purplish.prototype.localPostIDs = function(){
         return $(".post").map(function(){return $(this).data("post-id");});
     }
@@ -135,9 +143,23 @@ $(function (){
     }
 
     Purplish.prototype.highlightPost = function(id){
-        purplish.log("Highlighting post",id);
+        var post = purplish.ensurePost(id);
+        purplish.log("Highlighting post",post.data("post-id"));
         $(".post.highlight").removeClass("highlight");
-        $(".post[data-post-id="+id+"]").addClass("highlight");
+        $(".post[data-post-id="+post.data("post-id")+"]").addClass("highlight");
+    }
+
+    Purplish.prototype.gotoPost = function(id){
+        var post = purplish.ensurePost(id);
+        purplish.log("Going to post",post.data("post-id"));
+        if(post.length==0){
+            window.location = "/post/"+post.data("post-id");
+        }else{
+            purplish.highlightPost(id);
+            $('html, body').stop().animate({
+                scrollTop: $(">a[name]",post).offset().top
+            }, 200);
+        }
     }
 
     Purplish.prototype.init = function(){
@@ -154,6 +176,12 @@ $(function (){
         if(hash.indexOf("#post-")==0){
             purplish.highlightPost(hash.slice("#post-".length));
         }
+
+        // Post refs
+        $(".post-reference").click(function(){
+            purplish.gotoPost($(this).text().slice(2));
+            return false;
+        });
         
         // File handling
         function registerFileRemove(element){
