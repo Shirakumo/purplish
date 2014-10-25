@@ -134,13 +134,26 @@ $(function (){
         return null;
     }
 
+    Purplish.prototype.highlightPost = function(id){
+        purplish.log("Highlighting post",id);
+        $(".post.highlight").removeClass("highlight");
+        $(".post[data-post-id="+id+"]").addClass("highlight");
+    }
+
     Purplish.prototype.init = function(){
         purplish.log("Init...");
+        
         // Set datetime
         $("time").each(function(){
             $(this).text(purplish.formatDate(new Date(Date.parse($(this).attr("datetime")))));
         });
         $("#replybox .time").text(purplish.formatDate(new Date()));
+
+        // Highlight linked
+        var hash = window.location.hash;
+        if(hash.indexOf("#post-")==0){
+            purplish.highlightPost(hash.slice("#post-".length));
+        }
         
         // File handling
         function registerFileRemove(element){

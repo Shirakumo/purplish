@@ -201,6 +201,12 @@
    :clear both
    :min-height 120px
    :border-bottom 1px solid #(border)
+
+   (>a[name]
+    :display block
+    :position relative
+    :top -100px
+    :visibility hidden)
    
    (header
     (.id
@@ -320,6 +326,10 @@
       :padding 0 2px 0 2px
       :color "#000"
       :text-decoration none))))
+
+  (.post.highlight
+   :background "#FFFEAB"
+   :z-index 2)
 
   ("#replybox"
    :background #(front)
