@@ -4,6 +4,8 @@ function Purplish(){
 }
 var purplish = null;
 
+$(document).trigger("purplish-genesis");
+
 $(function (){
     Purplish.prototype.log = function(message){
         var args = $.extend([], arguments);
@@ -72,11 +74,23 @@ $(function (){
     }
 
     Purplish.prototype.getPost = function(id){
-        return $(".post[data-post-id="+id+"]");
+        var post = $(".post[data-post-id="+id+"]");
+        if (post.length == 0)
+            purplish.log("[Warn] No post with ID",id,"found");
+        return post;
     }
 
     Purplish.prototype.ensurePost = function(thing){
-        return (thing instanceof jQuery)? thing : purplish.getPost(thing);
+        if (thing instanceof jQuery){
+            if(thing.length == 0)
+                purplish.log("[Warn] Ensuring 0-length jQuery object",thing,"to post");
+            return thing;
+        }else if (parseInt(Number(thing)) == thing){
+            return purplish.getPost(thing);
+        }else{
+            purplish.log("[Warn] Don't know how to ensure",thing,"to a post");
+            return thing;
+        }
     }
 
     Purplish.prototype.localPostIDs = function(){
@@ -87,10 +101,58 @@ $(function (){
         var id = $("main.thread").data("thread-id");
         return (id == undefined)? null : id;
     }
+    
+    Purplish.prototype.registerPost = function(post){
+        var post = purplish.ensurePost(post);
+        purplish.log("Registering post", post.data("post-id"));
+
+        // Ensure we're starting fresh.
+        post.unbind();
+        $("*",post).unbind();
+        
+        // ID click
+        $(".id", post).click(function(){
+            var thread = $(this).closest(".thread");
+            var box = $("#replybox");
+            if(box.length>0){
+                // Update post target
+                box.attr("action","/api/purplish/post/create");
+                $("input[type=submit]",box).val("Post");
+                $("input[name=thread]",box).val(thread.data("thread-id"));
+                $(".title,.text,.files input",box).removeAttr("required");
+                // Update textbox
+                var text = $(".text", box);
+                text.focus();
+                text.val((text.val()+"\n\n"+">>"+post.data("post-id")).trim()+"  \n");
+                return false;
+            }
+        });
+
+        // Set datetime
+        $("time", post).each(function(){
+            $(this).text(purplish.formatDate(new Date(Date.parse($(this).attr("datetime")))));
+        });
+        
+        // Post refs
+        $(".post-reference", post).click(function(){
+            purplish.gotoPost($(this).text().slice(2));
+            return false;
+        });
+        
+        // Opening inline images
+        $(".text img", post).css("cursor", "pointer").click(function(){
+            window.open($(this).attr("src"),'_blank');
+        });
+
+        $(document).trigger("register-post", [post]);
+        
+        return post;
+    }
 
     Purplish.prototype.integratePost = function(post){
         var post = $($.parseHTML(post));
         if($(".posts .post[data-post-id="+post.data("post-id")+"]").length == 0){
+            purplish.registerPost(post);
             var li = $(document.createElement("li"));
             $(".posts").append(li.append(post));
         }
@@ -164,11 +226,14 @@ $(function (){
 
     Purplish.prototype.init = function(){
         purplish.log("Init...");
+
+        // Remote comps init
+        $(document).trigger("purplish-init-start");
+
+        // Register existing posts
+        $(".post").each(function(){purplish.registerPost($(this));});
         
         // Set datetime
-        $("time").each(function(){
-            $(this).text(purplish.formatDate(new Date(Date.parse($(this).attr("datetime")))));
-        });
         $("#replybox .time").text(purplish.formatDate(new Date()));
 
         // Highlight linked
@@ -176,12 +241,6 @@ $(function (){
         if(hash.indexOf("#post-")==0){
             purplish.highlightPost(hash.slice("#post-".length));
         }
-
-        // Post refs
-        $(".post-reference").click(function(){
-            purplish.gotoPost($(this).text().slice(2));
-            return false;
-        });
         
         // File handling
         function registerFileRemove(element){
@@ -214,30 +273,6 @@ $(function (){
             purplish.setTheme(theme);
             loadTheme(theme);
         });
-        
-        // Opening inline images
-        $(".text img").css("cursor", "pointer").click(function(){
-            window.open($(this).attr("src"),'_blank');
-        });
-
-        // Posting things
-        $(".post .id").click(function(){
-            var post = $(this).closest(".post");
-            var thread = $(this).closest(".thread");
-            var box = $("#replybox");
-            if(box.length>0){
-                // Update post target
-                box.attr("action","/api/purplish/post/create");
-                $("input[type=submit]",box).val("Post");
-                $("input[name=thread]",box).val(thread.data("thread-id"));
-                $(".title,.text,.files input",box).removeAttr("required");
-                // Update textbox
-                var text = $(".text", box);
-                text.focus();
-                text.val((text.val()+"\n\n"+">>"+post.data("post-id")).trim()+"  \n");
-                return false;
-            }
-        });
 
         // Name saving
         if(getCookie("purplish-username") !== undefined){
@@ -251,10 +286,17 @@ $(function (){
         // Post fetching
         purplish.startPostFetching();
 
+        // Remote comps init
+        $(document).trigger("purplish-init-finish");
+
         purplish.log("Init complete.");
         return null;
     }
 
     purplish = new Purplish();
-    purplish.init();
+
+    // We have to wait for the theme script to load.
+    $(document).on("script-loaded",function(){
+        purplish.init();
+    });
 });

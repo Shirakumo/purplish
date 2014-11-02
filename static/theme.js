@@ -20,13 +20,18 @@ function loadCSS(filename){
 }
 
 function loadJS(filename){
+    var trigger= function(){
+        document.dispatchEvent(new CustomEvent("script-loaded", {"filename": filename}));
+    }
     var script=document.createElement("script");
     script.setAttribute("class", "theme-part");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("src", filename);
-    window.onload = function(){
-        document.getElementsByTagName("body")[0].appendChild(script);
+    script.onreadystatechange = function(){
+        if (this.readyState == 'complete'){trigger();}
     }
+    script.onload = trigger;
+    document.getElementsByTagName("body")[0].appendChild(script);
 }
 
 function loadTheme(name){
@@ -35,10 +40,14 @@ function loadTheme(name){
         els[i].parentNode.removeChild(els[i]);
     }
     loadCSS("/static/purplish/theme/"+name+".css");
-    loadJS("/static/purplish/theme/"+name+".js");
+    window.onload = function(){
+        loadJS("/static/purplish/theme/"+name+".js");
+    }
 }
 
 var theme = getCookie("purplish-theme");
 if(theme !== undefined && theme !== ""){
     loadTheme(theme);
+}else{
+    loadTheme("default");
 }
