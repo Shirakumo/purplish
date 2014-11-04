@@ -80,7 +80,10 @@
         (plump:serialize
          (clip:process
           (plump:parse (template "thread.ctml"))
-          :title (dm:field thread "title")
+          :title (let ((revision (last-revision thread)))
+                   (if revision
+                       (dm:field revision "title")
+                       (dm:field thread "title")))
           :thread thread :posts posts)
          stream)
         path))
