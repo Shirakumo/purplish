@@ -101,15 +101,15 @@
 
 (defun embed-external (target start end match-start match-end reg-starts reg-ends)
   (declare (ignore start end))
-  (let ((target (subseq target (aref reg-starts 0) (aref reg-ends 0)))
+  (let ((label (subseq target (aref reg-starts 0) (aref reg-ends 0)))
         (address (subseq target (aref reg-starts 1) (aref reg-ends 1))))
     (setf address (cl-ppcre:regex-replace-all "\\\"" address "%22"))
-    (or (funcall (external-embedder target) address)
+    (or (funcall (external-embedder label) address)
         (subseq target match-start match-end))))
 
 (defun preparse (text)
   (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "<a href=\"/post/\\1\" class=\"post-reference\">&gt;&gt;\\1</a>"))
-  (setf text (cl-ppcre:regex-replace-all "\\s\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
+  (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
   (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>")))
 
 (defun sanitize (node)
