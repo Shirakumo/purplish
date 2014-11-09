@@ -213,10 +213,11 @@ $(function (){
 
     Purplish.prototype.gotoPost = function(id){
         var post = purplish.ensurePost(id);
-        purplish.log("Going to post",post.data("post-id"));
         if(post.length==0){
-            window.location = "/post/"+post.data("post-id");
+            purplish.log("Going to post",id);
+            window.location = "/post/"+id);
         }else{
+            purplish.log("Scrolling to post",post.data("post-id"));
             purplish.highlightPost(id);
             $('html, body').stop().animate({
                 scrollTop: $(">a[name]",post).offset().top
