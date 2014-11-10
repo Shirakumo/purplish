@@ -15,6 +15,13 @@
 (define-hook post-moved (id old-thread-id))
 (define-hook thread-moved (id old-board-id))
 
+(defmacro with-deleting-on-error ((object) &body body)
+  (let ((err (gensym "ERROR")))
+    `(handler-bind ((error #'(lambda (,err)
+                               (declare (ignore ,err))
+                               (dm:delete ,object))))
+       ,@body)))
+
 (defun create-board (name description &optional (visible T))
   (when (dm:get-one 'purplish-boards (db:query (:= 'name name)))
     (error "A board with that name already exists!"))
@@ -23,10 +30,11 @@
           (dm:field board "description") (or description "")
           (dm:field board "visible") (if visible 1 0))
     (dm:insert board)
-    ;; Update header and init board
-    (dolist (board (dm:get 'purplish-boards (db:query :all)))
-      (recache-board board :cascade T))
-    (recache-frontpage)
+    (with-deleting-on-error (board)
+      ;; Update header and init board
+      (dolist (board (dm:get 'purplish-boards (db:query :all)))
+        (recache-board board :cascade T))
+      (recache-frontpage))
     (trigger 'board-created (dm:id board))
     board))
 
@@ -62,14 +70,16 @@
           (dm:field post "title") title
           (dm:field post "text") text)
     (dm:insert post)
-    ;; Shuffle files around
-    (dolist (file files)
-      (create-file post file))
-    ;; Bump
-    (unless (= parent -1)
-      (db:update 'purplish-posts (db:query (:= '_id parent)) `(("updated" . ,(get-universal-time)))))
-    ;; Publicise!
-    (recache-post post)
+
+    (with-deleting-on-error (post)
+      ;; Shuffle files around
+      (dolist (file files)
+        (create-file post file))
+      ;; Bump
+      (unless (= parent -1)
+        (db:update 'purplish-posts (db:query (:= '_id parent)) `(("updated" . ,(get-universal-time)))))
+      ;; Publicise!
+      (recache-post post))
     (trigger 'post-created (dm:id post))
     post))
 
@@ -122,8 +132,9 @@
               (dm:field edit "title") title
               (dm:field edit "text") text)
         (dm:insert edit)
-        ;; Publicise!
-        (recache-post post)
+        (with-deleting-on-error (edit)
+          ;; Publicise!
+          (recache-post post))
         (trigger 'post-edited (dm:id post) (dm:id edit))))
     post))
 
