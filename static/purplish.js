@@ -215,7 +215,7 @@ $(function (){
         var post = purplish.ensurePost(id);
         if(post.length==0){
             purplish.log("Going to post",id);
-            window.location = "/post/"+id);
+            window.location = "/post/"+id;
         }else{
             purplish.log("Scrolling to post",post.data("post-id"));
             purplish.highlightPost(id);
