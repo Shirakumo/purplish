@@ -15,22 +15,15 @@
 (define-hook post-moved (id old-thread-id))
 (define-hook thread-moved (id old-board-id))
 
-(defmacro with-deleting-on-error ((object) &body body)
-  (let ((err (gensym "ERROR")))
-    `(handler-bind ((error #'(lambda (,err)
-                               (declare (ignore ,err))
-                               (dm:delete ,object))))
-       ,@body)))
-
 (defun create-board (name description &optional (visible T))
   (when (dm:get-one 'purplish-boards (db:query (:= 'name name)))
     (error "A board with that name already exists!"))
   (with-model board ('purplish-boards NIL)
-    (setf (dm:field board "name") name
-          (dm:field board "description") (or description "")
-          (dm:field board "visible") (if visible 1 0))
-    (dm:insert board)
-    (with-deleting-on-error (board)
+    (db:with-transaction ()
+      (setf (dm:field board "name") name
+            (dm:field board "description") (or description "")
+            (dm:field board "visible") (if visible 1 0))
+      (dm:insert board)
       ;; Update header and init board
       (dolist (board (dm:get 'purplish-boards (db:query :all)))
         (recache-board board :cascade T))
@@ -59,19 +52,19 @@
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
   (with-model post ('purplish-posts NIL)
     (dolist (file files)
-      (check-file file))    
-    (setf (dm:field post "board") board
-          (dm:field post "parent") parent
-          (dm:field post "revision") revision
-          (dm:field post "author") (or* author "Anonymous")
-          (dm:field post "registered") (or* registered 0)
-          (dm:field post "time") (get-universal-time)
-          (dm:field post "updated") (get-universal-time)
-          (dm:field post "title") title
-          (dm:field post "text") text)
-    (dm:insert post)
+      (check-file file))
+    (db:with-transaction ()
+      (setf (dm:field post "board") board
+            (dm:field post "parent") parent
+            (dm:field post "revision") revision
+            (dm:field post "author") (or* author "Anonymous")
+            (dm:field post "registered") (or* registered 0)
+            (dm:field post "time") (get-universal-time)
+            (dm:field post "updated") (get-universal-time)
+            (dm:field post "title") title
+            (dm:field post "text") text)
+      (dm:insert post)
 
-    (with-deleting-on-error (post)
       ;; Shuffle files around
       (dolist (file files)
         (create-file post file))
@@ -121,18 +114,18 @@
     (let ((revision (or (last-revision post)
                         post)))
       (with-model edit ('purplish-posts NIL)
-        (setf (dm:field edit "board") (dm:field revision "board")
-              (dm:field edit "parent") (dm:id post)
-              (dm:field edit "revision") (1+ (dm:field revision "revision"))
-              (dm:field edit "author") author
-              (dm:field edit "registered") 1
-              (dm:field edit "deleted") (if delete 1 0)
-              (dm:field edit "time") (get-universal-time)
-              (dm:field edit "updated") (get-universal-time)
-              (dm:field edit "title") title
-              (dm:field edit "text") text)
-        (dm:insert edit)
-        (with-deleting-on-error (edit)
+        (db:with-transaction ()
+          (setf (dm:field edit "board") (dm:field revision "board")
+                (dm:field edit "parent") (dm:id post)
+                (dm:field edit "revision") (1+ (dm:field revision "revision"))
+                (dm:field edit "author") author
+                (dm:field edit "registered") 1
+                (dm:field edit "deleted") (if delete 1 0)
+                (dm:field edit "time") (get-universal-time)
+                (dm:field edit "updated") (get-universal-time)
+                (dm:field edit "title") title
+                (dm:field edit "text") text)
+          (dm:insert edit)
           ;; Publicise!
           (recache-post post))
         (trigger 'post-edited (dm:id post) (dm:id edit))))
@@ -144,16 +137,17 @@
          (new-thread (ensure-thread new-thread)))
     (when (= old-thread -1)
       (error "Post is a thread."))
-    ;; Update revisions
-    (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
-               `((board . ,(dm:field new-thread "board"))))
-    ;; Update post
-    (setf (dm:field post "board") (dm:field new-thread "board")
-          (dm:field post "parent") (dm:id new-thread))
-    (dm:save post)
-    ;; Publicise!
-    (recache-post post)
-    (recache-thread old-thread)
+    (db:with-transaction ()
+      ;; Update revisions
+      (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
+                 `((board . ,(dm:field new-thread "board"))))
+      ;; Update post
+      (setf (dm:field post "board") (dm:field new-thread "board")
+            (dm:field post "parent") (dm:id new-thread))
+      (dm:save post)
+      ;; Publicise!
+      (recache-post post)
+      (recache-thread old-thread))
     (trigger 'post-moved (dm:id post) old-thread)
     post))
 
@@ -161,18 +155,19 @@
   (let* ((thread (ensure-thread thread))
          (old-board (dm:field thread "board"))
          (new-board (ensure-board new-board)))
-    ;; Update revisions
-    (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent (dm:id thread)))))
-      (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
-                 `((board . ,(dm:id new-board)))))
-    ;; Update posts
-    (db:update 'purplish-posts (db:query (:= 'parent (dm:id thread)))
-               `((board . ,(dm:id new-board))))
-    ;; Update thread
-    (setf (dm:field thread "board") (dm:id new-board))
-    (dm:save thread)
-    ;; Publicise!
-    (recache-thread thread :cascade T)
-    (recache-board old-board)
+    (db:with-transaction ()
+      ;; Update revisions
+      (dolist (post (dm:get 'purplish-posts (db:query (:= 'parent (dm:id thread)))))
+        (db:update 'purplish-posts (db:query (:= 'parent (dm:id post)))
+                   `((board . ,(dm:id new-board)))))
+      ;; Update posts
+      (db:update 'purplish-posts (db:query (:= 'parent (dm:id thread)))
+                 `((board . ,(dm:id new-board))))
+      ;; Update thread
+      (setf (dm:field thread "board") (dm:id new-board))
+      (dm:save thread)
+      ;; Publicise!
+      (recache-thread thread :cascade T)
+      (recache-board old-board))
     (trigger 'thread-moved (dm:id thread) old-board)
     thread))
