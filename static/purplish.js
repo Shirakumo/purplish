@@ -266,13 +266,15 @@ $(function (){
         
         registerFileChange($(".files>input", box));
         
-        // Name saving
-        if(getCookie("purplish-username") !== undefined){
-            $(".author", box).val(purplish.getName());
+        // Name stuff
+        var name = purplish.getName();
+        if(name !== undefined){
+            $(".author", box).val(name);
         }
         
         $("input[type=submit]", box).click(function(){
-            purplish.setName($(".author", box).val());
+            purplish.saveName($(".author", box).val());
+            return false;
         });
     }
 
