@@ -274,7 +274,6 @@ $(function (){
         
         $("input[type=submit]", box).click(function(){
             purplish.saveName($(".author", box).val());
-            return false;
         });
     }
 
