@@ -225,6 +225,57 @@ $(function (){
         }
     }
 
+    Purplish.prototype.initPostBox = function(box){
+        // Set datetime
+        $(".time", box).text(purplish.formatDate(new Date()));
+
+        // File handling
+        function registerFileRemove(element){
+            element.dblclick(function(){
+                $(this).remove();
+            }).click(function(){
+                $(this).toggleClass("selected");
+            });
+        }
+        
+        function registerFileChange(element){
+            element.change(function(){
+                // Create subsitute input
+                var input = document.createElement("input");
+                $(input).attr({"type":"file", "name":"files[]", "multiple":"multiple"});
+                $(".files", box).prepend(input);
+
+                // Create label for list
+                var span = document.createElement("span");
+                var names = [];
+                for(var i=0; i<this.files.length; i++)
+                    names.push(this.files[i].name);
+                $(span).html(names.join("<br />"));
+
+                // Create list item
+                var li = document.createElement("li");
+                $(li).append(span);
+                $(li).append($(this).detach());
+                $(".files .filelist", box).append(li);
+                
+                // Reregister for new element
+                registerFileRemove($(li));
+                registerFileChange($(input));
+            });
+        }
+        
+        registerFileChange($(".files>input", box));
+        
+        // Name saving
+        if(getCookie("purplish-username") !== undefined){
+            $(".author", box).val(purplish.getName());
+        }
+        
+        $("input[type=submit]", box).click(function(){
+            purplish.setName($(".author", box).val());
+        });
+    }
+
     Purplish.prototype.init = function(){
         purplish.log("Init...");
 
@@ -234,40 +285,12 @@ $(function (){
         // Register existing posts
         $(".post").each(function(){purplish.registerPost($(this));});
         
-        // Set datetime
-        $("#replybox .time").text(purplish.formatDate(new Date()));
-
         // Highlight linked
         var hash = window.location.hash;
         if(hash.indexOf("#post-")==0){
             purplish.highlightPost(hash.slice("#post-".length));
         }
-        
-        // File handling
-        function registerFileRemove(element){
-            element.dblclick(function(){
-                $(this).remove();
-            });
-        }
-        
-        function registerFileChange(element){
-            element.change(function(){
-                var li = document.createElement("li");
-                var span = document.createElement("span");
-                var input = document.createElement("input");
-                $(input).attr({"type": "file", "name": "files[]"});
-                $(span).text($(this).val().split(/(\\|\/)/g).pop());
-                $(li).append(span);
-                $(li).append($(this).detach());
-                $("#replybox .files .filelist").append(li);
-                $("#replybox .files").prepend(input);
-                registerFileRemove($(li));
-                registerFileChange($(input));
-            });
-        }
-        
-        registerFileChange($("#replybox .files>input"));
-        
+
         // Theme picking
         $("#themes li").click(function(){
             var theme = $(this).text();
@@ -275,14 +298,8 @@ $(function (){
             loadTheme(theme);
         });
 
-        // Name saving
-        if(getCookie("purplish-username") !== undefined){
-            $("#replybox .author").val(purplish.getName());
-        }
-        
-        $("#replybox input[type=submit]").click(function(){
-            purplish.setName($("#replybox .author").val());
-        });
+        // Posbox
+        purplish.initPostBox($("#replybox"));
 
         // Post fetching
         purplish.startPostFetching();

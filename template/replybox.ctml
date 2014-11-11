@@ -16,7 +16,7 @@
   </header>
   <div class="content">
     <div class="files">
-      <input type="file" name="files[]"
+      <input type="file" name="files[]" multiple
              lquery='(attr :required (unless thread "required"))' />
       <ul class="filelist" title="Double click file to remove.">
       </ul>

@@ -393,7 +393,9 @@
        :padding 2px
        :cursor pointer
        :overflow hidden
-       :text-overflow ellipsis)))
+       :text-overflow ellipsis)
+      (li.selected
+       :background #(base))))
     (.text
      :flex-grow 1
      :min-height 150px
