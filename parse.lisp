@@ -110,7 +110,9 @@
 (defun preparse (text)
   (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "<a href=\"/post/\\1\" class=\"post-reference\">&gt;&gt;\\1</a>"))
   (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
-  (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>")))
+  (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>"))
+  ;; temporary hack fix to circumvent 3bmd crashing, ugh.
+  (setf text (cl-ppcre:regex-replace-all "(> *){5,}" text ">>>>>")))
 
 (defun sanitize (node)
   (lquery:$ node "script,link,frame,frameset,embed,object,applet" (remove))
