@@ -15,20 +15,49 @@
 (defun themes ()
   (mapcar #'pathname-name (uiop:directory-files *themes* #p"*.css")))
 
+(defmacro with-retry-restart ((name format &rest args) &body body)
+  (let ((return (gensym "RETURN")))
+    `(loop with ,return = NIL
+           until (with-simple-restart (,name ,format ,@args)
+                   (setf ,return
+                         (progn ,@body))
+                   T)
+           finally (return ,return))))
+
+(defmacro with-deleting-restart ((delete-func object &rest args) &body body)
+  (let ((obj (gensym "OBJECT")))
+    `(let ((,obj ,object))
+       (restart-case
+           (progn ,@body)
+         (delete ()
+           :report (lambda (s) (format s "Delete the offending ~s" ,obj))
+           (l:warn :purplish-cache "Deleting cache-offending object ~s" ,obj)
+           (,delete-func ,obj ,@args))))))
+
 (defmacro with-cache-file ((stream path descriptor) &body body)
-  (let ((temp (gensym "TEMP")))
+  (let ((temp (gensym "TEMP"))
+        (err (gensym "ERROR")))
     `(let* ((,path ,descriptor)
             (,temp (make-pathname :type "tmp" :defaults ,path))
             (*package* (find-package "RAD-USER")))
-       (ensure-directories-exist ,temp)
-       (with-open-file (,stream ,temp :direction :output :if-exists :supersede)
-         ,@body)
-       (uiop:rename-file-overwriting-target ,temp ,path))))
+       (handler-bind ((error #'(lambda (,err)
+                                 (l:error :purplish-cache "[~a] during caching of ~s: ~a"
+                                          (type-of ,err) ,path ,err))))
+         (restart-case
+             (with-retry-restart (retry "Retry caching ~a" ,path)
+               (ensure-directories-exist ,temp)
+               (with-open-file (,stream ,temp :direction :output :if-exists :supersede)
+                 ,@body)
+               (uiop:rename-file-overwriting-target ,temp ,path))
+           (stub ()
+             :report "Create a stub file instead."
+             (with-open-file (,stream ,path :direction :output :if-exists :supersede)
+               (format ,stream "<div class=\"error\">Error generating cache!<br />~a</div>" ,path))))))))
 
-(defun front-cache ()
+(defun front-cache (&optional ensure-cached)
   (merge-pathnames "frontpage.html" *cache*))
 
-(defun board-cache (board)
+(defun board-cache (board &optional ensure-cached)
   (let ((board (ensure-board board)))
     (merge-pathnames (format NIL "board/~a.html" (dm:id board))
                      *cache*)))
@@ -52,15 +81,16 @@
   (let* ((post (ensure-post post))
          (revision (last-revision post)))
     (l:debug :purplish-cache "Recaching Post ~a" (dm:id post))
-    (with-cache-file (stream path (post-cache post))
-      (plump:serialize
-       (clip:process
-        (plump:parse (template "post.ctml"))
-        :post post
-        :files (dm:get 'purplish-files (db:query (:= 'parent (dm:id post))))
-        :revision revision)
-       stream)
-      path)
+    (with-deleting-restart (delete-post post :author "SYSTEM" :purge T)
+      (with-cache-file (stream path (post-cache post))
+        (plump:serialize
+         (clip:process
+          (plump:parse (template "post.ctml"))
+          :post post
+          :files (dm:get 'purplish-files (db:query (:= 'parent (dm:id post))))
+          :revision revision)
+         stream)
+        path))
     (when propagate
       (recache-frontpage)
       (if (= -1 (dm:field post "parent"))
@@ -78,29 +108,30 @@
       (dolist (post posts)
         (recache-post post :propagate NIL)))
 
-    (when full
-      (with-cache-file (stream path (thread-cache thread))
+    (with-deleting-restart (delete-post thread :author "SYSTEM" :purge T)
+      (when full
+        (with-cache-file (stream path (thread-cache thread))
+          (plump:serialize
+           (clip:process
+            (plump:parse (template "thread.ctml"))
+            :title (let ((revision (last-revision thread)))
+                     (if revision
+                         (dm:field revision "title")
+                         (dm:field thread "title")))
+            :thread thread :posts posts)
+           stream)
+          path))
+
+      (with-cache-file (stream path (thread-min-cache thread))
         (plump:serialize
          (clip:process
-          (plump:parse (template "thread.ctml"))
-          :title (let ((revision (last-revision thread)))
-                   (if revision
-                       (dm:field revision "title")
-                       (dm:field thread "title")))
-          :thread thread :posts posts)
+          (plump:parse (template "thread-min.ctml"))
+          :thread thread :posts (loop for minposts = posts
+                                      then (cdr minposts)
+                                      repeat (- (length posts) 3)
+                                      finally (return minposts)))
          stream)
         path))
-
-    (with-cache-file (stream path (thread-min-cache thread))
-      (plump:serialize
-       (clip:process
-        (plump:parse (template "thread-min.ctml"))
-        :thread thread :posts (loop for minposts = posts
-                                    then (cdr minposts)
-                                    repeat (- (length posts) 3)
-                                    finally (return minposts)))
-       stream)
-      path)
 
     (when propagate
       (recache-board (dm:field thread "board")))))
@@ -114,15 +145,15 @@
     (when cascade
       (dolist (thread threads)
         (recache-thread thread :cascade T :propagate NIL)))
-
-    (with-cache-file (stream path (board-cache board))
-      (plump:serialize
-       (clip:process
-        (plump:parse (template "board.ctml"))
-        :title (dm:field board "name")
-        :board board :threads threads)
-       stream)
-      path)))
+    (with-deleting-restart (delete-board board)
+      (with-cache-file (stream path (board-cache board))
+        (plump:serialize
+         (clip:process
+          (plump:parse (template "board.ctml"))
+          :title (dm:field board "name")
+          :board board :threads threads)
+         stream)
+        path))))
 
 (defun recache-frontpage ()
   (l:debug :purplish-cache "Recaching Frontpage")
