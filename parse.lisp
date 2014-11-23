@@ -6,51 +6,6 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defun date-machine (stamp)
-  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
-  (let ((local-time:*default-timezone* local-time:+utc-zone+))
-    (local-time:format-timestring
-     NIL stamp :format '((:year 4) "-" (:month 2) "-" (:day 2) "T" (:hour 2) ":" (:min 2) ":" (:sec 2)))))
-
-(defun date-human (stamp)
-  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
-  (let ((local-time:*default-timezone* local-time:+utc-zone+))
-    (local-time:format-timestring
-     NIL stamp :format '((:year 4) "." (:month 2) "." (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2)))))
-
-(defun date-fancy (stamp)
-  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
-  (let ((local-time:*default-timezone* local-time:+utc-zone+))
-    (local-time:format-timestring
-     NIL stamp :format '(:long-weekday ", " :ordinal-day " of " :long-month " " :year ", " :hour ":" (:min 2) ":" (:sec 2) " UTC"))))
-
-(lquery:define-lquery-function purplish-time (node time)
-  (let ((stamp (local-time:universal-to-timestamp time)))
-    (setf (plump:attribute node "datetime")
-          (date-machine stamp))
-    (setf (plump:attribute node "title")
-          (date-fancy stamp))
-    (setf (plump:children node) (plump:make-child-array))
-    (plump:make-text-node node (date-human stamp))))
-
-(lquery:define-lquery-function purplish-cache (node type object)
-  ;; We don't want to parse the cached file again just to serialise it anew
-  ;; so we cheat by changing this to a fulltext element and abusing its direct
-  ;; serialisation.
-  (change-class node 'plump:fulltext-element
-                :children (plump:make-child-array))
-  (plump:make-text-node
-   node (with-open-file (stream (ecase type
-                                  (:board (board-cache object))
-                                  (:thread (thread-cache object))
-                                  (:thread-min (thread-min-cache object))
-                                  (:post (post-cache object))))
-          (plump::slurp-stream stream))))
-
-(lquery:define-lquery-function purplish-template (node object)
-  (setf (plump:children node) (plump:make-child-array))
-  (plump:parse (template (format NIL "~(~a~).ctml" object)) :root node))
-
 (defvar *external-embedders* (make-hash-table :test 'equalp))
 
 (defun external-embedder (name)
