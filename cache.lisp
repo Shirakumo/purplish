@@ -52,7 +52,9 @@
            (stub ()
              :report "Create a stub file instead."
              (with-open-file (,stream ,path :direction :output :if-exists :supersede)
-               (format ,stream "<div class=\"error\">Error generating cache!<br />~a</div>" ,path))))))))
+               (format ,stream "<div class=\"error\">Error generating cache!<br />~a</div>" ,path)))
+           (bail ()
+             :report "Bail out, potentially leaving no cache file behind (dangerous)."))))))
 
 (defun front-cache (&optional ensure-cached)
   (merge-pathnames "frontpage.html" *cache*))
@@ -179,3 +181,75 @@
     (recache-atom :board board))
   (recache-frontpage)
   (recache-atom))
+
+(defun date-machine (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
+  (let ((local-time:*default-timezone* local-time:+utc-zone+))
+    (local-time:format-timestring
+     NIL stamp :format '((:year 4) "-" (:month 2) "-" (:day 2) "T" (:hour 2) ":" (:min 2) ":" (:sec 2)))))
+
+(defun date-human (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
+  (let ((local-time:*default-timezone* local-time:+utc-zone+))
+    (local-time:format-timestring
+     NIL stamp :format '((:year 4) "." (:month 2) "." (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2)))))
+
+(defun date-fancy (stamp)
+  (when (integerp stamp) (setf stamp (local-time:universal-to-timestamp stamp)))
+  (let ((local-time:*default-timezone* local-time:+utc-zone+))
+    (local-time:format-timestring
+     NIL stamp :format '(:long-weekday ", " :ordinal-day " of " :long-month " " :year ", " :hour ":" (:min 2) ":" (:sec 2) " UTC"))))
+
+;; Template helpers
+(lquery:define-lquery-function purplish-time (node time)
+  (let ((stamp (local-time:universal-to-timestamp time)))
+    (setf (plump:attribute node "datetime")
+          (date-machine stamp))
+    (setf (plump:attribute node "title")
+          (date-fancy stamp))
+    (setf (plump:children node) (plump:make-child-array))
+    (plump:make-text-node node (date-human stamp)))
+  node)
+
+(lquery:define-lquery-function purplish-cache (node type object)
+  (let ((path (ecase type
+                (:board (board-cache object))
+                (:thread (thread-cache object))
+                (:thread-min (thread-min-cache object))
+                (:post (post-cache object))))
+        (retry T))
+    (loop 
+      (with-open-file (stream path :direction :input :if-does-not-exist nil)
+        (cond (stream
+               ;; We don't want to parse the cached file again just to serialise it anew
+               ;; so we cheat by changing this to a fulltext element and abusing its direct
+               ;; serialisation.
+               (change-class node 'plump:fulltext-element
+                             :children (plump:make-child-array))
+               (plump:make-text-node node (plump::slurp-stream stream))
+               (return))
+              (retry
+               (v:warn :purplish-cache "Attempting to recache ~s as a cache-fetch occurred but we could not find the file ~s!"
+                       object path)
+               (setf retry NIL)
+               (handler-bind ((error #'(lambda (err)
+                                         (declare (ignore err))
+                                         (invoke-restart 'stub))))
+                 (ecase type
+                   (:board (recache-board object))
+                   (:thread (recache-thread object :full T :propagate NIL))
+                   (:thread-min (recache-thread object :full NIL :propagate NIL))
+                   (:post (recache-post object :propagate NIL)))))
+              (T
+               (v:severe :purplish-cache "WTF! Still failed to find cache for ~s at ~s despite recaching (with stub) attempt!"
+                       object path)
+               (let ((div (plump:make-element node "div")))
+                 (setf (plump:attribute div "class") "error")
+                 (plump:make-text-node div (format NIL "Failed to fetch cache for ~a" path)))
+               (return))))))
+  node)
+
+(lquery:define-lquery-function purplish-template (node object)
+  (setf (plump:children node) (plump:make-child-array))
+  (plump:parse (template (format NIL "~(~a~).ctml" object)) :root node)
+  node)
