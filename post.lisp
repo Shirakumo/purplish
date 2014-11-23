@@ -101,7 +101,8 @@
             (recache-board (dm:field post "board"))
             (recache-frontpage))
            (T
-            (recache-thread (dm:field post "parent"))))
+            (recache-thread (dm:field post "parent"))
+            (recache-frontpage)))
          (trigger 'post-purged id)))
       (T
        (edit-post post (or author "Anonymous") "" "_deleted_" :delete T)
