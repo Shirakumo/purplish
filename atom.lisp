@@ -58,8 +58,5 @@
 (define-trigger purplish:post-edited (id edit-id)
   (recache-atom :post id))
 
-(define-trigger purplish:post-purged (id)
-  (recache-atom :post id))
-
 (define-api purplish/atom (&optional board) ()
   (serve-or-err (atom-cache board) "Feed not found." "application/atom+xml"))
