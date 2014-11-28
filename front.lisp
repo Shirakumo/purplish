@@ -16,10 +16,10 @@
     (each #'(lambda (node)
               (if (and user
                        (or (string-equal (lquery:$ node "a[rel=author]" (text) (node)) (user:username user))
-                           (user:check user '(purplish post change))))
-                  (progn (unless (user:check user '(purplish post move))
+                           (user:check user (perm purplish post change))))
+                  (progn (unless (user:check user (perm purplish post move))
                            (lquery:$ node "nav.edit .move-button" (remove)))
-                         (unless (user:check user '(purplish post purge))
+                         (unless (user:check user (perm purplish post purge))
                            (lquery:$ node "nav.edit .purge-button" (remove))))
                   (lquery:$ node "nav.edit" (remove)))))))
 

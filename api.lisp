@@ -34,7 +34,7 @@
 (defun post-accessible-p (post)
   (let ((user (auth:current)))
     (and user
-         (or (user:check user '(purplish post change))
+         (or (user:check user (perm purplish post change))
              (and (= (dm:field post "registered") 1)
                   (string-equal (dm:field post "author")
                                 (user:username user)))))))
@@ -133,7 +133,7 @@
       (api-output (with-output-to-string (stream)
                     (plump:serialize doc stream))))))
 
-(define-api purplish/board/create (name &optional description visible) (:access (purplish board create))
+(define-api purplish/board/create (name &optional description visible) (:access (perm purplish board create))
   (when (dm:get-one 'purplish-boards (db:query (:= 'title name)))
     (error 'api-argument-invalid :argument 'name :message "A board with that name already exists."))
   (with-api-error (create-board name description (string= visible "true")))
@@ -141,7 +141,7 @@
       (redirect (format NIL "/board/~a" name) 303)
       (api-output "Board created.")))
 
-(define-api purplish/board/delete (board) (:access (purplish board delete))
+(define-api purplish/board/delete (board) (:access (perm purplish board delete))
   (with-board (board board)
     (with-api-error (delete-board board))
     (if (string= (post/get "browser") "true")
@@ -159,7 +159,7 @@
             (redirect (format NIL "/thread/~a" (dm:id thread)) 303)
             (api-output "Thread created."))))))
 
-(define-api purplish/thread/move (thread new-board) (:access (purplish thread move))
+(define-api purplish/thread/move (thread new-board) (:access (perm purplish thread move))
   (with-api-error (move-thread thread new-board))
   (if (string= (post/get "browser") "true")
       (redirect (format NIL "/thread/~a" thread) 303)
@@ -169,7 +169,7 @@
   (with-post (thread thread)
     (unless (= (dm:field thread "parent") -1)
       (error 'api-argument-invalid :argument 'thread :message "This isn't a thread."))
-    (unless (user:check (auth:current) '(purplish thread delete))
+    (unless (user:check (auth:current) (perm purplish thread delete))
       (error 'api-auth-error :message "You do not have permission to delete threads."))
     (with-api-error (delete-post thread :purge T))
     (if (string= (post/get "browser") "true")
@@ -205,7 +205,7 @@
     (with-post-accessible (post)
       (cond
         ((and (string= purge "true")
-              (user:check (auth:current) '(purplish post purge)))
+              (user:check (auth:current) (perm purplish post purge)))
          (with-api-error (delete-post post :purge T))
          (if (string= (post/get "browser") "true")
              (redirect (format NIL "/thread/~a" (dm:field post "parent")))
@@ -218,7 +218,7 @@
              (redirect (format NIL "/post/~a" (dm:id post)) 303)
              (api-output "Post deleted.")))))))
 
-(define-api purplish/post/move (post new-thread) (:access (purplish post move))
+(define-api purplish/post/move (post new-thread) (:access (perm purplish post move))
   (with-api-error (move-post post new-thread))
   (if (string= (post/get "browser") "true")
       (redirect (format NIL "/post/~a" post) 303)
