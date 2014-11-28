@@ -229,7 +229,7 @@
                (plump:make-text-node node (plump::slurp-stream stream))
                (return))
               (retry
-               (v:warn :purplish-cache "Attempting to recache ~s as a cache-fetch occurred but we could not find the file ~s!"
+               (l:warn :purplish-cache "Attempting to recache ~s as a cache-fetch occurred but we could not find the file ~s!"
                        object path)
                (setf retry NIL)
                (handler-bind ((error #'(lambda (err)
@@ -241,7 +241,7 @@
                    (:thread-min (recache-thread object :full NIL :propagate NIL))
                    (:post (recache-post object :propagate NIL)))))
               (T
-               (v:severe :purplish-cache "WTF! Still failed to find cache for ~s at ~s despite recaching (with stub) attempt!"
+               (l:severe :purplish-cache "WTF! Still failed to find cache for ~s at ~s despite recaching (with stub) attempt!"
                        object path)
                (let ((div (plump:make-element node "div")))
                  (setf (plump:attribute div "class") "error")
