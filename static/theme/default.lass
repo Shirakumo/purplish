@@ -140,6 +140,9 @@
            :width auto
            :min-width 120px
            :max-width 120px
+           :max-height 250px
+           :overflow-x hidden
+           :overflow-y auto
            (* :max-width 120px)
            (.preview.full
             :max-width none
@@ -153,7 +156,14 @@
 
   ("#threads"
    :list-style none
-   :margin 0 :padding 0)
+   :margin 0 :padding 0
+
+   (.post
+    (.content
+     (.files
+      :max-height 400px
+      :overflow-x hidden
+      :overflow-y auto))))
 
   (.thread
    :margin-top 10px
@@ -269,6 +279,15 @@
         :max-width 150px
         :max-height 150px)
        (video :background black :color white))))
+
+    
+    ((:and .files "::-webkit-scrollbar-track")
+     :background-color transparent)
+    ((:and .files "::-webkit-scrollbar")
+     :width 6px
+     :background-color transparent)
+    ((:and .files "::-webkit-scrollbar-thumb")
+     :background-color #(border))
 
     (.text
      :flex-grow 1
