@@ -19,6 +19,36 @@
 
   (body :background #(back))
 
+  (.popup
+   :z-index 1000000000
+   :position fixed
+   :top 0 :left 0 :right 0 :bottom 0
+   :background (rgba 0 0 0 0.75)
+   :padding 50px 0 0 0
+   (.inner
+    :max-width 800px
+    :background white
+    :padding 5px
+    :border-radius 3px
+    :margin 0 auto 0 auto
+    (h1
+     :padding 0
+     :margin 0 0 5px 10px)
+    (.chord
+     :padding 1px
+     (code
+      :vertical-align middle
+      :display inline-block
+      :min-width 50px
+      :background (hex EEE)
+      :font-family Consolas Inconsolata monospace
+      :margin 2px
+      :padding 0 5px 0 5px
+      :text-align right)
+     (span
+      :display inline-block
+      :vertical-align middle))))
+
   (body>header
    :display flex
    :flex-wrap wrap
