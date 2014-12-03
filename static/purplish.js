@@ -471,6 +471,38 @@ $(function (){
         purplish.keychords[key] = explanation || "?";
     }
 
+    Purplish.prototype.popup = function(title, content, type){
+        if($(".popup").length == 0){
+            if(typeof(type)==='undefined')type="info";
+            var el = document.createElement("div");
+            var inner = document.createElement("div");
+            var h1 = document.createElement("h1");
+            $(h1).text(title);
+            $(inner).addClass("inner")
+                .html(content)
+                .prepend(h1)
+                .click(function(){return false;});
+            $(el).addClass(type)
+                .addClass("popup")
+                .append(inner)
+                .click(function(){$(this).remove();})
+                .appendTo("body");
+            return el;
+        }else{
+            $(".popup").click();
+            return null;
+        }
+    }
+
+    Purplish.prototype.showKeychords = function(){
+        var el = document.createElement("div");
+        var inner = "";
+        for(var key in purplish.keychords){
+            inner = inner+"<div class='chord'><code>"+key+"</code><span>"+purplish.keychords[key]+"</span></div>";
+        }
+        return purplish.popup("Keychords", inner);
+    }
+
     Purplish.prototype.initKeychords = function(){
         purplish.bindKey("h",purplish.rotateHeader,
                         "Rotate the header.");
@@ -498,6 +530,8 @@ $(function (){
                         "Go to the board.");
         purplish.bindKey("v",function(){purplish.jumptoThread(purplish.postThread());},
                         "Go to the thread of the current post.");
+        purplish.bindKey("?",purplish.showKeychords,
+                        "Show keychords cheat sheet.");
 
         // We have to override this because the default implementation
         // is broken.
