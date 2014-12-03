@@ -40,7 +40,7 @@
     (when pieces (aref pieces 3))))
 
 (define-external-embedder vine (address)
-  (format NIL "<iframe class=\"vine-embed\" src=\"https://vine.co/v/~a/embed/postcard\" width=\"320\" height=\"320\" frameborder=\"no\"></iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
+  (format NIL "<iframe class=\"vine-embed\" src=\"https://vine.co/v/~a/embed/simple\" width=\"320\" height=\"320\" frameborder=\"no\"></iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
           (or (vine-code address) (return))))
 
 (define-external-embedder soundcloud (address)
