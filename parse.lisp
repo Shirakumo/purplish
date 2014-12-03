@@ -33,6 +33,13 @@
   (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//player.vimeo.com/video/~a\"></iframe>"
           (or (vimeo-code address) (return))))
 
+(defun vine-code (url)
+  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vine.co/v/([0-9]+)" url)) 3))
+
+(define-external-embedder vine (address)
+  (format NIL "<iframe class=\"vine-embed\" src=\"https://vine.co/v/~a/embed/postcard\" width=\"320\" height=\"320\" frameborder=\"no\"></iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
+          (or (vine-code address) (return))))
+
 (define-external-embedder soundcloud (address)
   (format NIL "<iframe width=\"100%\" height=\"166\" frameborder=\"no\" src=\"//w.soundcloud.com/player/?url=~a\"></iframe>"
           address))
