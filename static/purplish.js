@@ -355,7 +355,7 @@ $(function (){
                 purplish.jumptoPost(thing);
             }else{
                 purplish.log("Scrolling to post",post.data("post-id"));
-                purplish.highlightPost(id);
+                purplish.highlightPost(post);
                 $('html, body').stop().animate({
                     scrollTop: $(">a[name]",post).offset().top
                 }, 200);
