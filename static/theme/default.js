@@ -1,8 +1,4 @@
-$(document).on("purplish-init-start", function(){    
-    $("#header-image").click(function(){
-        $(this).attr("src", "/api/purplish/header?t="+new Date().getTime());
-    });
-
+$(document).on("purplish-init-start", function(){
     function refitPreview(){
         $(".preview.full").each(function(){
             var height = $(this).innerHeight();
