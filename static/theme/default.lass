@@ -150,7 +150,9 @@
           (.text
            (img
             :max-width 100%
-            :max-height 100%))))
+            :max-height 100%)
+           (iframe
+            :max-width 100%))))
      ((:and li :last-child)
       (.post :border-bottom none)))))
 
