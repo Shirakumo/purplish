@@ -20,21 +20,24 @@
          #'(lambda (,address) (block NIL ,@body))))
 
 (defun youtube-code (url)
-  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url)) 5))
+  (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url))))
+    (when pieces (aref pieces 5))))
 
 (define-external-embedder youtube (address)
   (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//www.youtube.com/embed/~a\"></iframe>"
           (or (youtube-code address) (return))))
 
 (defun vimeo-code (url)
-  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo.com/([0-9]+)" url)) 3))
+  (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo\\.com/([0-9]+)" url))))
+    (when pieces (aref pieces 3))))
 
 (define-external-embedder vimeo (address)
   (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//player.vimeo.com/video/~a\"></iframe>"
           (or (vimeo-code address) (return))))
 
 (defun vine-code (url)
-  (aref (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vine.co/v/([0-9]+)" url)) 3))
+  (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vine\\.co/v/([0-9a-zA-Z]+)" url))))
+    (when pieces (aref pieces 3))))
 
 (define-external-embedder vine (address)
   (format NIL "<iframe class=\"vine-embed\" src=\"https://vine.co/v/~a/embed/postcard\" width=\"320\" height=\"320\" frameborder=\"no\"></iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
@@ -71,7 +74,7 @@
 
 (defun preparse (text)
   (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text "<a href=\"/post/\\1\" class=\"post-reference\">&gt;&gt;\\1</a>"))
-  (setf text (cl-ppcre:regex-replace-all "\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
+  (setf text (cl-ppcre:regex-replace-all "\\!?\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
   (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>"))
   ;; temporary hack fix to circumvent 3bmd crashing, ugh.
   (setf text (cl-ppcre:regex-replace-all "(> *){5,}" text ">>>>>")))
