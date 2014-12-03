@@ -520,8 +520,6 @@ $(function (){
                         "Go to the previous file.");
         purplish.bindKey("d",function(){purplish.gotoFile(purplish.nextFile());},
                         "Go to the next file.");
-        purplish.bindKey("x",function(){purplish.downloadFile();},
-                        "Download the current file.");
         purplish.bindKey("q",function(){history.back()},
                         "Go backwards in the browser history.");
         purplish.bindKey("e",function(){history.forward()},
