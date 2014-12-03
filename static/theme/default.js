@@ -9,6 +9,33 @@ $(document).on("purplish-init-start", function(){
         return null;
     }
 
+    function exitPreview(thing){
+        var preview = ($(thing).hasClass("preview"))? thing : $(".preview", (thing || document));
+        // Show inline
+        $(preview).removeClass("full");
+        // Make clicking propagate to the preview again
+        $("*:not(a)",preview).unbind("click");
+    }
+
+    function enterPreview(thing){
+        var preview = ($(thing).hasClass("preview"))? thing : $(".preview", (thing || purplish.currentFile));
+        exitPreview();
+        // Show fullscreen
+        $(preview).addClass("full");
+        // Autoplay video, audio
+        $("audio,video",preview).each(function(){preview.play();});
+        // Prevent click closing it
+        $("*:not(a)",preview).click(function(e){
+            e.stopPropagation();
+        });
+        // Full image
+        $(".image",preview).each(function(){
+            $("img",preview).attr("src", $("a",preview).attr("href"));
+        });
+        // Refit
+        refitPreview();
+    }
+
     $(document).on("register-post", function(e, post){
         // Inserting
         $(".post .id", post).click(function(){
@@ -22,28 +49,24 @@ $(document).on("purplish-init-start", function(){
         $(".preview>a", post).click(function(e){$(this).parent().click();return false;});
         $(".preview", post).click(function(){
             if($(this).hasClass("full")){
-                // Show inline
-                $(this).removeClass("full");
-                // Make clicking propagate to the preview again
-                $("*:not(a)",this).unbind("click");
+                exitPreview(this);
             }else{
-                // Show fullscreen
-                $(this).addClass("full");
-                // Autoplay video, audio
-                $("audio,video",this).each(function(){this.play();});
-                // Prevent click closing it
-                $("*:not(a)",this).click(function(e){
-                    e.stopPropagation();
-                });
-                // Full image
-                $(".image",this).each(function(){
-                    $("img",this).attr("src", $(this).attr("href"));
-                });
-                // Refit
-                refitPreview();
+                enterPreview(this);
             }
         });
     });
+
+    $(document).on("purplish-current-file-changed", function(e, file){
+        if($(".preview.full").length != 0){
+            purplish.log("Simulating preview switch...");
+            $(".preview",file).click();
+        }
+    });
+
+    purplish.bindKey("escape", exitPreview,
+                     "Exit the preview");
+    purplish.bindKey("return", enterPreview,
+                     "Enter preview mode for the current file.");
     
     $(window).resize(function(){
         refitPreview();
