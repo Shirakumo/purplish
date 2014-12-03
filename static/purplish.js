@@ -1,6 +1,9 @@
 function Purplish(){
     this.postFetchIntervalID = null;
     this.postFetchInterval = 15000;
+    this.currentPost = null;
+    this.currentFile = null;
+    this.keychords = {};
 }
 var purplish = null;
 
@@ -25,6 +28,26 @@ $(function (){
             purplish.zeroPadDate(date.getHours())+":"+
             purplish.zeroPadDate(date.getMinutes())+":"+
             purplish.zeroPadDate(date.getSeconds());
+    }
+
+    Purplish.prototype.nextOfKind = function(kind, thing){
+        var things = $(kind);
+        for(var i=0; i<things.length; i++){
+            if(things[i] == thing){
+                return things[i+1] || null;
+            }
+        }
+        return null;
+    }
+
+    Purplish.prototype.previousOfKind = function(kind, thing){
+        var things = $(kind);
+        for(var i=things.length-1; i>=0; i--){
+            if(things[i] == thing){
+                return things[i-1] || null;
+            }
+        }
+        return null;
     }
 
     Purplish.prototype.saveName = function(name){
@@ -59,6 +82,10 @@ $(function (){
         });
         return null;
     }
+
+    Purplish.prototype.rotateHeader = function(){
+        return $("#header-image").attr("src", "/api/purplish/header?t="+new Date().getTime());
+    }
     
     Purplish.prototype.callWithThreadPostIDs = function(thread, callback){
         return this.callRadianceApi("/api/purplish/thread/post-ids",
@@ -73,6 +100,10 @@ $(function (){
                                     callback);
     }
 
+    Purplish.prototype.currentBoard = function(){
+        return $("#replybox input[name='board']").val();
+    }
+
     Purplish.prototype.getPost = function(id){
         var post = $(".post[data-post-id="+id+"]");
         if (post.length == 0)
@@ -80,17 +111,85 @@ $(function (){
         return post;
     }
 
+    Purplish.prototype.getThread = function(id){
+        var post = $(".thread[data-thread-id="+id+"]");
+        if (post.length == 0)
+            purplish.log("[Warn] No thread with ID",id,"found");
+        return post;
+    }
+    
+    Purplish.prototype.getFile = function(id){
+        var file = $(".file[data-file-id="+id+"]");
+        if(file.length == 0)
+            purplish.log("[Warn] No file with ID",id,"found");
+        return file;
+    }
+    
     Purplish.prototype.ensurePost = function(thing){
-        if (thing instanceof jQuery){
-            if(thing.length == 0)
-                purplish.log("[Warn] Ensuring 0-length jQuery object",thing,"to post");
+        if(thing instanceof jQuery && thing.hasClass("post")){
             return thing;
-        }else if (parseInt(Number(thing)) == thing){
+        }else if(thing instanceof Element && $(thing).hasClass("post")){
+            return $(thing);
+        }else if(parseInt(Number(thing)) == thing){
             return purplish.getPost(thing);
         }else{
             purplish.log("[Warn] Don't know how to ensure",thing,"to a post");
             return thing;
         }
+    }
+    
+    Purplish.prototype.ensureThread = function(thing){
+        if(thing instanceof jQuery && thing.hasClass("thread")){
+            return thing;
+        }else if(thing instanceof Element && $(thing).hasClass("thread")){
+            return $(thing);
+        }else if(parseInt(Number(thing)) == thing){
+            return purplish.getThread(thing);
+        }else{
+            purplish.log("[Warn] Don't know how to ensure",thing,"to a thread");
+            return thing;
+        }
+    }
+    
+    Purplish.prototype.ensureFile = function(thing){
+        if(thing instanceof jQuery && thing.hasClass("file")){
+            return thing;
+        }else if(thing instanceof Element && $(thing).hasClass("file")){
+            return $(thing);
+        }else if(parseInt(Number(thing)) == thing){
+            return purplish.getFile(thing);
+        }else{
+            purplish.log("[Warn] Don't know how to ensure",thing,"to a file");
+            return thing;
+        }
+    }
+    
+    Purplish.prototype.previousPost = function(thing){
+        return purplish.previousOfKind(".post", purplish.ensurePost(thing || purplish.currentPost)[0]);
+    }
+    
+    Purplish.prototype.nextPost = function(thing){
+        return purplish.nextOfKind(".post", purplish.ensurePost(thing || purplish.currentPost)[0]);
+    }
+    
+    Purplish.prototype.postFiles = function(thing){
+        return $(".files .file",purplish.ensurePost(thing || purplish.currentPost));
+    }
+
+    Purplish.prototype.postThread = function(thing){
+        return purplish.ensurePost(thing || purplish.currentPost).closest(".thread");
+    }
+    
+    Purplish.prototype.filePost = function(thing){
+        return purplish.ensureFile(thing || purplish.currentFile).closest(".post");
+    }
+    
+    Purplish.prototype.previousFile = function(thing){
+        return purplish.previousOfKind(".file", purplish.ensureFile(thing || purplish.currentFile)[0]);
+    }
+
+    Purplish.prototype.nextFile = function(thing){
+        return purplish.nextOfKind(".file", purplish.ensureFile(thing || purplish.currentFile)[0]);
     }
 
     Purplish.prototype.localPostIDs = function(){
@@ -204,25 +303,110 @@ $(function (){
         return null;
     }
 
-    Purplish.prototype.highlightPost = function(id){
-        var post = purplish.ensurePost(id);
-        purplish.log("Highlighting post",post.data("post-id"));
-        $(".post.highlight").removeClass("highlight");
-        $(".post[data-post-id="+post.data("post-id")+"]").addClass("highlight");
+    Purplish.prototype.setCurrentFile = function(thing, changePost){
+        var file = purplish.ensureFile(thing);
+        purplish.log("Setting current file",file);
+        if(typeof(changePost)==='undefined')changePost=true;
+        if(file && changePost){
+            purplish.setCurrentPost(purplish.filePost(file));
+        }
+        purplish.currentFile = file;
+        $(".file.highlight").removeClass("highlight");
+        $(file).addClass("highlight");
+        $(document).trigger("purplish-current-file-changed", file);
+        return file;
     }
 
-    Purplish.prototype.gotoPost = function(id){
-        var post = purplish.ensurePost(id);
-        if(post.length==0){
-            purplish.log("Going to post",id);
-            window.location = "/post/"+id;
-        }else{
-            purplish.log("Scrolling to post",post.data("post-id"));
-            purplish.highlightPost(id);
+    Purplish.prototype.setCurrentPost = function(thing){
+        var post = purplish.ensurePost(thing);
+        purplish.log("Setting current post",post);
+        purplish.currentPost = post;
+        purplish.setCurrentFile($(purplish.postFiles(post)[0]), false);
+        $(".post.highlight").removeClass("highlight");
+        $(".post[data-post-id="+post.data("post-id")+"]").addClass("highlight");
+        $(document).trigger("purplish-current-post-changed", post);
+        return post;
+    }
+
+    Purplish.prototype.highlightPost = function(thing){
+        var post = purplish.ensurePost(thing);
+        purplish.log("Highlighting post",post.data("post-id"));
+        return purplish.setCurrentPost(post);
+    }
+
+    Purplish.prototype.highlightFile = function(thing){
+        var file = purplish.ensureFile(thing);
+        purplish.log("Highlighting file",file.data("file-id"));
+        return purplish.setCurrentFile(file);
+    }
+
+    Purplish.prototype.jumptoBoard = function(id){
+        purplish.log("Going to board",id);
+        window.location = "/board/"+id;
+    }
+
+    Purplish.prototype.gotoPost = function(thing){
+        var post = purplish.ensurePost(thing);
+        if(post){
+            if(post.length==0){
+                purplish.jumptoPost(thing);
+            }else{
+                purplish.log("Scrolling to post",post.data("post-id"));
+                purplish.highlightPost(id);
+                $('html, body').stop().animate({
+                    scrollTop: $(">a[name]",post).offset().top
+                }, 200);
+            }
+        }
+        return post;
+    }
+
+    Purplish.prototype.jumptoPost = function(id){
+        purplish.log("Jumping to post",id);
+        window.location = "/post/"+id;
+    }
+
+    Purplish.prototype.gotoThread = function(id){
+        var thread = purplish.ensureThread(id);
+        if(thread){
+            if(thread.length==0){
+                purplish.jumptoThread(id);
+            }else{
+                purplish.log("Scrolling to thread",thread.data("thread-id"));
+                purplish.setCurrentPost($(".post",thread)[0]);
+                $('html, body').stop().animate({
+                    scrollTop: $("a[name]",thread).offset().top
+                }, 200);
+            }
+        }
+        return thread;
+    }
+
+    Purplish.prototype.jumptoThread = function(id){
+        var thread = purplish.ensureThread(id);
+        id = (thread)? thread.data("thread-id") : id;
+        purplish.log("Jumping to thread",id);
+        window.location = "/thread/"+id;
+    }
+
+    Purplish.prototype.gotoFile = function(thing){
+        var file = purplish.ensureFile(thing);
+        if(file){
+            purplish.log("Scrolling to file",file);
+            purplish.highlightFile(file);
             $('html, body').stop().animate({
-                scrollTop: $(">a[name]",post).offset().top
+                scrollTop: file.offset().top-50
             }, 200);
         }
+        return file;
+    }
+
+    Purplish.prototype.gotoPostBox = function(){
+        $('html, body').stop().animate({
+            scrollTop: $("#replybox").offset().top-50
+        }, 200);
+        $("#replybox textarea").focus();
+        return $("#replybox");
     }
 
     Purplish.prototype.initPostBox = function(box){
@@ -277,14 +461,61 @@ $(function (){
         });
     }
 
+    Purplish.prototype.bindKey = function(key, func, explanation){
+        Mousetrap.bind(key, func);
+        purplish.keychords[key] = explanation || "?";
+    }
+
+    Purplish.prototype.initKeychords = function(){
+        purplish.bindKey("h",purplish.rotateHeader,
+                        "Rotate the header.");
+        purplish.bindKey("p",purplish.gotoPostBox,
+                        "Jump to the post box.");
+        purplish.bindKey("n",function(){$("html,body").scrollTop(0);},
+                        "Jump to the top of the page.");
+        purplish.bindKey("m",function(){$("html,body").scrollTop($(document).height());},
+                        "Jump to the bottom of the page.");
+        purplish.bindKey("w",function(){purplish.gotoPost(purplish.previousPost());},
+                        "Go to the previous post.");
+        purplish.bindKey("s",function(){purplish.gotoPost(purplish.nextPost());},
+                        "Go to the next post.");
+        purplish.bindKey("a",function(){purplish.gotoFile(purplish.previousFile());},
+                        "Go to the previous file.");
+        purplish.bindKey("d",function(){purplish.gotoFile(purplish.nextFile());},
+                        "Go to the next file.");
+        purplish.bindKey("x",function(){purplish.downloadFile();},
+                        "Download the current file.");
+        purplish.bindKey("q",function(){history.back()},
+                        "Go backwards in the browser history.");
+        purplish.bindKey("e",function(){history.forward()},
+                        "Go forwards in the browser history.");
+        purplish.bindKey("b",function(){purplish.jumptoBoard(purplish.currentBoard());},
+                        "Go to the board.");
+        purplish.bindKey("v",function(){purplish.jumptoThread(purplish.postThread());},
+                        "Go to the thread of the current post.");
+
+        // We have to override this because the default implementation
+        // is broken.
+        Mousetrap.stopCallback = function(e, element, combo) {
+            return element.tagName == 'input' || element.tagName == 'select' || element.tagName == 'textarea' ||
+                (element.contentEditable && element.contentEditable == 'true');
+        }
+        purplish.log("Keychords ready");
+    }
+
     Purplish.prototype.init = function(){
         purplish.log("Init...");
 
         // Remote comps init
         $(document).trigger("purplish-init-start");
 
+        // Header rotate
+        $("#header-image").click(purplish.rotateHeader);
+
         // Register existing posts
         $(".post").each(function(){purplish.registerPost($(this));});
+
+        purplish.setCurrentPost($(".post")[0]);
         
         // Highlight linked
         var hash = window.location.hash;
@@ -292,15 +523,18 @@ $(function (){
             purplish.highlightPost(hash.slice("#post-".length));
         }
 
+        // Keychords
+        purplish.initKeychords();
+
+        // Posbox
+        purplish.initPostBox($("#replybox"));
+
         // Theme picking
         $("#themes li").click(function(){
             var theme = $(this).text();
             purplish.setTheme(theme);
             loadTheme(theme);
         });
-
-        // Posbox
-        purplish.initPostBox($("#replybox"));
 
         // Post fetching
         purplish.startPostFetching();
