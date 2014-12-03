@@ -304,11 +304,11 @@ $(function (){
     }
 
     Purplish.prototype.setCurrentFile = function(thing, changePost){
-        var file = purplish.ensureFile(thing);
-        purplish.log("Setting current file",file);
         if(typeof(changePost)==='undefined')changePost=true;
+        var file = purplish.ensureFile(thing);
+        purplish.log("Setting current file",file.data("file-id"));
         if(file && changePost){
-            purplish.setCurrentPost(purplish.filePost(file));
+            purplish.setCurrentPost(purplish.filePost(file), false);
         }
         purplish.currentFile = file;
         $(".file.highlight").removeClass("highlight");
@@ -317,11 +317,14 @@ $(function (){
         return file;
     }
 
-    Purplish.prototype.setCurrentPost = function(thing){
+    Purplish.prototype.setCurrentPost = function(thing, changeFile){
+        if(typeof(changeFile)==='undefined')changeFile=true;
         var post = purplish.ensurePost(thing);
-        purplish.log("Setting current post",post);
+        purplish.log("Setting current post",post.data("post-id"));
         purplish.currentPost = post;
-        purplish.setCurrentFile($(purplish.postFiles(post)[0]), false);
+        if(changeFile){
+            purplish.setCurrentFile($(purplish.postFiles(post)[0]), false);
+        }
         $(".post.highlight").removeClass("highlight");
         $(".post[data-post-id="+post.data("post-id")+"]").addClass("highlight");
         $(document).trigger("purplish-current-post-changed", post);
@@ -462,7 +465,9 @@ $(function (){
     }
 
     Purplish.prototype.bindKey = function(key, func, explanation){
-        Mousetrap.bind(key, func);
+        Mousetrap.bind(key, function(){
+            purplish.log("Triggering key func",key);
+            func()});
         purplish.keychords[key] = explanation || "?";
     }
 
