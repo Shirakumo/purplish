@@ -120,7 +120,7 @@
                      (if revision
                          (dm:field revision "title")
                          (dm:field thread "title")))
-            :thread thread :posts posts)
+            :board `(:_id ,(dm:field thread "board")) :thread thread :posts posts)
            stream)
           path))
 
