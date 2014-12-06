@@ -59,6 +59,13 @@
      ;;        (list (cdr (assoc :band--id json))
      ;;              (cdr (assoc :album--id json))
      ;;              (cdr (assoc :track--id json)))))))
+
+     ;; KLUDGE!
+     ;; Since we cannot use a nice API we have to do crawling. There's a JS block within the page
+     ;; that contains the info we need. Sadly it is JS and not JSON, so we can't use a parser to get
+     ;; what we need easily and need to do everything by RegEx. This might break horribly if they
+     ;; change anything at all about how the data is presented, but I don't think there's any other
+     ;; choice right now aside from writing a specific parser for this, which is overkill.
      (ignore-errors
       (let ((site (drakma:http-request (format NIL "http://~a.bandcamp.com/~a/~a" band a/t id))))
         (cl-ppcre:register-groups-bind (resp) ("var\\s*EmbedData\\s*=\\s*(\\{[\\s\\S]*?\\});" site)
