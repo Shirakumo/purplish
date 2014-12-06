@@ -48,15 +48,22 @@
           address))
 
 (defun bandcamp-code (url)
-  (ignore-errors
-   (when (cl-ppcre:scan "^((http|https)://)?(www\\.)?([0-9a-zA-Z_\\-]+)\\.bandcamp\\.com/(album|track)/([^/]+)$" url)
-     (let* ((drakma:*text-content-types* (cons '("application" . "json") (cons '("text" . "json") drakma:*text-content-types*)))
-            (resp (drakma:http-request "http://api.bandcamp.com/api/url/1/info" :parameters `(("key" . "vatnajokull")
-                                                                                              ("url" . ,url)))))
-       (let ((json (cl-json:decode-json-from-string resp)))
-         (list (cdr (assoc :band--id json))
-               (cdr (assoc :album--id json))
-               (cdr (assoc :track--id json))))))))
+  (cl-ppcre:register-groups-bind (NIL NIL NIL band a/t id) ("^((http|https)://)?(www\\.)?([0-9a-zA-Z_\\-]+)\\.bandcamp\\.com/(album|track)/([^/]+)$" url)
+    (or ;; Apparently this has been discontinued.
+     ;; (ignore-errors
+     ;;  (let* ((drakma:*text-content-types* (cons '("application" . "json") (cons '("text" . "json") drakma:*text-content-types*)))
+     ;;         (resp (drakma:http-request "http://api.bandcamp.com/api/url/1/info" :parameters `(("key" . "vatnajokull")
+     ;;                                                                                           ("url" . ,url)))))
+     ;;    (let ((json (cl-json:decode-json-from-string resp)))
+     ;;      (unless (cdr (assoc :error json))
+     ;;        (list (cdr (assoc :band--id json))
+     ;;              (cdr (assoc :album--id json))
+     ;;              (cdr (assoc :track--id json)))))))
+     (ignore-errors
+      (let ((site (drakma:http-request (format NIL "http://~a.bandcamp.com/~a/~a" band a/t id))))
+        (cl-ppcre:register-groups-bind (resp) ("var\\s*EmbedData\\s*=\\s*(\\{[\\s\\S]*?\\});" site)
+          (cl-ppcre:register-groups-bind (album track band) ("\"album.*value\\s*:\\s*([0-9]+)[\\s\\S]*?track_id\\s*:\\s*([0-9]+)[\\s\\S]*?art_id\\s*:\\s*([0-9]+)" resp)
+            (list band album track))))))))
 
 (define-external-embedder bandcamp (address)
   (destructuring-bind (band album track) (or (bandcamp-code address) (return))
