@@ -249,11 +249,11 @@ $(function (){
     }
 
     Purplish.prototype.integratePost = function(post){
-        var post = $($.parseHTML(post));
+        var post = purplish.ensurePost(post);
         if($(".posts .post[data-post-id="+post.data("post-id")+"]").length == 0){
-            purplish.registerPost(post);
             var li = $(document.createElement("li"));
             $(".posts").append(li.append(post));
+            purplish.registerPost(post);
         }
         return post;
     }
@@ -273,7 +273,7 @@ $(function (){
                 var callFunc = null;
                 callFunc = function(post){
                     if(post != null){
-                        purplish.integratePost(post);
+                        purplish.integratePost($($.parseHTML(post.trim())));
                     }
                     if(i < inexistent.length){
                         purplish.callWithRenderedPost(inexistent[i],callFunc);
