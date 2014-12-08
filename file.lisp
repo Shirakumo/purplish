@@ -38,7 +38,9 @@
   ((:audio/mpeg :audio/x-wav :audio/ogg)
    (file name) (clip:process (template "files/audio.ctml") :file file :name name))
 
-  ((:application/pdf)
+  ((:text/plain :text/html :text/css :text/javascript :application/x-javascript
+    :application/pdf :application/epub+zip :application/x-mobipocket-ebook
+    :message/rfc822 :application/xml)
    (file name) (clip:process (template "files/general.ctml") :file file :name name)))
 
 (defun file-path (file)
