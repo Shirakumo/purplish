@@ -4,6 +4,9 @@
       <li>
         <a href="/">Frontpage</a>
       </li>
+      <li>
+        <a id="user-panel-link" @href="<auth>/<auth:page;login>">Login</a>
+      </li>
       <c:splice iterate="(purplish::boards)">
         <li>
           <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name) :title description)">BOARD</a>

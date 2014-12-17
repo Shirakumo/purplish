@@ -32,7 +32,10 @@
           (let ((doc (plump:parse stream))
                 (user (auth:current)))
             (when user
-              (lquery:$ doc "#replybox .author" (val (user:username user))))
+              (lquery:$ doc "#replybox .author" (val (user:username user)))
+              (if (implementation :admin)
+                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-string (resolve #?"<admin>/"))) (text "UCP"))
+                  (lquery:$ doc "#user-panel-link" (remove))))
             (remove-inaccessible-options doc user)
             (show-error doc)
             (with-output-to-string (stream)
