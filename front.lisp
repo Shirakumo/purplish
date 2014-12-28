@@ -34,7 +34,7 @@
             (when user
               (lquery:$ doc "#replybox .author" (val (user:username user)))
               (if (implementation :admin)
-                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-string (resolve #?"<admin>/"))) (text "UCP"))
+                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-url (resolve #?"<admin>/") :representation :external)) (text "UCP"))
                   (lquery:$ doc "#user-panel-link" (remove))))
             (remove-inaccessible-options doc user)
             (show-error doc)
