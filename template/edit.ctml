@@ -8,7 +8,7 @@
   <body>
     <c:splice lquery="(purplish-template :header)" />
     <c:using value="post">
-      <form id="replybox" action="/api/purplish/post/edit" method="post" enctype="multipart/form-data">
+      <form id="replybox" @action="/api/purplish/post/edit" method="post" enctype="multipart/form-data">
         <header>
           <input type="hidden" name="browser" value="true" />
           <input type="hidden" name="post" value="ID" lquery="(val _id)"/>

@@ -6,10 +6,8 @@
   </subtitle>
   <updated lquery="(text (purplish::date-machine updated))"></updated>
   <id>http://chan.<c:splice lquery="(text domain)" />/</id>
-  <link rel="alternate" type="text/html" hreflang="en" href="http://chan.DOMAIN/"
-        lquery="(attr :href (format NIL &quot;http://chan.~a/&quot; domain))"/>
-  <link rel="self" type="application/atom+xml" href="http://chan.DOMAIN/api/purplish/atom"
-        lquery="(attr :href (format NIL &quot;http://chan.~a/api/purplish/atom~@[?board=~a~]&quot; domain board))"/>
+  <link rel="alternate" type="text/html" hreflang="en" @href="chan/"/>
+  <link rel="self" type="application/atom+xml" @href='(#?"chan/api/purplish/atom{0}" (format NIL "~@[?board=~a~]" board))'/>
   <rights>Copyright (c) 2014, TymoonNET/NexT</rights>
   <generator uri="http://github.com/Shinmera/purplish/" version="1.0">
     purplish

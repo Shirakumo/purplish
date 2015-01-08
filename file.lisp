@@ -44,10 +44,10 @@
    (file name) (clip:process (template "files/general.ctml") :file file :name name)))
 
 (defun file-path (file)
-  (format NIL "/static/purplish/file/~a/~a.~a"
-          (dm:field file "board")
-          (dm:id file)
-          (dm:field file "type")))
+  (external-pattern "/static/purplish/file/{0}/{1}.{2}"
+                    (dm:field file "board")
+                    (dm:id file)
+                    (dm:field file "type")))
 
 (defun embed-file (file)
   (let ((file (ensure-file file)))

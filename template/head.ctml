@@ -1,7 +1,7 @@
-<link rel="stylesheet" type="text/css" href="/static/purplish/theme/default.css" class="theme-part" />
-<script type="text/javascript" src="/static/purplish/theme.js"></script>
+<link rel="stylesheet" type="text/css" @href="/static/purplish/theme/default.css" class="theme-part" />
+<script type="text/javascript" @src="/static/purplish/theme.js"></script>
 <meta name="viewport" content="width=device-width" />
 <meta name="description" content="SOME-CHAN" lquery="(attr :content (config-tree :purplish :description))" />
 <meta name="robots" content="index, follow" />
-<link href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN"
+<link @href="/api/purplish/atom" type="application/atom+xml" rel="alternate" title="SOME-CHAN"
       lquery="(attr :title (config-tree :purplish :title))"/>

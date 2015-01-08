@@ -8,6 +8,7 @@
 (define-module #:purplish
   (:nicknames #:org.tymoonnext.radiance.purplish)
   (:use #:cl #:radiance)
+  (:domain "chan")
   ;; atom.lisp
   (:export
    #:atom-cache

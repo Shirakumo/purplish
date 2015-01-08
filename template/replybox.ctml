@@ -1,5 +1,4 @@
-<form id="replybox" action="/api/purplish/post/create" method="post" enctype="multipart/form-data"
-      lquery='(attr :action (if thread "/api/purplish/post/create" "/api/purplish/thread/create"))'>
+<form id="replybox" @action='(#?"/api/purplish/{0}/create" (if thread "post" "thread"))' method="post" enctype="multipart/form-data">
   <a name="reply"/>
   <header>
     <input type="hidden" name="browser" value="true" />
@@ -23,7 +22,7 @@
     </div>
     <textarea class="text" name="text" tabindex="3"
               lquery='(attr :required (unless thread "required"))'></textarea>
-    <a class="help" href="/static/purplish/markup.html" target="_blank">Markup Help</a>
+    <a class="help" @href="/static/purplish/markup.html" target="_blank">Markup Help</a>
   </div>
   <footer>
     <input type="submit" value="Post" lquery='(val (if thread "Post" "Make Thread"))' tabindex="4" />

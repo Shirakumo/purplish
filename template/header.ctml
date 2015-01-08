@@ -2,21 +2,21 @@
   <nav id="top">
     <ul id="links">
       <li>
-        <a href="/">Frontpage</a>
+        <a @href="chan/">Frontpage</a>
       </li>
       <li>
-        <a id="user-panel-link" @href="<auth>/<auth:page;login>">Login</a>
+        <a id="user-panel-link" @href="<auth:page;login,<purplish>>">Login</a>
       </li>
       <c:splice iterate="(purplish::boards)">
         <li>
-          <a href="/board/BOARD" lquery="(text name) (attr :href (format NIL &quot;/board/~a&quot; name) :title description)">BOARD</a>
+          <a @href='(#?"chan/board/{0}" name)' lquery="(text name) (attr :title description)">BOARD</a>
         </li>
       </c:splice>
     </ul>
     <ul id="themes" iterate="(purplish::themes)" title="Pick a theme">
       <li lquery="(text *)"></li>
     </ul>
-    <form action="/search" method="get">
+    <form @action="chan/search" method="get">
       <input type="search" name="s" placeholder="Find here..." />
       <input type="hidden" name="thread" value=""
              lquery="(val (when thread (clip thread :_id)))"/>
