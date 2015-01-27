@@ -3,7 +3,7 @@
            lquery="(attr :data-post-id _id :data-post-revision (if (** :revision) (clip (** :revision) :revision) 0))">
     <a name="POST-ID" lquery='(attr :name (format NIL "post-~a" _id))'/>
     <header>
-      <a class="id" @href='(#?"chan/thread/{0}#post-{0}" (if (= -1 parent) _id parent) _id)' lquery='(text _id)'>ID</a>
+      <a class="id" @href='(#?"chan/thread/{0}#post-{1}" (if (= -1 parent) _id parent) _id)' lquery='(text _id)'>ID</a>
       <address class="author"><a rel="author"
                                  lquery='(text author) (attr :href (when (= 1 registered) (external-pattern "<profile:user;{0}>" author)))
                                          (add-class (when (= 1 registered) "registered"))'>AUTHOR</a></address>
