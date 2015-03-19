@@ -61,8 +61,8 @@
             (dm:field post "registered") (or* registered 0)
             (dm:field post "time") (get-universal-time)
             (dm:field post "updated") (get-universal-time)
-            (dm:field post "title") title
-            (dm:field post "text") text)
+            (dm:field post "title") (or title "")
+            (dm:field post "text") (or text ""))
       (dm:insert post)
 
       ;; Shuffle files around
@@ -124,8 +124,8 @@
                 (dm:field edit "deleted") (if delete 1 0)
                 (dm:field edit "time") (get-universal-time)
                 (dm:field edit "updated") (get-universal-time)
-                (dm:field edit "title") title
-                (dm:field edit "text") text)
+                (dm:field edit "title") (or title "")
+                (dm:field edit "text") (or text ""))
           (dm:insert edit)
           ;; Publicise!
           (recache-post post))
