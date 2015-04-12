@@ -25,7 +25,12 @@
        ,@body)))
 
 (defmacro with-api-error (&body body)
-  `(handler-case (progn ,@body)
+  `(handler-case
+       (handler-bind
+           ((error (lambda (err)
+                     (when *debugger*
+                       (invoke-debugger err)))))
+         ,@body)
      (radiance-error (err)
        (error 'api-error :message (message err)))
      (error (err)
