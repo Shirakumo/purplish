@@ -563,7 +563,10 @@
             (.files
              :min-width 120px
              :max-width 120px
-             (* :max-width 120px !important))))
+             (* :max-width 120px !important)
+             (.preview.full
+              :max-width 100% !important
+              (* :max-width 100% !important)))))
           
           ("#replybox"
            :padding 2px
