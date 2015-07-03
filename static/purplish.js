@@ -1,6 +1,6 @@
 function Purplish(){
     this.postFetchIntervalID = null;
-    this.postFetchInterval = 15000;
+    this.postFetchInterval = 60000;
     this.currentPost = null;
     this.currentFile = null;
     this.keychords = {};
