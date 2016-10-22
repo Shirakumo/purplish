@@ -163,7 +163,7 @@
     (plump:serialize
      (clip:process
       (plump:parse (template "frontpage.ctml"))
-      :title (config-tree :purplish :title)
+      :title (config :title)
       :posts (dm:get 'purplish-posts (db:query (:= 'revision 0))
                      :amount 20 :sort '((time :DESC))))
      stream)))

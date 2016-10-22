@@ -42,8 +42,8 @@
     
     (execute (dm:get 'purplish-posts (db:query (:= 'revision 0))
                      :amount 20 :sort '((time :DESC)))
-             (config-tree :purplish :title)
-             (config-tree :purplish :description)
+             (config :title)
+             (config :description)
              (atom-cache))))
 
 (define-trigger purplish:board-created (id)

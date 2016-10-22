@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8"/>
-    <title>Frontpage - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
+    <title>Frontpage - <c:splice lquery="(text (mconfig :purplish :title))" /></title>
     <c:splice lquery="(purplish-template :head)" />
   </head>
   <body>
@@ -10,7 +10,7 @@
     <main id="frontpage">
       <div id="news">
         <h2>Breaking News</h2>
-        <div lquery='(html (purplish::parse (or (config-tree :purplish :news) "No news :(")))'>
+        <div lquery='(html (purplish::parse (or (mconfig :purplish :news) "No news :(")))'>
         </div>
       </div>
       <div id="recent-posts">

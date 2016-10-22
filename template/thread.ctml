@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8"/>
-    <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (config-tree :purplish :title))" /></title>
+    <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (mconfig :purplish :title))" /></title>
     <c:splice lquery="(purplish-template :head)" />
     <link @href='(#?"/api/purplish/atom?board={0}" (clip board :_id))' type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
-          lquery='(attr :title (format NIL "~a ~a" (clip board :name) (config-tree :purplish :title)))'/>
+          lquery='(attr :title (format NIL "~a ~a" (clip board :name) (mconfig :purplish :title)))'/>
   </head>
   <body>
     <a name="top" />

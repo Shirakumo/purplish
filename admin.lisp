@@ -39,13 +39,13 @@
   (admin:define-panel settings purplish (:access (perm purplish admin config) :icon "fa-gears" :tooltip "Change the purplish configuration" :lquery (template "admin-config.ctml"))
     (with-actions (error info)
         ((:save
-          (setf (config-tree :purplish :title) (post-var "title")
-                (config-tree :purplish :description) (post-var "description")
-                (config-tree :purplish :news) (post-var "news")
-                (config-tree :purplish :thumb :width) (post-var "thumb-width")
-                (config-tree :purplish :thumb :height) (post-var "thumb-height")
-                (config-tree :purplish :thumb :gif) (post-var "thumb-gif")
-                (config-tree :purplish :file :size-limit) (post-var "file-size-limit"))))
+          (setf (config :title) (post-var "title")
+                (config :description) (post-var "description")
+                (config :news) (post-var "news")
+                (config :thumb :width) (post-var "thumb-width")
+                (config :thumb :height) (post-var "thumb-height")
+                (config :thumb :gif) (post-var "thumb-gif")
+                (config :file :size-limit) (post-var "file-size-limit"))))
       (r-clip:process
        T :error error :info info)))
 
