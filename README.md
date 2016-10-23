@@ -17,12 +17,12 @@ Interface Dependencies
 
 Configuration Variables
 -----------------------
-* `(:purplish :title)`
-* `(:purplish :description)`
-* `(:purplish :thumb :width)`
-* `(:purplish :thumb :height)`
-* `(:purplish :thumb :gif)`
-* `(:purplish :file :size-limit)`
+* `(:title)`
+* `(:description)`
+* `(:thumb :width)`
+* `(:thumb :height)`
+* `(:thumb :gif)`
+* `(:file :size-limit)`
 
 Permissions
 -----------

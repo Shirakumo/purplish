@@ -6,6 +6,13 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
+(defaulted-config "Purplish" :title)
+(defaulted-config "An unconfigured imageboard." :description)
+(defaulted-config 128 :thumb :width)
+(defaulted-config 128 :thumb :height)
+(defaulted-config T :thumb :gif)
+(defaulted-config 5000 :file :size-limit)
+
 (defun ensure-file (file)
   (or
    (etypecase file
