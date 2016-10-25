@@ -143,14 +143,14 @@
     (error 'api-argument-invalid :argument 'name :message "A board with that name already exists."))
   (with-api-error (create-board name description (string= visible "true")))
   (if (string= (post/get "browser") "true")
-      (redirect (external-pattern "chan/board/{0}" name) 303)
+      (redirect (external-uri (format NIL "chan/board/~a" name)) 303)
       (api-output "Board created.")))
 
 (define-api purplish/board/delete (board) (:access (perm purplish board delete))
   (with-board (board board)
     (with-api-error (delete-board board))
     (if (string= (post/get "browser") "true")
-        (redirect (external-pattern "chan/") 303)
+        (redirect (external-uri "chan/") 303)
         (api-output "Board deleted."))))
 
 (define-api purplish/thread/create (board title text files[] &optional author username) ()
@@ -161,13 +161,13 @@
       (let ((thread (with-api-error (create-post (dm:id board) -1 title text files[] author
                                                  (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))
         (if (string= (post/get "browser") "true")
-            (redirect (external-pattern "chan/thread/{0}" (dm:id thread)) 303)
+            (redirect (external-uri (format NIL "chan/thread/~a" (dm:id thread))) 303)
             (api-output "Thread created."))))))
 
 (define-api purplish/thread/move (thread new-board) (:access (perm purplish thread move))
   (with-api-error (move-thread thread new-board))
   (if (string= (post/get "browser") "true")
-      (redirect (external-pattern "chan/thread/{0}" thread) 303)
+      (redirect (external-uri (format NIL "chan/thread/~a" thread)) 303)
       (api-output "Thread moved.")))
 
 (define-api purplish/thread/delete (thread) ()
@@ -178,7 +178,7 @@
       (error 'api-auth-error :message "You do not have permission to delete threads."))
     (with-api-error (delete-post thread :purge T))
     (if (string= (post/get "browser") "true")
-        (redirect (external-pattern "chan/board/{0}" (dm:field thread "board")) 303)
+        (redirect (external-uri (format NIL "chan/board/~a" (dm:field thread "board"))) 303)
         (api-output "Thread purged."))))
 
 (define-api purplish/post/create (thread &optional author title text files[] username) ()
@@ -194,7 +194,7 @@
                     (create-post (dm:field thread "board") (dm:id thread) title text files[] author
                                  (if (and author (auth:current) (string-equal (user:username (auth:current)) author)) 1 0)))))        
         (if (string= (post/get "browser") "true")
-            (redirect (external-pattern "chan/post/{0}" (dm:id post)) 303)
+            (redirect (external-uri (format NIL "chan/post/~a" (dm:id post))) 303)
             (api-output "Post created."))))))
 
 (define-api purplish/post/edit (post &optional title text) ()
@@ -202,7 +202,7 @@
     (with-post-accessible (post)
       (with-api-error (edit-post post (user:username (auth:current)) title text))
       (if (string= (post/get "browser") "true")
-          (redirect (external-pattern "chan/post/{0}" (dm:id post)) 303)
+          (redirect (external-uri (format NIL "chan/post/~a" (dm:id post))) 303)
           (api-output "Board created.")))))
 
 (define-api purplish/post/delete (post &optional purge) ()
@@ -213,23 +213,23 @@
               (user:check (auth:current) (perm purplish post purge)))
          (with-api-error (delete-post post :purge T))
          (if (string= (post/get "browser") "true")
-             (redirect (external-pattern "chan/thread/{0}" (dm:field post "parent")))
+             (redirect (external-uri (format NIL "chan/thread/~a" (dm:field post "parent"))))
              (api-output "Post purged.")))
         ((string= purge "true")
          (error 'api-auth-error :message "You do not have permission to purge posts."))
         (T
          (with-api-error (delete-post post))
          (if (string= (post/get "browser") "true")
-             (redirect (external-pattern "chan/post/{0}" (dm:id post)) 303)
+             (redirect (external-uri (format NIL "chan/post/~a" (dm:id post))) 303)
              (api-output "Post deleted.")))))))
 
 (define-api purplish/post/move (post new-thread) (:access (perm purplish post move))
   (with-api-error (move-post post new-thread))
   (if (string= (post/get "browser") "true")
-      (redirect (external-pattern "chan/post/{0}" post) 303)
+      (redirect (external-uri (format NIL "chan/post/~a" post)) 303)
       (api-output "Post moved.")))
 
 (define-api purplish/header () ()
   (let ((header (random-header)))
-    (redirect (external-pattern "/static/purplish/headers/{0}.{1}"
-                      (pathname-name header) (pathname-type header)))))
+    (redirect (external-uri (format NIL "/static/purplish/headers/~a. a"
+                                    (pathname-name header) (pathname-type header))))))

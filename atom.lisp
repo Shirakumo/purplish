@@ -7,11 +7,11 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun atom-post-link (post)
-  (external-pattern "chan/thread/{0}#post-{0}"
-                    (if (= -1 (dm:field post "parent"))
-                        (dm:id post)
-                        (dm:field post "parent"))
-                    (dm:id post)))
+  (external-uri (format NIL "chan/thread/~a#post-~a"
+                        (if (= -1 (dm:field post "parent"))
+                            (dm:id post)
+                            (dm:field post "parent"))
+                        (dm:id post))))
 
 (defun atom-cache (&optional board)
   (merge-pathnames (format NIL "atom/~:[general.xml~;~:*~a.xml~]" board) *cache*))

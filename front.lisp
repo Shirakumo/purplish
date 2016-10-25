@@ -55,14 +55,14 @@
 ;; Redirects
 (define-page post #@"chan/post/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
-    (redirect (external-pattern "chan/thread/{0}#post-{1}"
-                                (if (= -1 (dm:field post "parent"))
-                                    (dm:id post)
-                                    (dm:field post "parent"))
-                                (dm:id post)))))
+    (redirect (external-uri (format NIL "chan/thread/~a#post-~a"
+                                    (if (= -1 (dm:field post "parent"))
+                                        (dm:id post)
+                                        (dm:field post "parent"))
+                                    (dm:id post))))))
 
 (define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
-  (redirect (external-pattern "<profile:user;{0}>" user)))
+  (redirect (external-uri (resource 'user 'profile user))))
 
 ;;;;
 ;; Dynamics

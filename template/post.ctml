@@ -5,7 +5,7 @@
     <header>
       <a class="id" @href='(#?"chan/thread/{0}#post-{1}" (if (= -1 parent) _id parent) _id)' lquery='(text _id)'>ID</a>
       <address class="author"><a rel="author"
-                                 lquery='(text author) (attr :href (when (= 1 registered) (external-pattern "<profile:user;{0}>" author)))
+                                 lquery='(text author) (attr :href (when (= 1 registered) (external-uri (resource 'user 'profile author))))
                                          (add-class (when (= 1 registered) "registered"))'>AUTHOR</a></address>
       <h3 lquery="(text (if (** :revision) (clip (** :revision) :title) title))" class="title">TITLE</h3>
       <time pubdate datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
