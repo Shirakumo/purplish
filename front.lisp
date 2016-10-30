@@ -42,18 +42,18 @@
               (plump:serialize doc stream)))))
       (error 'request-not-found :message error-message)))
 
-(define-page frontpage #@"chan/" ()
+(define-page frontpage "chan/" ()
   (serve-or-err (front-cache) "Frontpage not found."))
 
-(define-page board #@"chan/board/([0-9a-zA-Z\\-]+)" (:uri-groups (board))
+(define-page board "chan/board/([0-9a-zA-Z\\-]+)" (:uri-groups (board))
   (serve-or-err (board-cache board) "Board not found."))
 
-(define-page thread #@"chan/thread/([0-9]+)" (:uri-groups (thread))
+(define-page thread "chan/thread/([0-9]+)" (:uri-groups (thread))
   (serve-or-err (thread-cache thread) "Thread not found."))
 
 ;;;;
 ;; Redirects
-(define-page post #@"chan/post/([0-9]+)" (:uri-groups (post))
+(define-page post "chan/post/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
     (redirect (external-uri (format NIL "chan/thread/~a#post-~a"
                                     (if (= -1 (dm:field post "parent"))
@@ -61,7 +61,7 @@
                                         (dm:field post "parent"))
                                     (dm:id post))))))
 
-(define-page user #@"chan/user/([^/]+)" (:uri-groups (user))
+(define-page user "chan/user/([^/]+)" (:uri-groups (user))
   (redirect (external-uri (resource 'user 'profile user))))
 
 ;;;;
@@ -75,7 +75,7 @@
        (with-output-to-string (,stream)
          (plump:serialize ,doc ,stream)))))
 
-(define-page edit #@"chan/edit/([0-9]+)" (:uri-groups (post))
+(define-page edit "chan/edit/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
     (unless post
       (error 'request-not-found :message "No such post."))
@@ -87,7 +87,7 @@
        :revision (or (last-revision post) post))
       (show-error doc))))
 
-(define-page history #@"chan/history/([0-9]+)" (:uri-groups (post))
+(define-page history "chan/history/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
     (unless post
       (error 'request-not-found :message "No such post."))
@@ -108,7 +108,7 @@
      :title "Search Results")
     (show-error doc (format NIL "Please wait ~a seconds before searching again." time-left))))
 
-(define-page search #@"chan/search" ()
+(define-page search "chan/search" ()
   (rate:with-rate-limitation (search)
     (with-dynamic-env (doc "search.ctml")
       (clip:process
