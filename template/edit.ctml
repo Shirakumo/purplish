@@ -17,7 +17,7 @@
           <input type="text" class="title" name="title" placeholder="Title" maxlength="64" tabindex="1"
                  lquery='(attr :required (when (= -1 parent) "required")) (val title)'/>
           <input type="text" name="username" placeholder="Leave empty" style="display:none;" value="" />
-          <div class="time" lquery="(purplish-time time)"></div>
+          <div class="time" lquery="(time time)"></div>
         </header>
         <div class="content">
           <div class="files">

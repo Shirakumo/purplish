@@ -4,7 +4,7 @@
   <subtitle type="html" lquery="(text description)">
     DESCRIPTION
   </subtitle>
-  <updated lquery="(text (purplish::date-machine updated))"></updated>
+  <updated lquery="(text (format-machine-date updated))"></updated>
   <id>http://chan.<c:splice lquery="(text domain)" />/</id>
   <link rel="alternate" type="text/html" hreflang="en" @href="chan/"/>
   <link rel="self" type="application/atom+xml" @href='(#?"chan/api/purplish/atom{0}" (format NIL "~@[?board=~a~]" board))'/>
@@ -18,8 +18,8 @@
       <link rel="alternate" type="text/html" href="http://chan.DOMAIN/thread/ID#post-ID"
             lquery="(attr :href (purplish::atom-post-link *))"/>
       <id lquery="(text (purplish::atom-post-link *))">http://chan.DOMAIN/thread/ID#post-ID</id>
-      <published lquery="(text (purplish::date-machine time))">TIME</published>
-      <updated lquery="(text (purplish::date-machine time))">TIME</updated>
+      <published lquery="(text (format-machine-date time))">TIME</published>
+      <updated lquery="(text (format-machine-date time))">TIME</updated>
       <author>
         <name lquery="(text author)">AUTHOR</name>
       </author>
