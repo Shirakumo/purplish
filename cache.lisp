@@ -170,7 +170,8 @@
 
 (defun prune-cache ()
   (l:warn :purplish-cache "Pruning cache")
-  (uiop:delete-directory-tree *cache* :validate (constantly T))
+  (when (probe-file *cache*)
+    (uiop:delete-directory-tree *cache* :validate (constantly T)))
   (ensure-directories-exist *cache*))
 
 (defun recache-all ()
