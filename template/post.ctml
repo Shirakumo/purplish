@@ -34,7 +34,7 @@
               Revision <a class="revision" @href='(#?"chan/history/{0}" parent)' lquery='(text revision)'>REVISION</a>,
               last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
                                    lquery="(purplish-time time)">2014.01.01 00:00:00</time>
-              by <address class="editor"><a rel="author" @href='(#?"<profile:user;{0}>" author)' class="registered"
+              by <address class="editor"><a rel="author" @href='(#?"<profile:page;{0}>" author)' class="registered"
                                             lquery='(text author)'>EDITOR</a></address>
             </div>
           </c:when>
