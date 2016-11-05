@@ -22,7 +22,7 @@
            (with-cache-file (stream path file)
              (plump:serialize
               (clip:process
-               (plump:parse (template "atom.ctml"))
+               (plump:parse (@template "atom.ctml"))
                :title title
                :description description
                :updated (or (when posts (dm:field (car (last posts)) "time"))

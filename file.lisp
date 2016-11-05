@@ -6,8 +6,8 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *headers* (static-file "headers/"))
-(defvar *files* (static-file "file/"))
+(defvar *headers* (@static "headers/"))
+(defvar *files* (@static "file/"))
 (defvar *file-embedders* (make-hash-table :test 'equalp))
 (defvar *allowed-types* ())
 
@@ -30,18 +30,18 @@
   ((:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml)
    (file name)
    (let ((thumb (make-pathname :name (format NIL "thumb-~a" (pathname-name file)) :defaults file)))
-     (clip:process (template "files/image.ctml") :file file :file-thumb thumb :name name)))
+     (clip:process (@template "files/image.ctml") :file file :file-thumb thumb :name name)))
 
   ((:video/mp4 :video/webm :video/ogg)
-   (file name) (clip:process (template "files/video.ctml") :file file :name name))
+   (file name) (clip:process (@template "files/video.ctml") :file file :name name))
 
   ((:audio/mpeg :audio/x-wav :audio/ogg)
-   (file name) (clip:process (template "files/audio.ctml") :file file :name name))
+   (file name) (clip:process (@template "files/audio.ctml") :file file :name name))
 
   ((:text/plain :text/html :text/css :text/javascript :application/x-javascript
     :application/pdf :application/epub+zip :application/x-mobipocket-ebook
     :message/rfc822 :application/xml)
-   (file name) (clip:process (template "files/general.ctml") :file file :name name)))
+   (file name) (clip:process (@template "files/general.ctml") :file file :name name)))
 
 (defun file-path (file)
   (external-uri (format NIL "/static/purplish/file/~a/~a.~a"
@@ -109,4 +109,4 @@
   (when (or (string-equal type "file")
             (string-equal type "headers"))
     (setf (header "Cache-Control") "public, max-age=31536000"))
-  (serve-file (static-file (format NIL "~a/~a" type path))))
+  (serve-file (@static (format NIL "~a/~a" type path))))

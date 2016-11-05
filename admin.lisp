@@ -7,7 +7,7 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (define-implement-hook admin
-  (admin:define-panel cache purplish (:access (perm purplish admin cache) :icon "fa-database" :tooltip "Recache parts." :lquery (template "admin-cache.ctml"))
+  (admin:define-panel cache purplish (:access (perm purplish admin cache) :icon "fa-database" :tooltip "Recache parts." :lquery (@template "admin-cache.ctml"))
     (with-actions (error info)
         ((:recache
           (dolist (cache (post/get "type[]"))
@@ -36,7 +36,7 @@
        :error error :info (when info (format NIL "Recached ~{~a~^, ~}" info))
        :boards (boards))))
 
-  (admin:define-panel settings purplish (:access (perm purplish admin config) :icon "fa-gears" :tooltip "Change the purplish configuration" :lquery (template "admin-config.ctml"))
+  (admin:define-panel settings purplish (:access (perm purplish admin config) :icon "fa-gears" :tooltip "Change the purplish configuration" :lquery (@template "admin-config.ctml"))
     (with-actions (error info)
         ((:save
           (setf (config :title) (post-var "title")
@@ -55,7 +55,7 @@
   (defun header-src (header)
     (format NIL "/static/purplish/headers/~a" (header-id header)))
 
-  (admin:define-panel headers purplish (:access (perm purplish admin headers) :icon "fa-image" :tooltip "Add or remove header images." :lquery (template "admin-headers.ctml"))
+  (admin:define-panel headers purplish (:access (perm purplish admin headers) :icon "fa-image" :tooltip "Add or remove header images." :lquery (@template "admin-headers.ctml"))
     (with-actions (error info)
         ((:delete
           (dolist (file (or (post-var "selected[]") (list (post-var "file"))))
@@ -73,7 +73,7 @@
       (r-clip:process
        T :error error :info info :headers (uiop:directory-files *headers*))))
 
-  (admin:define-panel themes purplish (:access (perm purplish admin themes) :icon "fa-paint-brush" :tooltip "Manage available chan themes." :lquery (template "admin-themes.ctml"))
+  (admin:define-panel themes purplish (:access (perm purplish admin themes) :icon "fa-paint-brush" :tooltip "Manage available chan themes." :lquery (@template "admin-themes.ctml"))
     (with-actions (error info)
         ((:delete
           (dolist (name (or (post-var "selected[]") (list (post-var "name"))))
@@ -89,7 +89,7 @@
       (r-clip:process
        T :error error :info info :themes (themes))))
 
-  (admin:define-panel boards purplish (:access (perm purplish admin boards) :icon "fa-newspaper-o" :tooltip "Create or remove boards." :lquery (template "admin-boards.ctml"))
+  (admin:define-panel boards purplish (:access (perm purplish admin boards) :icon "fa-newspaper-o" :tooltip "Create or remove boards." :lquery (@template "admin-boards.ctml"))
     (with-actions (error info)
         ((:delete
           (dolist (name (or (post-var "selected[]") (list (post-var "name"))))

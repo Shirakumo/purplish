@@ -7,7 +7,7 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defvar *cache* (asdf:system-relative-pathname :purplish "cache/"))
-(defvar *themes* (static-file "theme/"))
+(defvar *themes* (@static "theme/"))
 
 (defun boards ()
   (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
@@ -87,7 +87,7 @@
       (with-cache-file (stream path (post-cache post))
         (plump:serialize
          (clip:process
-          (plump:parse (template "post.ctml"))
+          (plump:parse (@template "post.ctml"))
           :post post
           :files (dm:get 'purplish-files (db:query (:= 'parent (dm:id post))))
           :revision revision)
@@ -115,7 +115,7 @@
         (with-cache-file (stream path (thread-cache thread))
           (plump:serialize
            (clip:process
-            (plump:parse (template "thread.ctml"))
+            (plump:parse (@template "thread.ctml"))
             :title (let ((revision (last-revision thread)))
                      (if revision
                          (dm:field revision "title")
@@ -127,7 +127,7 @@
       (with-cache-file (stream path (thread-min-cache thread))
         (plump:serialize
          (clip:process
-          (plump:parse (template "thread-min.ctml"))
+          (plump:parse (@template "thread-min.ctml"))
           :thread thread :posts (loop for minposts = posts
                                       then (cdr minposts)
                                       repeat (- (length posts) 3)
@@ -151,7 +151,7 @@
       (with-cache-file (stream path (board-cache board))
         (plump:serialize
          (clip:process
-          (plump:parse (template "board.ctml"))
+          (plump:parse (@template "board.ctml"))
           :title (dm:field board "name")
           :board board :threads threads)
          stream)
@@ -162,7 +162,7 @@
   (with-cache-file (stream path (front-cache))
     (plump:serialize
      (clip:process
-      (plump:parse (template "frontpage.ctml"))
+      (plump:parse (@template "frontpage.ctml"))
       :title (config :title)
       :posts (dm:get 'purplish-posts (db:query (:= 'revision 0))
                      :amount 20 :sort '((time :DESC))))
@@ -224,5 +224,5 @@
 
 (lquery:define-lquery-function purplish-template (node object)
   (setf (plump:children node) (plump:make-child-array))
-  (plump:parse (template (format NIL "~(~a~).ctml" object)) :root node)
+  (plump:parse (@template (format NIL "~(~a~).ctml" object)) :root node)
   node)

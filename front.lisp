@@ -68,7 +68,7 @@
 ;; Dynamics
 (defmacro with-dynamic-env ((doc template) &body body)
   (let ((stream (gensym "STREAM")))
-    `(let ((,doc (plump:parse (template ,template)))
+    `(let ((,doc (plump:parse (@template ,template)))
            (*package* ,(find-package "RAD-USER")))
        (setf (content-type *response*) "application/xhtml+xml")
        ,@body
