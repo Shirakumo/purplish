@@ -1,8 +1,8 @@
 <article class="thread" lquery="(attr :data-thread-id (clip thread :_id))">
   <nav>
-    <a @href='(#?"chan/thread/{0}" (clip thread :_id))'>View</a>
-    <a @href='(#?"chan/thread/{0}#bottom" (clip thread :_id))'>Jump to Bottom</a>
-    <a @href='(#?"chan/thread/{0}#reply" (clip thread :_id))'>Reply</a>
+    <a @href='chan/thread/{0} (clip thread :_id)'>View</a>
+    <a @href='chan/thread/{0}#bottom (clip thread :_id)'>Jump to Bottom</a>
+    <a @href='chan/thread/{0}#reply (clip thread :_id)'>Reply</a>
   </nav>
   <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
   <ul class="posts" iterate="posts">

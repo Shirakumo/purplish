@@ -3,7 +3,7 @@
            lquery="(attr :data-post-id _id :data-post-revision (if (** :revision) (clip (** :revision) :revision) 0))">
     <a name="POST-ID" lquery='(attr :name (format NIL "post-~a" _id))'/>
     <header>
-      <a class="id" @href='(#?"chan/thread/{0}#post-{1}" (if (= -1 parent) _id parent) _id)' lquery='(text _id)'>ID</a>
+      <a class="id" @href='chan/thread/{0}#post-{1} (if (= -1 parent) _id parent) _id' lquery='(text _id)'>ID</a>
       <address class="author"><a rel="author"
                                  lquery='(text author) (attr :href (when (= 1 registered) (external-uri (resource 'user 'profile author))))
                                          (add-class (when (= 1 registered) "registered"))'>AUTHOR</a></address>
@@ -31,20 +31,20 @@
         <c:using value="(** :revision)">
           <c:when test="*">
             <div class="revision">
-              Revision <a class="revision" @href='(#?"chan/history/{0}" parent)' lquery='(text revision)'>REVISION</a>,
+              Revision <a class="revision" @href='chan/history/{0} parent' lquery='(text revision)'>REVISION</a>,
               last edited on <time datetime="2014-01-01T00:00:00" title="Wednesday, January 1st 2014. 00:00:00 UTC"
                                    lquery="(time time)">2014.01.01 00:00:00</time>
-              by <address class="editor"><a rel="author" @href='(#?"<profile:page;{0}>" author)' class="registered"
+              by <address class="editor"><a rel="author" @href='<profile page {0}> author' class="registered"
                                             lquery='(text author)'>EDITOR</a></address>
             </div>
           </c:when>
         </c:using>
         <nav class="edit">
-          <a @href='(#?"chan/edit/{0}" _id)' class="edit-button">Edit</a>
-          <a @href='(#?"/api/purplish/post/delete?post={0}&browser=true" _id)' class="delete-button">Delete</a>
-          <a @href='(#?"/api/purplish/post/delete?post={0}&purge=true&browser=true" _id)' class="purge-button">Purge</a>
+          <a @href='chan/edit/{0} _id' class="edit-button">Edit</a>
+          <a @href='/api/purplish/post/delete?post={0}&browser=true _id' class="delete-button">Delete</a>
+          <a @href='/api/purplish/post/delete?post={0}&purge=true&browser=true _id' class="purge-button">Purge</a>
           <c:unless test="(= -1 parent)">
-            <a @href='(#?"/api/purplish/post/move?post={0}" _id)' class="move-button">Move</a>
+            <a @href='/api/purplish/post/move?post={0} _id' class="move-button">Move</a>
           </c:unless>
         </nav>
       </footer>

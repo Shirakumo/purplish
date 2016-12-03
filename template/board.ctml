@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (mconfig :purplish :title))" /></title>
     <c:splice lquery="(purplish-template :head)" />
-    <link @href='(#?"/api/purplish/atom?board={0}" (clip board :_id))' type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
+    <link @href='/api/purplish/atom?board={0} (clip board :_id)' type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
           lquery='(attr :title (format NIL "~a ~a" (clip board :name) (mconfig :purplish :title)))'/>
   </head>
   <body>

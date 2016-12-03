@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <title><c:splice lquery="(text title)" /> - <c:splice lquery="(text (mconfig :purplish :title))" /></title>
     <c:splice lquery="(purplish-template :head)" />
-    <link @href='(#?"/api/purplish/atom?board={0}" (clip board :_id))' type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
+    <link @href='/api/purplish/atom?board={0} (clip board :_id)' type="application/atom+xml" rel="alternate" title="SOME-CHAN BOARD"
           lquery='(attr :title (format NIL "~a ~a" (clip board :name) (mconfig :purplish :title)))'/>
   </head>
   <body>
@@ -12,7 +12,7 @@
     <c:splice lquery="(purplish-template :header)" />
     <main class="thread" data-thread-id="ID" lquery="(attr :data-thread-id (clip thread :_id))">
       <nav>
-        <a @href='(#?"chan/board/{0}" (clip thread :board))'>Return to Board</a>
+        <a @href='chan/board/{0} (clip thread :board)'>Return to Board</a>
         <a href="#bottom">Jump to Bottom</a>
       </nav>
       <c:noop as="div" class="op" lquery="(purplish-cache :post thread)" />
@@ -21,7 +21,7 @@
       </ul>
       <c:splice lquery="(purplish-template :replybox)" />
       <nav>
-        <a @href='(#?"chan/board/{0}" (clip thread :board))'>Return to Board</a>
+        <a @href='chan/board/{0} (clip thread :board)'>Return to Board</a>
         <a href="#top">Jump to Top</a>
       </nav>
     </main>

@@ -5,11 +5,11 @@
         <a @href="chan/">Frontpage</a>
       </li>
       <li>
-        <a id="user-panel-link" @href="<auth:page;login,<purplish>>">Login</a>
+        <a id="user-panel-link" @href="<auth page login #>">Login</a>
       </li>
       <c:splice iterate="(purplish::boards)">
         <li>
-          <a @href='(#?"chan/board/{0}" name)' lquery="(text name) (attr :title description)">BOARD</a>
+          <a @href='chan/board/{0} name' lquery="(text name) (attr :title description)">BOARD</a>
         </li>
       </c:splice>
     </ul>
