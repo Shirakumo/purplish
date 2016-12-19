@@ -34,7 +34,7 @@
             (when user
               (lquery:$ doc "#replybox .author" (val (user:username user)))
               (if (implementation :admin)
-                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-url (resource 'domain 'admin) :representation :external)) (text "UCP"))
+                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-url (resource 'admin 'domain) :representation :external)) (text "UCP"))
                   (lquery:$ doc "#user-panel-link" (remove))))
             (remove-inaccessible-options doc user)
             (show-error doc)
@@ -62,7 +62,7 @@
                                     (dm:id post))))))
 
 (define-page user "chan/user/([^/]+)" (:uri-groups (user))
-  (redirect (external-uri (resource 'user 'profile user))))
+  (redirect (external-uri (resource 'profile 'profile:page user))))
 
 ;;;;
 ;; Dynamics
