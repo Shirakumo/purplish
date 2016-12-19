@@ -6,7 +6,7 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(define-implement-hook admin
+(define-implement-trigger admin
   (admin:define-panel cache purplish (:access (perm purplish admin cache) :icon "fa-database" :tooltip "Recache parts." :lquery (@template "admin-cache.ctml"))
     (with-actions (error info)
         ((:recache
