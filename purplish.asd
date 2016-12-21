@@ -27,11 +27,11 @@
                (:file "atom")
                (:file "admin"))
   :depends-on ((:interface :database)
-               (:interface :data-model)
                (:interface :auth)
                (:interface :cache)
                (:interface :profile)
                (:interface :rate)
+               :r-data-model
                :cl-ppcre
                :lquery
                :i-json

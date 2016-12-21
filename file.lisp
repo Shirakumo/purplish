@@ -83,7 +83,7 @@
                   (second file))))
     (unless (find mime *allowed-types* :test #'string-equal)
       (error "Files of type ~s are not allowed." mime))
-    (with-model model ('purplish-files NIL)
+    (dm:with-model model ('purplish-files NIL)
       (setf (dm:field model "board") (dm:field post "board")
             (dm:field model "parent") (dm:id post)
             (dm:field model "type") (mimes:mime-file-type mime)

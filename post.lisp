@@ -18,7 +18,7 @@
 (defun create-board (name description &optional (visible T))
   (when (dm:get-one 'purplish-boards (db:query (:= 'name name)))
     (error "A board with that name already exists!"))
-  (with-model board ('purplish-boards NIL)
+  (dm:with-model board ('purplish-boards NIL)
     (db:with-transaction ()
       (setf (dm:field board "name") name
             (dm:field board "description") (or description "")
@@ -50,7 +50,7 @@
     T))
 
 (defun create-post (board parent title text files &optional author (registered 0) (revision 0))
-  (with-model post ('purplish-posts NIL)
+  (dm:with-model post ('purplish-posts NIL)
     (dolist (file files)
       (check-file file))
     (db:with-transaction ()
@@ -114,7 +114,7 @@
     ;; Create a new post with increased revision number.
     (let ((revision (or (last-revision post)
                         post)))
-      (with-model edit ('purplish-posts NIL)
+      (dm:with-model edit ('purplish-posts NIL)
         (db:with-transaction ()
           (setf (dm:field edit "board") (dm:field revision "board")
                 (dm:field edit "parent") (dm:id post)
