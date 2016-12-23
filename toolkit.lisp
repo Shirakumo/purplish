@@ -15,19 +15,18 @@
 
 (defun ensure-file (file)
   (or
-   (etypecase file
+   (typecase file
      (dm:data-model file)
-     (fixnum (dm:get-one 'files (db:query (:= '_id file))))
-     (string (dm:get-one 'files (db:query (:= '_id (parse-integer file))))))
+     (db:id (dm:get-one 'files (db:query (:= '_id file))))
+     (T (ensure-file (db:ensure-id file))))
    (error "No such file found.")))
 
 (defun ensure-post (post)
   (or
-   (etypecase post
+   (typecase post
      (dm:data-model post)
-     (fixnum (dm:get-one 'posts (db:query (:= '_id post))))
-     (string (dm:get-one 'posts (db:query (:= '_id (or (parse-integer post :junk-allowed T)
-                                                                (return-from ensure-post)))))))
+     (db:id (dm:get-one 'posts (db:query (:= '_id post))))
+     (T (ensure-post (db:ensure-id post))))
    (error "No such post found.")))
 
 (defun ensure-thread (post)
@@ -38,20 +37,20 @@
 
 (defun ensure-board (board)
   (or
-   (etypecase board
+   (typecase board
      (dm:data-model board)
-     (fixnum (dm:get-one 'boards (db:query (:= '_id board))))
-     (string (dm:get-one 'boards (let ((id (parse-integer board :junk-allowed T)))
-                                            (if id
-                                                (db:query (:= '_id id))
-                                                (db:query (:= 'name board)))))))
+     (db:id (dm:get-one 'boards (db:query (:= '_id board))))
+     (T (dm:get-one 'boards (let ((id (ignore-errors (db:ensure-id board))))
+                              (if id
+                                  (db:query (:= '_id id))
+                                  (db:query (:= 'name board)))))))
    (error "No such board found.")))
 
 (defun last-revision (post)
   (let ((id (etypecase post
               (dm:data-model (dm:id post))
-              (fixnum post)
-              (string (parse-integer post)))))
+              (db:id post)
+              (T (db:ensure-id post)))))
     (dm:get-one 'posts (db:query (:and (:= 'parent id)
-                                                (:< 0 'revision)))
+                                       (:< 0 'revision)))
                 :sort '((revision :DESC)))))
