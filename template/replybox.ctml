@@ -1,4 +1,4 @@
-<form id="replybox" @action='/api/purplish/{0}/create" (if thread "post" "thread")' method="post" enctype="multipart/form-data">
+<form id="replybox" @action='/api/purplish/{0}/create (if thread "post" "thread")' method="post" enctype="multipart/form-data">
   <a name="reply"/>
   <header>
     <input type="hidden" name="browser" value="true" />

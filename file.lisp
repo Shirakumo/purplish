@@ -44,10 +44,10 @@
    (file name) (clip:process (@template "files/general.ctml") :file file :name name)))
 
 (defun file-path (file)
-  (external-uri (format NIL "/static/purplish/file/~a/~a.~a"
-                        (dm:field file "board")
-                        (dm:id file)
-                        (dm:field file "type"))))
+  (format NIL "/static/purplish/file/~a/~a.~a"
+          (dm:field file "board")
+          (dm:id file)
+          (dm:field file "type")))
 
 (defun embed-file (file)
   (let ((file (ensure-file file)))
@@ -83,7 +83,7 @@
                   (second file))))
     (unless (find mime *allowed-types* :test #'string-equal)
       (error "Files of type ~s are not allowed." mime))
-    (dm:with-model model ('purplish-files NIL)
+    (dm:with-model model ('files NIL)
       (setf (dm:field model "board") (dm:field post "board")
             (dm:field model "parent") (dm:id post)
             (dm:field model "type") (mimes:mime-file-type mime)

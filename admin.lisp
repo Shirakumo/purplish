@@ -99,4 +99,4 @@
           (create-board (post-var "name") (post-var "description") (when (string= (post-var "visible") "true") T))
           (setf info "Board created.")))
       (r-clip:process
-       T :error error :info info :boards (dm:get 'purplish-boards (db:query :all))))))
+       T :error error :info info :boards (dm:get 'boards (db:query :all))))))

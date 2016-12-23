@@ -10,7 +10,7 @@
 (defvar *themes* (@static "theme/"))
 
 (defun boards ()
-  (dm:get 'purplish-boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
+  (dm:get 'boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
 
 (defun themes ()
   (mapcar #'pathname-name (uiop:directory-files *themes* #p"*.css")))
@@ -89,7 +89,7 @@
          (clip:process
           (plump:parse (@template "post.ctml"))
           :post post
-          :files (dm:get 'purplish-files (db:query (:= 'parent (dm:id post))))
+          :files (dm:get 'files (db:query (:= 'parent (dm:id post))))
           :revision revision)
          stream)
         path))
@@ -101,7 +101,7 @@
 
 (defun recache-thread (thread &key cascade (propagate T) (full T))
   (let* ((thread (ensure-post thread))
-         (posts (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id thread))
+         (posts (dm:get 'posts (db:query (:and (:= 'parent (dm:id thread))
                                                         (:= 'revision 0)))
                         :sort '((time :ASC)))))
     (l:debug :purplish-cache "Recaching Thread ~a" (dm:id thread))
@@ -140,7 +140,7 @@
 
 (defun recache-board (board &key cascade)
   (let* ((board (ensure-board board))
-         (threads (dm:get 'purplish-posts (db:query (:and (:= 'board (dm:id board))
+         (threads (dm:get 'posts (db:query (:and (:= 'board (dm:id board))
                                                           (:= 'parent -1)))
                           :sort '((updated :DESC)))))
     (l:debug :purplish-cache "Recaching Board ~a" (dm:id board))
@@ -164,7 +164,7 @@
      (clip:process
       (plump:parse (@template "frontpage.ctml"))
       :title (config :title)
-      :posts (dm:get 'purplish-posts (db:query (:= 'revision 0))
+      :posts (dm:get 'posts (db:query (:= 'revision 0))
                      :amount 20 :sort '((time :DESC))))
      stream)))
 
@@ -177,7 +177,7 @@
 (defun recache-all ()
   (prune-cache)
   (l:info :purplish-cache "Recaching all")
-  (dolist (board (dm:get 'purplish-boards (db:query :all)))
+  (dolist (board (dm:get 'boards (db:query :all)))
     (recache-board board :cascade T)
     (recache-atom :board board))
   (recache-frontpage)

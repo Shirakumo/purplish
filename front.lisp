@@ -34,7 +34,7 @@
             (when user
               (lquery:$ doc "#replybox .author" (val (user:username user)))
               (if (implementation :admin)
-                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-url (resource 'admin 'domain) :representation :external)) (text "UCP"))
+                  (lquery:$ doc "#user-panel-link" (attr :href (uri-to-url (resource :admin :page) :representation :external)) (text "UCP"))
                   (lquery:$ doc "#user-panel-link" (remove))))
             (remove-inaccessible-options doc user)
             (show-error doc)
@@ -45,7 +45,7 @@
 (define-page frontpage "chan/" ()
   (serve-or-err (front-cache) "Frontpage not found."))
 
-(define-page board "chan/board/([0-9a-zA-Z\\-]+)" (:uri-groups (board))
+(define-page board "chan/board/(.+)" (:uri-groups (board))
   (serve-or-err (board-cache board) "Board not found."))
 
 (define-page thread "chan/thread/([0-9]+)" (:uri-groups (thread))
@@ -55,11 +55,12 @@
 ;; Redirects
 (define-page post "chan/post/([0-9]+)" (:uri-groups (post))
   (let ((post (ensure-post post)))
-    (redirect (external-uri (format NIL "chan/thread/~a#post-~a"
-                                    (if (= -1 (dm:field post "parent"))
-                                        (dm:id post)
-                                        (dm:field post "parent"))
-                                    (dm:id post))))))
+    (redirect (make-url :domains '("chan")
+                        :path (format NIL "/thread/~a"
+                                      (if (= -1 (dm:field post "parent"))
+                                          (dm:id post)
+                                          (dm:field post "parent")))
+                        :fragment (format NIL "post-~a" (dm:id post))))))
 
 (define-page user "chan/user/([^/]+)" (:uri-groups (user))
   (redirect (external-uri (resource 'profile 'profile:page user))))
@@ -96,12 +97,12 @@
        doc
        :title "Post History"
        :post post
-       :revisions (dm:get 'purplish-posts (db:query (:and (:= 'parent (dm:id post))
+       :revisions (dm:get 'posts (db:query (:and (:= 'parent (dm:id post))
                                                           (:> 'revision 0)))))
       (lquery:$ doc ".revisions nav.edit" (remove))
       (remove-inaccessible-options doc))))
 
-(rate:define-rate search (time-left :timeout 10)
+(rate:define-limit search (time-left :timeout 10)
   (with-dynamic-env (doc "search.ctml")
     (clip:process
      doc
@@ -109,7 +110,7 @@
     (show-error doc (format NIL "Please wait ~a seconds before searching again." time-left))))
 
 (define-page search "chan/search" ()
-  (rate:with-rate-limitation (search)
+  (rate:with-limitation (search)
     (with-dynamic-env (doc "search.ctml")
       (clip:process
        doc

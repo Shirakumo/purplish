@@ -7,11 +7,12 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun atom-post-link (post)
-  (external-uri (format NIL "chan/thread/~a#post-~a"
-                        (if (= -1 (dm:field post "parent"))
-                            (dm:id post)
-                            (dm:field post "parent"))
-                        (dm:id post))))
+  (make-url :domains '("chan")
+            :path (format NIL "/thread/~a"
+                          (if (= -1 (dm:field post "parent"))
+                              (dm:id post)
+                              (dm:field post "parent")))
+            :fragment (format NIL "post-~a" (dm:id post))))
 
 (defun atom-cache (&optional board)
   (merge-pathnames (format NIL "atom/~:[general.xml~;~:*~a.xml~]" board) *cache*))
@@ -33,14 +34,14 @@
       (let ((board (ensure-board (if board
                                      board
                                      (dm:field (ensure-post post) "board")))))
-        (execute (dm:get 'purplish-posts (db:query (:and (:= 'board (dm:id board))
+        (execute (dm:get 'posts (db:query (:and (:= 'board (dm:id board))
                                                          (:= 'parent -1)))
                          :amount 20 :sort '((updated :DESC)))
                  (dm:field board "name")
                  (dm:field board "description")
                  (atom-cache (dm:id board)))))
     
-    (execute (dm:get 'purplish-posts (db:query (:= 'revision 0))
+    (execute (dm:get 'posts (db:query (:= 'revision 0))
                      :amount 20 :sort '((time :DESC)))
              (config :title)
              (config :description)

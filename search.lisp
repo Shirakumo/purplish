@@ -44,4 +44,4 @@
                                      (:or (:matches 'title query)
                                           (:matches 'author query)
                                           (:matches 'text query))))))))
-    (funcall func 'purplish-posts query :amount amount :sort '((time :DESC)))))
+    (funcall func 'posts query :amount amount :sort '((time :DESC)))))

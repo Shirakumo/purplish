@@ -88,11 +88,11 @@
 
 (defun preparse (text)
   (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text
-                                         #'(lambda (target-string start end match-start match-end reg-starts reg-ends)
-                                             (declare (ignore start end reg-starts reg-ends))
-                                             (let ((id (subseq target-string (+ match-start 2) match-end)))
-                                               (format NIL "<a href=\"~a\" class=\"post-reference\">&gt;&gt;~a</a>"
-                                                       (external-uri (format NIL "chan/post/~a" id)) id)))))
+                                         (lambda (target-string start end match-start match-end reg-starts reg-ends)
+                                           (declare (ignore start end reg-starts reg-ends))
+                                           (let ((id (subseq target-string (+ match-start 2) match-end)))
+                                             (format NIL "<a href=\"~a\" class=\"post-reference\">&gt;&gt;~a</a>"
+                                                     (uri-to-url (format NIL "chan/post/~a" id) :representation :external) id)))))
   (setf text (cl-ppcre:regex-replace-all "\\!?\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
   (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>"))
   ;; temporary hack fix to circumvent 3bmd crashing, ugh.
