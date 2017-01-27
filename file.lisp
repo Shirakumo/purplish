@@ -7,7 +7,7 @@
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defvar *headers* (ensure-directories-exist (conf-dir "headers/")))
-(defvar *files* (ensure-directories-exist (conf-dir "headers/")))
+(defvar *files* (ensure-directories-exist (conf-dir "file/")))
 (defvar *file-embedders* (make-hash-table :test 'equalp))
 (defvar *allowed-types* ())
 
