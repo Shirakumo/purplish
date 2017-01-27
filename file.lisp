@@ -106,7 +106,13 @@
          headers)))
 
 (define-page static-files ("/static/purplish/([^/]+)/(.+)" 1001) (:uri-groups (type path))
-  (when (or (string-equal type "file")
-            (string-equal type "headers"))
-    (setf (header "Cache-Control") "public, max-age=31536000"))
-  (serve-file (@static (format NIL "~a/~a" type path))))
+  (cond ((string= type "file")
+         (setf (header "Cache-Control") "public, max-age=31536000")
+         (serve-file (merge-pathnames (parse-path-safely path) *files*)))
+        ((string= type "headers")
+         (setf (header "Cache-Control") "public, max-age=31536000")
+         (serve-file (merge-pathnames (parse-path-safely path) *headers*)))
+        ((string= type "theme")
+         (serve-file (merge-pathnames (parse-path-safely path) *themes*)))
+        (T
+         (error 'request-not-found))))
