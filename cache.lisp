@@ -6,7 +6,8 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *cache* (asdf:system-relative-pathname :purplish "cache/"))
+(defvar *cache* (ensure-directories-exist
+                 (merge-pathnames "cache/" (mconfig-pathname #.*package*))))
 (defvar *themes* (@static "theme/"))
 
 (defun boards ()
