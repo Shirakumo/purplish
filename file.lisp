@@ -6,9 +6,8 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *headers* (@static "headers/"))
-(defvar *files* (ensure-directories-exist
-                 (merge-pathnames "file/" (mconfig-pathname #.*package*))))
+(defvar *headers* (ensure-directories-exist (conf-dir "headers/")))
+(defvar *files* (ensure-directories-exist (conf-dir "headers/")))
 (defvar *file-embedders* (make-hash-table :test 'equalp))
 (defvar *allowed-types* ())
 

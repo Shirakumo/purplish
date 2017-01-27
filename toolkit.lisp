@@ -54,3 +54,8 @@
     (dm:get-one 'posts (db:query (:and (:= 'parent id)
                                        (:< 0 'revision)))
                 :sort '((revision :DESC)))))
+
+(defun conf-dir (dir)
+  (make-pathname :name NIL
+                 :type NIL
+                 :defaults (merge-pathnames dir (mconfig-pathname #.*package*))))

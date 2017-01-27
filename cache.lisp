@@ -6,9 +6,8 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *cache* (ensure-directories-exist
-                 (merge-pathnames "cache/" (mconfig-pathname #.*package*))))
-(defvar *themes* (@static "theme/"))
+(defvar *cache* (ensure-directories-exist (conf-dir "cache/")))
+(defvar *themes* (ensure-directories-exist (conf-dir "theme/")))
 
 (defun boards ()
   (dm:get 'boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
