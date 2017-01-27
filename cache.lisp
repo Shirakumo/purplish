@@ -9,6 +9,17 @@
 (defvar *cache* (ensure-directories-exist (conf-dir "cache/")))
 (defvar *themes* (ensure-directories-exist (conf-dir "theme/")))
 
+(define-trigger radiance:startup ()
+  (flet ((copy-dir-contents (from to)
+           (dolist (file (uiop:directory-files from))
+             (uiop:copy-file file (make-pathname :name (pathname-name file)
+                                                 :type (pathname-type file)
+                                                 :defaults to)))))
+    (when (null (uiop:directory-files *themes*))
+      (copy-dir-contents (@static "theme/") *themes*))
+    (when (null (uiop:directory-files *headers*))
+      (copy-dir-contents (@static "headers/") *headers*))))
+
 (defun boards ()
   (dm:get 'boards (db:query (:= 'visible 1)) :sort '((name :ASC))))
 
