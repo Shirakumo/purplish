@@ -30,7 +30,8 @@
   (or (with-open-file (stream file :if-does-not-exist NIL)
         (when stream
           (let ((doc (plump:parse stream))
-                (user (auth:current)))
+                (user (auth:current))
+                (plump:*tag-dispatchers* plump:*xml-tags*))
             (when user
               (lquery:$ doc "#replybox .author" (val (user:username user)))
               (if (implementation :admin)

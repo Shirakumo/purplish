@@ -50,7 +50,8 @@
         (err (gensym "ERROR")))
     `(let* ((,path ,descriptor)
             (,temp (make-pathname :type "tmp" :defaults ,path))
-            (*package* (find-package "RAD-USER")))
+            (*package* (find-package "RAD-USER"))
+            (plump:*tag-dispatchers* plump:*xml-tags*))
        (handler-bind ((error #'(lambda (,err)
                                  (l:error :purplish-cache "[~a] during caching of ~s: ~a"
                                           (type-of ,err) ,path ,err))))
