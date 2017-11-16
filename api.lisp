@@ -133,7 +133,8 @@
 
 (define-api purplish/post/render (post) ()
   (with-post (post post)
-    (let ((doc (plump:parse (post-cache post))))
+    (let ((doc (plump:parse (post-cache post)))
+          (plump:*tag-dispatchers* plump:*xml-tags*))
       (remove-inaccessible-options doc)
       (api-output (with-output-to-string (stream)
                     (plump:serialize doc stream))))))

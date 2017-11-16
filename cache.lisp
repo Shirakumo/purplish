@@ -93,7 +93,8 @@
 
 (defun recache-post (post &key (propagate T))
   (let* ((post (ensure-post post))
-         (revision (last-revision post)))
+         (revision (last-revision post))
+         (plump:*tag-dispatchers* plump:*xml-tags*))
     (l:debug :purplish-cache "Recaching Post ~a" (dm:id post))
     (with-deleting-restart (delete-post post :author "SYSTEM" :purge T)
       (with-cache-file (stream path (post-cache post))
@@ -115,7 +116,8 @@
   (let* ((thread (ensure-post thread))
          (posts (dm:get 'posts (db:query (:and (:= 'parent (dm:id thread))
                                                         (:= 'revision 0)))
-                        :sort '((time :ASC)))))
+                        :sort '((time :ASC))))
+         (plump:*tag-dispatchers* plump:*xml-tags*))
     (l:debug :purplish-cache "Recaching Thread ~a" (dm:id thread))
     (when cascade
       (recache-post thread :propagate NIL)
@@ -154,7 +156,8 @@
   (let* ((board (ensure-board board))
          (threads (dm:get 'posts (db:query (:and (:= 'board (dm:id board))
                                                           (:= 'parent -1)))
-                          :sort '((updated :DESC)))))
+                          :sort '((updated :DESC))))
+         (plump:*tag-dispatchers* plump:*xml-tags*))
     (l:debug :purplish-cache "Recaching Board ~a" (dm:id board))
     (when cascade
       (dolist (thread threads)
@@ -171,14 +174,15 @@
 
 (defun recache-frontpage ()
   (l:debug :purplish-cache "Recaching Frontpage")
-  (with-cache-file (stream path (front-cache))
-    (plump:serialize
-     (clip:process
-      (plump:parse (@template "frontpage.ctml"))
-      :title (config :title)
-      :posts (dm:get 'posts (db:query (:= 'revision 0))
-                     :amount 20 :sort '((time :DESC))))
-     stream)))
+  (let ((plump:*tag-dispatchers* plump:*xml-tags*))
+    (with-cache-file (stream path (front-cache))
+      (plump:serialize
+       (clip:process
+        (plump:parse (@template "frontpage.ctml"))
+        :title (config :title)
+        :posts (dm:get 'posts (db:query (:= 'revision 0))
+                       :amount 20 :sort '((time :DESC))))
+       stream))))
 
 (defun prune-cache ()
   (l:warn :purplish-cache "Pruning cache")

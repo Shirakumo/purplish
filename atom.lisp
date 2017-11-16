@@ -33,7 +33,8 @@
     (when (or post board)
       (let ((board (ensure-board (if board
                                      board
-                                     (dm:field (ensure-post post) "board")))))
+                                     (dm:field (ensure-post post) "board"))))
+            (plump:*tag-dispatchers* plump:*xml-tags*))
         (execute (dm:get 'posts (db:query (:and (:= 'board (dm:id board))
                                                          (:= 'parent -1)))
                          :amount 20 :sort '((updated :DESC)))

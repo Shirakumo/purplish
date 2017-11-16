@@ -39,8 +39,9 @@
                   (lquery:$ doc "#user-panel-link" (remove))))
             (remove-inaccessible-options doc user)
             (show-error doc)
-            (with-output-to-string (stream)
-              (plump:serialize doc stream)))))
+            (let ((plump:*tag-dispatchers* plump:*xml-tags*))
+              (with-output-to-string (stream)
+                (plump:serialize doc stream))))))
       (error 'request-not-found :message error-message)))
 
 (define-page frontpage "chan/" ()
@@ -71,7 +72,8 @@
 (defmacro with-dynamic-env ((doc template) &body body)
   (let ((stream (gensym "STREAM")))
     `(let ((,doc (plump:parse (@template ,template)))
-           (*package* ,(find-package "RAD-USER")))
+           (*package* ,(find-package "RAD-USER"))
+           (plump:*tag-dispatchers* plump:*xml-tags*))
        (setf (content-type *response*) "application/xhtml+xml")
        ,@body
        (with-output-to-string (,stream)
