@@ -105,14 +105,14 @@
       (lquery:$ doc ".revisions nav.edit" (remove))
       (remove-inaccessible-options doc))))
 
-(rate:define-limit search (time-left :timeout 10)
+(rate:define-limit search-chan (time-left :timeout 10)
   (with-dynamic-env (doc "search.ctml")
     (clip:process
      doc
      :title "Search Results")
     (show-error doc (format NIL "Please wait ~a seconds before searching again." time-left))))
 
-(define-page search "chan/search" ()
+(define-page search-chan "chan/search" ()
   (rate:with-limitation (search)
     (with-dynamic-env (doc "search.ctml")
       (clip:process
