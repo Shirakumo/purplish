@@ -113,7 +113,7 @@
     (show-error doc (format NIL "Please wait ~a seconds before searching again." time-left))))
 
 (define-page search-chan "chan/search" ()
-  (rate:with-limitation (search)
+  (rate:with-limitation (search-chan)
     (with-dynamic-env (doc "search.ctml")
       (clip:process
        doc
