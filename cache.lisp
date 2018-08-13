@@ -6,8 +6,10 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *cache* (ensure-directories-exist (conf-dir "cache/")))
-(defvar *themes* (ensure-directories-exist (conf-dir "theme/")))
+(defvar *cache* (ensure-directories-exist
+                 (environment-module-directory #.*package* :cache)))
+(defvar *themes* (ensure-directories-exist
+                  (environment-module-pathname #.*package* :data "theme/")))
 
 (define-trigger radiance:startup ()
   (flet ((copy-dir-contents (from to)

@@ -11,7 +11,7 @@
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :license "Artistic"
-  :version "0.9.0"
+  :version "1.0.0"
   :description "Imageboard CMS for Radiance"
   :homepage "https://github.com/Shinmera/purplish"
   :components ((:file "module")
@@ -25,7 +25,8 @@
                (:file "front")
                (:file "api")
                (:file "atom")
-               (:file "admin"))
+               (:file "admin")
+               (:file "migrate"))
   :depends-on ((:interface :database)
                (:interface :auth)
                (:interface :cache)
