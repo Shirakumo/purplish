@@ -13,7 +13,9 @@
   :license "Artistic"
   :version "1.0.0"
   :description "Imageboard CMS for Radiance"
-  :homepage "https://github.com/Shinmera/purplish"
+  :homepage "https://Shinmera.github.io/purplish/"
+  :bug-tracker "https://github.com/Shinmera/purplish/issues"
+  :source-control (:git "https://github.com/Shinmera/purplish.git")
   :components ((:file "module")
                (:file "db")
                (:file "toolkit")
