@@ -148,8 +148,10 @@
     greentext-ref))
 
 (defun parse (text)
-  (let ((parser (make-instance 'cl-markless:parser :directives *markless-directives*))
-        (node (plump-dom:make-root)))
+  (let ((parser (make-instance 'cl-markless:parser :directives *markless-directives*
+                                                   :stack-size-limit 128))
+        (node (plump-dom:make-root))
+        (text (cl-ppcre:regex-replace-all "\\r\\n" text (string #\Linefeed))))
     (cl-markless:output (cl-markless:parse text parser)
                         :target node :format :plump)
     node))
