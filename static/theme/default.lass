@@ -329,7 +329,10 @@
       :max-width 300px
       :max-height 300px)
 
-     (.post-reference
+     (.quote
+      :color green)
+
+     ((:or .post-reference .board-reference)
       :text-decoration none
       :font-weight bold
       :color #(base))

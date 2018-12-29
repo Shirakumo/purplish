@@ -42,7 +42,6 @@
                :trivial-mimes
                :local-time
                :clip
-               :3bmd
-               :3bmd-ext-code-blocks
+               :cl-markless-plump
                :trivial-thumbnail
                :drakma))

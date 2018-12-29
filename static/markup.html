@@ -4,49 +4,126 @@
     <meta charset="utf-8"/>
     <title>Purplish Markup Help</title>
     <style type="text/css">
-     code{
-       font-family: Consolas, Inconsolata, monospace;
-       background: #DDD;
-       padding: 3px;
-     }
-
-     pre code{display: block;}
+      html{
+          font-family: sans-serif;
+          margin-bottom: 50vh;
+      }
+      code{
+          font-family: Consolas, Inconsolata, monospace;
+          background: #DDD;
+          padding: .2em;
+      }
+      code pre{
+          margin: 0;
+          overflow-x: auto;
+          white-space: pre-wrap;
+          white-space: -moz-pre-wrap;
+          white-space: -pre-wrap;
+          white-space: -o-pre-wrap;
+          word-wrap: break-word;
+      }
+      img{max-width:100%;}
+      .example{display: flex;}
+      .example>*{flex-grow: 1; width:50%; margin: 0 0.5em;}
+      .quote{color:green;}
+      a{text-decoration:none; color:#0088EE;}
     </style>
   </head>
   <body>
     <h1>Purplish Markup</h1>
     <p>
-      Post content is parsed using <a href="http://daringfireball.net/projects/markdown/basics">Markdown</a>, with some special extensions. Markdown is supposed to be a mixin with HTML, so you may input HTML with your normal text if some kind of markup is not exposed through Markdown syntax. Here's a basic rundown of the Markdown syntax:
+      Post content is parsed using <a href="https://shirakumo.github.io/Markless">Markless</a>, with some special extensions. Here's a basic rundown of the Markless syntax:
     </p>
-    <pre><code>*italic* **bold** ***even bolder***</code></pre>
-    <pre><code>_italic as well_ __this, too, is bold__ ___you get the gist___</code></pre>
+    <div class="example">
+      <code><pre>**bold**
+//italic//
+__underline__
+<-struck through->
+``code``</pre></code>
+      <div class="result">
+        <p>
+          <strong>bold</strong><br/>
+          <em>italic</em><br/>
+          <u>underline</u><br/>
+          <s>struck through</s><br/>
+          <code>code</code><br/>
+        </p>
+      </div>
+    </div>
     <p>
-      Markdown attempts to allow a more 'natural' form than HTML. For example, A list looks like so:
+      Markless is a lot more intuitive and easy to write than HTML. For example, lists:
     </p>
-    <pre><code>* Some item
-* Oh man more
-* And a last one</code></pre>
+    <div class="example">
+      <code><pre>- Some item
+- Oh man more
+- And a last one,
+  but on multiple lines!
+
+1.Numbered lists are also possible.
+2.Hop, skip, and...
+10.Jump!</pre></code>
+      <div class="result">
+        <ul>
+          <li>Some item</li>
+          <li>Oh man more</li>
+          <li>And a last one,<br/>
+            but on multiple lines!</li>
+        </ul>
+        <ol>
+          <li>Numbered lists are also possible.</li>
+          <li>Hop, skip, and...</li>
+          <li value="10">Jump!</li>
+        </ol>
+      </div>
+    </div>
     <p>
-      One of the things you will most likely want to use for text markup is links and images. Markdown offers syntax for that as well:
+      One of the things you will most likely want to use for text markup is links and images. Markless offers syntax for that as well:
     </p>
-    <pre><code>[Link label](http://example.com)</code></pre>
-    <pre><code>&lt;http://example.com&gt;</code></pre>
-    <pre><code>![image alt](http://example.com/some-image.jpg)</code></pre>
+    <div class="example">
+      <code><pre>http://example.com
+"Link label"(http://example.com)
+[ image http://filebox.tymoon.eu//file/TVRRNE1nPT0= ]</pre></code>
+      <div class="result">
+        <p>
+          <a href="http://example.com">http://example.com</a><br/>
+          <a href="http://example.com">Link label</a>
+        </p>
+        <img src="http://filebox.tymoon.eu//file/TVRRNE1nPT0=" alt="http://filebox.tymoon.eu//file/TVRRNE1nPT0="/>
+      </div>
+    </div>
     <p>
-      Markdown automatically segments your code into paragraphs when an empty line is encountered. This means that simple line breaks won't result in a line break in the result. If you want to force a line break, you have to append two spaces to the end of your line before the line break. For more information about Markdown, please see <a href="http://daringfireball.net/projects/markdown/syntax">the syntax</a>.
+      Markless automatically segments your code into paragraphs when an empty line is encountered, and respects line breaks where you put them.
     </p>
-    <h2>Extra Markup</h2>
     <p>
-      Purplish offers a few extra syntax specialties to integrate better. The additions are post references, embeddings and spoiler text.
+      Purplish offers a few extra syntax specialties to integrate better. The additions are greentexting, post references, and youtube embeds.
     </p>
     <p>
-      Post references work as is normal for imageboards. Simple prepend the post ID with two pointy opening brackets, like so: <code>&gt;&gt;1969</code>.
+      Greentext and references work as is normal for imageboards.
     </p>
+    <div class="example">
+      <code><pre>&gt; greentexting in TYOOL &lt;current year&gt;
+&gt;&gt;10
+&gt;&gt;/fab/</pre></code>
+      <div class="result">
+        <div class="quote">&gt; greentexting in TYOOL &lt;current year&gt;</div>
+        <p>
+          <a href="#" class="post-reference">&gt;&gt;10</a><br/>
+          <a href="#" class="board-reference">&gt;&gt;/fab/</a>
+        </p>
+      </div>
+    </div>
     <p>
-      Embeddings allow you to integrate things like youtube video players or soundcloud audio players into your posts. In order to create such an embed, simply use the same syntax as for a link, but change the link label to be the service you want to embed. Like so: <code>[youtube](https://www.youtube.com/watch?v=K2rwxs1gH9w)</code>
+      Aside from images, audio, and video that Markless has support for out of the box, you can embed Youtube like this:
     </p>
+    <div class="example">
+      <code><pre>[ youtube https://www.youtube.com/watch?v=oVeMn5xBwj0 ]</pre></code>
+      <div class="result">
+        <iframe width="100%" height="240" frameborder="no" allowfullscreen="yes" src="//www.youtube.com/embed/oVeMn5xBwj0"></iframe>
+      </div>
+    </div>
+    <h2>More</h2>
     <p>
-      Finally, spoiler text (hiding your text until its moused over) happens by surrounding the region with <code>|? ?|</code>. Simply just like this: <code>PS3 has |?no games?|</code>
+      For a more complete tutorial of Markless, please see the <a href="https://shirakumo.github.io/Markless">official website.</a>
     </p>
   </body>
 </html>

@@ -6,113 +6,150 @@
 
 (in-package #:org.tymoonnext.radiance.purplish)
 
-(defvar *external-embedders* (make-hash-table :test 'equalp))
-
-(defun external-embedder (name)
-  (or (gethash name *external-embedders*)
-      #'(lambda (address) (declare (ignore address)) NIL)))
-
-(defun (setf external-embedder) (func name)
-  (setf (gethash name *external-embedders*) func))
-
-(defmacro define-external-embedder (name (address) &body body)
-  `(setf (external-embedder ,(string name))
-         #'(lambda (,address) (block NIL ,@body))))
-
 (defun youtube-code (url)
   (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url))))
     (when pieces (aref pieces 5))))
 
-(define-external-embedder youtube (address)
-  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//www.youtube.com/embed/~a\"></iframe>"
-          (or (youtube-code address) (return))))
+(defclass cl-markless-components::youtube (cl-markless-components:video)
+  ())
 
-(defun vimeo-code (url)
-  (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vimeo\\.com/([0-9]+)" url))))
-    (when pieces (aref pieces 3))))
+(defmethod cl-markless:output-component ((component cl-markless-components::youtube) (target plump-dom:nesting-node) (format (eql :plump)))
+  (let ((element (plump-dom:make-element target "iframe")))
+    (setf (plump-dom:attribute element "width") "100%")
+    (setf (plump-dom:attribute element "height") "240")
+    (setf (plump-dom:attribute element "frameborder") "no")
+    (setf (plump-dom:attribute element "allowfullscreen") "yes")
+    (setf (plump-dom:attribute element "src")
+          (format NIL "//www.youtube.com/embed/~a?" (youtube-code (cl-markless-components:target component))))
+    (loop for option in (cl-markless-components:options component)
+          do (typecase option
+               (cl-markless-components:autoplay-option
+                (setf (plump-dom:attribute element "src")
+                      (format NIL "~aautoplay=1&" (plump-dom:attribute element "src"))))
+               (cl-markless-components:loop-option
+                (setf (plump-dom:attribute element "src")
+                      (format NIL "~aloop=1&" (plump-dom:attribute element "src"))))
+               (cl-markless-components:width-option
+                (setf (plump-dom:attribute element "width")
+                      (format NIL "~d~(~a~)"
+                              (cl-markless-components:size option)
+                              (cl-markless-components:unit option))))
+               (cl-markless-components:height-option
+                (setf (plump-dom:attribute element "height")
+                      (format NIL "~d~(~a~)"
+                              (cl-markless-components:size option)
+                              (cl-markless-components:unit option))))
+               (cl-markless-components:float-option
+                (setf (plump-dom:attribute element "style")
+                      (format NIL "float:~(~a~)" (cl-markless-components:direction option))))))))
 
-(define-external-embedder vimeo (address)
-  (format NIL "<iframe width=\"100%\" height=\"240\" frameborder=\"no\" allowfullscreen=\"yes\" src=\"//player.vimeo.com/video/~a\"></iframe>"
-          (or (vimeo-code address) (return))))
+(defclass quote-line (cl-markless-components:block-component cl-markless-components:parent-component)
+  ())
 
-(defun vine-code (url)
-  (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?vine\\.co/v/([0-9a-zA-Z]+)" url))))
-    (when pieces (aref pieces 3))))
+(defmethod cl-markless:output-component ((component quote-line) (target plump-dom:nesting-node) (format (eql :plump)))
+  (let ((element (plump-dom:make-element target "div")))
+    (setf (plump-dom:attribute element "class") "quote")
+    (loop for child across (cl-markless-components:children component)
+          do (cl-markless:output-component child element format))))
 
-(define-external-embedder vine (address)
-  (format NIL "<iframe class=\"vine-embed\" src=\"https://vine.co/v/~a/embed/simple\" width=\"320\" height=\"320\" frameborder=\"no\"></iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
-          (or (vine-code address) (return))))
+(defclass post-reference (cl-markless-components:inline-component cl-markless-components:unit-component)
+  ((post-id :initarg :post-id :initform (error "POST-ID required") :accessor post-id)))
 
-(define-external-embedder soundcloud (address)
-  (format NIL "<iframe width=\"100%\" height=\"166\" frameborder=\"no\" src=\"//w.soundcloud.com/player/?url=~a\"></iframe>"
-          address))
+(defmethod cl-markless:output-component ((component post-reference) (target plump-dom:nesting-node) (format (eql :plump)))
+  (let ((element (plump-dom:make-element target "a")))
+    (setf (plump-dom:attribute element "class") "post-reference")
+    (setf (plump-dom:attribute element "href") (uri-to-url (format NIL "chan/post/~a" (post-id component))
+                                                           :representation :external))
+    (plump-dom:make-text-node element (format NIL ">>~a" (post-id component)))))
 
-(defun bandcamp-code (url)
-  (cl-ppcre:register-groups-bind (NIL NIL NIL band a/t id) ("^((http|https)://)?(www\\.)?([0-9a-zA-Z_\\-]+)\\.bandcamp\\.com/(album|track)/([^/]+)$" url)
-    (or ;; Apparently this has been discontinued.
-     ;; (ignore-errors
-     ;;  (let* ((drakma:*text-content-types* (cons '("application" . "json") (cons '("text" . "json") drakma:*text-content-types*)))
-     ;;         (resp (drakma:http-request "http://api.bandcamp.com/api/url/1/info" :parameters `(("key" . "vatnajokull")
-     ;;                                                                                           ("url" . ,url)))))
-     ;;    (let ((json (cl-json:decode-json-from-string resp)))
-     ;;      (unless (cdr (assoc :error json))
-     ;;        (list (cdr (assoc :band--id json))
-     ;;              (cdr (assoc :album--id json))
-     ;;              (cdr (assoc :track--id json)))))))
+(defclass board-reference (cl-markless-components:inline-component cl-markless-components:unit-component)
+  ((board-id :initarg :board-id :initform (error "BOARD-ID required") :accessor board-id)))
 
-     ;; KLUDGE!
-     ;; Since we cannot use a nice API we have to do crawling. There's a JS block within the page
-     ;; that contains the info we need. Sadly it is JS and not JSON, so we can't use a parser to get
-     ;; what we need easily and need to do everything by RegEx. This might break horribly if they
-     ;; change anything at all about how the data is presented, but I don't think there's any other
-     ;; choice right now aside from writing a specific parser for this, which is overkill.
-     (ignore-errors
-      (let ((site (drakma:http-request (format NIL "http://~a.bandcamp.com/~a/~a" band a/t id))))
-        (cl-ppcre:register-groups-bind (resp) ("var\\s*EmbedData\\s*=\\s*(\\{[\\s\\S]*?\\});" site)
-          (cl-ppcre:register-groups-bind (album track band) ("\"album.*value\\s*:\\s*([0-9]+)[\\s\\S]*?track_id\\s*:\\s*([0-9]+)[\\s\\S]*?art_id\\s*:\\s*([0-9]+)" resp)
-            (list band album track))))))))
+(defmethod cl-markless:output-component ((component board-reference) (target plump-dom:nesting-node) (format (eql :plump)))
+  (let ((element (plump-dom:make-element target "a")))
+    (setf (plump-dom:attribute element "class") "board-reference")
+    (setf (plump-dom:attribute element "href") (uri-to-url (format NIL "chan/board/~a" (board-id component))
+                                                           :representation :external))
+    (plump-dom:make-text-node element (format NIL ">>/~a/" (board-id component)))))
 
-(define-external-embedder bandcamp (address)
-  (destructuring-bind (band album track) (or (bandcamp-code address) (return))
-    (declare (ignorable band))
-    (format NIL "<iframe width=\"100%\" height=\"42\" frameborder=\"no\" src=\"//bandcamp.com/EmbeddedPlayer/~@[album=~a/~]size=small/bgcol=ffffff/linkcol=0687f5/~@[track=~a/~]transparent=true/\" seamless></iframe>"
-            album track)))
 
-(defun embed-external (target start end match-start match-end reg-starts reg-ends)
-  (declare (ignore start end))
-  (let ((label (subseq target (aref reg-starts 0) (aref reg-ends 0)))
-        (address (subseq target (aref reg-starts 1) (aref reg-ends 1))))
-    (setf address (cl-ppcre:regex-replace-all "\\\"" address "%22"))
-    (or (funcall (external-embedder label) address)
-        (subseq target match-start match-end))))
+(defclass greentext-block (cl-markless:singular-line-directive)
+  ())
 
-(defun preparse (text)
-  (setf text (cl-ppcre:regex-replace-all ">>([0-9]+)" text
-                                         (lambda (target-string start end match-start match-end reg-starts reg-ends)
-                                           (declare (ignore start end reg-starts reg-ends))
-                                           (let ((id (subseq target-string (+ match-start 2) match-end)))
-                                             (format NIL "<a href=\"~a\" class=\"post-reference\">&gt;&gt;~a</a>"
-                                                     (uri-to-url (format NIL "chan/post/~a" id) :representation :external) id)))))
-  (setf text (cl-ppcre:regex-replace-all "\\!?\\[([a-zA-Z]+)\\]\\(([^)]+)\\)" text #'embed-external))
-  (setf text (cl-ppcre:regex-replace-all "\\|\\?(.*?)\\?\\|" text "<span class=\"spoiler\">\\1</span>"))
-  ;; temporary hack fix to circumvent 3bmd crashing, ugh.
-  (setf text (cl-ppcre:regex-replace-all "(> *){5,}" text ">>>>>")))
+(defmethod cl-markless:prefix ((_ greentext-block))
+  #(">" " "))
 
-(defun sanitize (node)
-  (lquery:$ node "script,link,frame,frameset,embed,object,applet" (remove))
-  (lquery:$ node "[onclick],[onfocus],[onblur],[onmouseover],[onmouseout],[ondoubleclick],[onload],[onunload]"
-            (each #'(lambda (node) (loop for attr being the hash-keys of (plump:attributes node)
-                                         when (and (< 2 (length attr)) (string-equal attr "on" :end1 2))
-                                         do (remhash attr (plump:attributes node))))))
-  (lquery:$ node "[href^=javascript],[href^=jscript]" (remove-attr :href))
-  (lquery:$ node "[src^=javascript],[src^=jscript]" (remove-attr :src))
-  node)
+(defmethod cl-markless:begin ((_ greentext-block) parser line cursor)
+  (cond ((or (<= (length line) (1+ cursor))
+             (char= #\> (aref line (1+ cursor))))
+         (cl-markless::delegate-paragraph parser line cursor))
+        (T
+         (cl-markless:commit _ (make-instance 'quote-line) parser)
+         cursor)))
+
+(defclass greentext-ref (cl-markless:inline-directive)
+  ())
+
+(defmethod cl-markless:prefix ((_ greentext-ref))
+  #(">" ">"))
+
+(defmethod cl-markless:begin ((_ greentext-ref) parser line cursor)
+  (let* ((stack-top (cl-markless:stack-top (cl-markless:stack parser)))
+         (children (cl-markless-components:children (cl-markless:stack-entry-component stack-top)))
+         (end cursor))
+    
+    (loop while (and (< end (length line))
+                     (char= #\> (aref line end)))
+          do (incf end))
+    (let ((next (if (< end (length line)) (aref line end) #\Nul)))
+      (cond ((<= (char-code #\0) (char-code next) (char-code #\9))
+             (let ((mid end))
+               (loop while (and (< end (length line))
+                                (<= (char-code #\0) (char-code (aref line end)) (char-code #\9)))
+                     do (incf end))
+               (vector-push-extend (make-instance 'post-reference :post-id (subseq line mid end)) children)))
+            ((char= next #\/)
+             (let ((mid end))
+               (loop do (incf end)
+                     while (and (< end (length line))
+                                (char/= #\/ (aref line end))))
+               (let ((next (if (< end (length line)) (aref line end) #\Nul)))
+                 (cond ((and (/= mid end) (char= #\/ next))
+                        (vector-push-extend (make-instance 'board-reference :board-id (subseq line (1+ mid) end)) children)
+                        (incf end))
+                       (T
+                        (vector-push-extend (subseq line cursor end) children))))))
+            (T
+             (vector-push-extend (subseq line cursor end) children))))
+    end))
+
+(defparameter *markless-directives*
+  '(cl-markless:paragraph
+    cl-markless:blockquote-header
+    cl-markless:blockquote
+    cl-markless:unordered-list
+    cl-markless:ordered-list
+    cl-markless:header
+    cl-markless:horizontal-rule
+    cl-markless:code-block
+    cl-markless:embed
+    cl-markless:bold
+    cl-markless:italic
+    cl-markless:underline
+    cl-markless:strikethrough
+    cl-markless:code
+    cl-markless:dash
+    cl-markless:supertext
+    cl-markless:subtext
+    cl-markless:compound
+    cl-markless:url
+    cl-markless:newline
+    greentext-block
+    greentext-ref))
 
 (defun parse (text)
-  (let ((3bmd:*smart-quotes* T)
-        (3bmd-code-blocks:*code-blocks* T))
-    (let ((doc (plump:parse
-                (with-output-to-string (stream)
-                  (3bmd:parse-string-and-print-to-stream
-                   (preparse text) stream)))))
-      (sanitize doc))))
+  (let ((parser (make-instance 'cl-markless:parser :directives *markless-directives*))
+        (node (plump-dom:make-root)))
+    (cl-markless:output (cl-markless:parse text parser)
+                        :target node :format :plump)
+    node))
