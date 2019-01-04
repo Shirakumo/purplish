@@ -13,7 +13,7 @@
 (defclass cl-markless-components::youtube (cl-markless-components:video)
   ())
 
-(defmethod cl-markless:output-component ((component cl-markless-components::youtube) (target plump-dom:nesting-node) (format (eql :plump)))
+(defmethod cl-markless:output-component ((component cl-markless-components::youtube) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
   (let ((element (plump-dom:make-element target "iframe")))
     (setf (plump-dom:attribute element "width") "100%")
     (setf (plump-dom:attribute element "height") "240")
@@ -46,7 +46,7 @@
 (defclass quote-line (cl-markless-components:block-component cl-markless-components:parent-component)
   ())
 
-(defmethod cl-markless:output-component ((component quote-line) (target plump-dom:nesting-node) (format (eql :plump)))
+(defmethod cl-markless:output-component ((component quote-line) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
   (let ((element (plump-dom:make-element target "div")))
     (setf (plump-dom:attribute element "class") "quote")
     (loop for child across (cl-markless-components:children component)
@@ -55,7 +55,7 @@
 (defclass post-reference (cl-markless-components:inline-component cl-markless-components:unit-component)
   ((post-id :initarg :post-id :initform (error "POST-ID required") :accessor post-id)))
 
-(defmethod cl-markless:output-component ((component post-reference) (target plump-dom:nesting-node) (format (eql :plump)))
+(defmethod cl-markless:output-component ((component post-reference) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
   (let ((element (plump-dom:make-element target "a")))
     (setf (plump-dom:attribute element "class") "post-reference")
     (setf (plump-dom:attribute element "href") (uri-to-url (format NIL "chan/post/~a" (post-id component))
@@ -65,7 +65,7 @@
 (defclass board-reference (cl-markless-components:inline-component cl-markless-components:unit-component)
   ((board-id :initarg :board-id :initform (error "BOARD-ID required") :accessor board-id)))
 
-(defmethod cl-markless:output-component ((component board-reference) (target plump-dom:nesting-node) (format (eql :plump)))
+(defmethod cl-markless:output-component ((component board-reference) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
   (let ((element (plump-dom:make-element target "a")))
     (setf (plump-dom:attribute element "class") "board-reference")
     (setf (plump-dom:attribute element "href") (uri-to-url (format NIL "chan/board/~a" (board-id component))
@@ -153,5 +153,5 @@
         (node (plump-dom:make-root))
         (text (cl-ppcre:regex-replace-all "\\r\\n" text (string #\Linefeed))))
     (cl-markless:output (cl-markless:parse text parser)
-                        :target node :format :plump)
+                        :target node :format 'cl-markless-plump:plump)
     node))
