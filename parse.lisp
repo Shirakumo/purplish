@@ -10,10 +10,10 @@
   (let ((pieces (nth-value 1 (cl-ppcre:scan-to-strings "((http|https)://)?(www\\.)?(youtube\\.com|youtu\\.be)/(watch\\?v=)?([0-9a-zA-Z_\\-]{4,12})" url))))
     (when pieces (aref pieces 5))))
 
-(defclass cl-markless-components::youtube (cl-markless-components:video)
+(defclass youtube (cl-markless-components:video)
   ())
 
-(defmethod cl-markless:output-component ((component cl-markless-components::youtube) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
+(defmethod cl-markless:output-component ((component youtube) (target plump-dom:nesting-node) (format cl-markless-plump:plump))
   (let ((element (plump-dom:make-element target "iframe")))
     (setf (plump-dom:attribute element "width") "100%")
     (setf (plump-dom:attribute element "height") "240")
@@ -149,6 +149,7 @@
 
 (defun parse (text)
   (let ((parser (make-instance 'cl-markless:parser :directives *markless-directives*
+                                                   :embed-types (list* 'youtube cl-markless:*default-embed-types*)
                                                    :stack-size-limit 128))
         (node (plump-dom:make-root))
         (text (cl-ppcre:regex-replace-all "\\r\\n" text (string #\Linefeed))))
