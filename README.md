@@ -26,6 +26,8 @@ Configuration Variables
 
 Permissions
 -----------
+* `(purplish post create)`
+* `(purplish thread create)`
 * `(purplish post change)`
 * `(purplish thread delete)`
 * `(purplish post purge)`

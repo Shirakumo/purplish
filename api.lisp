@@ -154,7 +154,7 @@
         (redirect #@"chan/" :external 303)
         (api-output "Board deleted."))))
 
-(define-api purplish/thread/create (board title text files[] &optional author username) ()
+(define-api purplish/thread/create (board title text files[] &optional author username) (:access (perm purplish thread create))
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (rate:with-limitation (post)
@@ -182,7 +182,7 @@
         (redirect (format-uri "chan/board/~a" (dm:field thread "board")) :external 303)
         (api-output "Thread purged."))))
 
-(define-api purplish/post/create (thread &optional author title text files[] username) ()
+(define-api purplish/post/create (thread &optional author title text files[] username) (:access (perm purplish post create))
   (unless (or (not username) (string= username ""))
     (error 'api-argument-invalid :argument 'username :message "Hi, spambot."))
   (unless (or* title text files[])

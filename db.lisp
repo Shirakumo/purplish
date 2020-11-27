@@ -30,3 +30,5 @@
                       (type (:varchar 16))
                       (filename (:varchar 128)))
              :indices '(parent)))
+
+(user:add-default-permissions '(purplish post create) '(purplish thread create))
