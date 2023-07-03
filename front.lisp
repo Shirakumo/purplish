@@ -1,9 +1,3 @@
-#|
- This file is a part of Purplish
- (c) 2013 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
- Author: Nicolas Hafner <shinmera@tymoon.eu>
-|#
-
 (in-package #:org.tymoonnext.radiance.purplish)
 
 (defun show-error (doc &optional (error (get-var "error")))
