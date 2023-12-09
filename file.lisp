@@ -23,7 +23,7 @@
                              collect `(define-file-embedder ,type ,@body)))))
 
 (define-for-multiple
-  ((:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml)
+  ((:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml :image/webp)
    (file name)
    (let ((thumb (make-pathname :name (format NIL "thumb-~a" (pathname-name file)) :defaults file)))
      (clip:process (@template "files/image.ctml") :file file :file-thumb thumb :name name)))
@@ -63,7 +63,7 @@
       (error "File is too big. Must be below ~aMb" (config :file :size-limit)))))
 
 (defun create-thumb (file mime)
-  (when (find mime '(:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml) :test #'string-equal)
+  (when (find mime '(:image/jpeg :image/png :image/gif :image/x-ms-bmp :image/svg+xml :image/webp) :test #'string-equal)
     (thumbnail:create
      file NIL
      :width (or* (config :thumb :width) 150)
