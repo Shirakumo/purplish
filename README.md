@@ -1,6 +1,6 @@
 About Purplish
 --------------
-Purplish is an imageboard software for [Radiance](https://github.com/Shinmera/Radiance). It supports multiple boards, themes, multiple files per post, rate limiting, video and audio embedding, post editing and more.
+Purplish is an imageboard software for [Radiance](https://shinmera.com/project/Radiance). It supports multiple boards, themes, multiple files per post, rate limiting, video and audio embedding, post editing and more.
 
 How To
 ------

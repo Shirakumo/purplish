@@ -1,5 +1,5 @@
 <footer>
-  Running TyNETv5 <a href="https://github.com/Shirakumo/radiance">Radiance</a>, <a href="https://github.com/Shirakumo/purplish">Purplish 2</a>.
+  Running TyNETv5 <a href="https://shirakumo.org/project/radiance">Radiance</a>, <a href="https://shirakumo.org/project/purplish">Purplish 2</a>.
 </footer>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
